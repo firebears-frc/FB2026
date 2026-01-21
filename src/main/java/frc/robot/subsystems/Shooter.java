@@ -16,71 +16,78 @@ import frc.robot.util.SparkUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Intake extends SubsystemBase {
-  private SparkMax intakeMotor = new SparkMax(12, MotorType.kBrushless);
-  private final SparkClosedLoopController intakeController;
-  private SparkLimitSwitch beamBreak = intakeMotor.getForwardLimitSwitch();
+public class Shooter extends SubsystemBase {
+  private SparkMax ShooterMotor = new SparkMax(12, MotorType.kBrushless);
+  private final SparkClosedLoopController ShooterController;
+  private SparkLimitSwitch beamBreak = ShooterMotor.getForwardLimitSwitch();
   private double setPoint = 0;
-  private static final int intakeCurrentLimit = 30;
+  private static final int ShooterCurrentLimit = 30;
 
-  @AutoLogOutput(key = "intake/hasCoral")
-  private boolean hasCoral = false;
+  @AutoLogOutput(key = "Shooter/fuel ready")
+  private boolean FuelReady = false;
 
-  public Intake() {
+  public Shooter() {
 
     // Configure turn motor
-    intakeController = intakeMotor.getClosedLoopController();
-    var intakeConfig = new SparkMaxConfig();
-    intakeConfig
+    ShooterController = ShooterMotor.getClosedLoopController();
+    var ShooterConfig = new SparkMaxConfig();
+    ShooterConfig
         .idleMode(IdleMode.kCoast)
-        .smartCurrentLimit(intakeCurrentLimit)
+        .smartCurrentLimit(ShooterCurrentLimit)
         .secondaryCurrentLimit(50)
         .voltageCompensation(12.0);
-    intakeConfig
+    ShooterConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pidf(.00007, 0.0, 0.0, 1.774691358024691e-4);
     // ff: 1.774691358024691e-4
-    intakeConfig.limitSwitch.forwardLimitSwitchEnabled(false);
+    ShooterConfig.limitSwitch.forwardLimitSwitchEnabled(false);
 
     SparkUtil.tryUntilOk(
-        intakeMotor,
+        ShooterMotor,
         5,
         () ->
-            intakeMotor.configure(
-                intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+            ShooterMotor.configure(
+                ShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
-  @AutoLogOutput(key = "intake/beamBreak")
+  @AutoLogOutput(key = "Shooter/beamBreak")
   private boolean beamBreak() {
     return beamBreak.isPressed();
   }
 
-  @AutoLogOutput(key = "intake/error")
+  @AutoLogOutput(key = "Shooter/error")
   private double getError() {
-    return setPoint - intakeMotor.getEncoder().getVelocity();
+    return setPoint - ShooterMotor.getEncoder().getVelocity();
   }
 
-  @AutoLogOutput(key = "intake/atSpeed")
+  @AutoLogOutput(key = "Shooter/atSpeed")
   private boolean atSpeed() {
     return getError() < 100 && getError() > -100;
   }
 
-  public Command reverseIntake() {
+  public Command reverseShooter() {
     return runOnce(
         () -> {
           setPoint = -1000;
         });
   }
 
-  public Command startIntake() {
+  public Command startShooter() {
     return runOnce(
         () -> {
           setPoint = 1000;
         });
   }
+  // subject to change based on design of the motor and mechanism
+  public Command SlowShot() {
+    return runOnce(
+        () -> {
+          setPoint = 500;
+        });
+  }
 
-  public Command pauseintake() {
+  public Command pauseShooter() {
     return runOnce(
         () -> {
           setPoint = 0;
@@ -89,17 +96,17 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (beamBreak() && !hasCoral) {
+    if (beamBreak() && !FuelReady) {
       setPoint = 0;
-      hasCoral = true;
+      FuelReady = true;
     } else if (!beamBreak()) {
-      hasCoral = false;
+      FuelReady = false;
     }
 
-    intakeController.setReference(setPoint, ControlType.kVelocity);
+    ShooterController.setReference(setPoint, ControlType.kVelocity);
 
-    Logger.recordOutput("intake/Output", intakeMotor.getAppliedOutput());
-    Logger.recordOutput("intake/speed", intakeMotor.getEncoder().getVelocity());
-    Logger.recordOutput("intake/setPoint", setPoint);
+    Logger.recordOutput("Shooter/Output", ShooterMotor.getAppliedOutput());
+    Logger.recordOutput("Shooter/speed", ShooterMotor.getEncoder().getVelocity());
+    Logger.recordOutput("Shooter/setPoint", setPoint);
   }
 }
