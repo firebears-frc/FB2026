@@ -11,78 +11,72 @@ import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.SparkUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Intake extends SubsystemBase {
-  private SparkMax intakeMotor = new SparkMax(12, MotorType.kBrushless);
-  private final SparkClosedLoopController intakeController;
-  private SparkLimitSwitch beamBreak = intakeMotor.getForwardLimitSwitch();
+public class Hopper extends SubsystemBase {
+  private SparkMax hopperMotor = new SparkMax(12, MotorType.kBrushless);// change can id
+  private final SparkClosedLoopController hopperController;
+  private SparkLimitSwitch beamBreak = hopperMotor.getForwardLimitSwitch();
   private double setPoint = 0;
-  private static final int intakeCurrentLimit = 30;
+  private static final int HopperCurrentLimit = 30;// safety limit
 
-  @AutoLogOutput(key = "intake/hasCoral")
+  @AutoLogOutput(key = "Hopper/hasCoral")
   private boolean hasCoral = false;
 
-  public Intake() {
+  public Hopper() {
 
     // Configure turn motor
-    intakeController = intakeMotor.getClosedLoopController();
-    var intakeConfig = new SparkMaxConfig();
-    intakeConfig
+    hopperController = hopperMotor.getClosedLoopController();
+    var HopperConfig = new SparkMaxConfig();
+    HopperConfig
         .idleMode(IdleMode.kCoast)
-        .smartCurrentLimit(intakeCurrentLimit)
+        .smartCurrentLimit(HopperCurrentLimit)
         .secondaryCurrentLimit(50)
         .voltageCompensation(12.0);
-    intakeConfig
+    HopperConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(.00007, 0.0, 0.0, 1.774691358024691e-4);
+        .pidf(.00007, 0.0, 0.0, 1.774691358024691e-4);//need changes
     // ff: 1.774691358024691e-4
-    intakeConfig.limitSwitch.forwardLimitSwitchEnabled(false);
+    HopperConfig.limitSwitch.forwardLimitSwitchEnabled(false);
 
     SparkUtil.tryUntilOk(
-        intakeMotor,
+        hopperMotor,
         5,
         () ->
-            intakeMotor.configure(
-                intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+            hopperMotor.configure(
+                HopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
-  @AutoLogOutput(key = "intake/beamBreak")
+  @AutoLogOutput(key = "Hopper/beamBreak")
   private boolean beamBreak() {
     return beamBreak.isPressed();
   }
 
-  @AutoLogOutput(key = "intake/error")
+  @AutoLogOutput(key = "Hopper/error")
   private double getError() {
-    return setPoint - intakeMotor.getEncoder().getVelocity();
+    return setPoint - hopperMotor.getEncoder().getVelocity();
   }
 
-  @AutoLogOutput(key = "intake/atSpeed")
+  @AutoLogOutput(key = "Hopper/atSpeed")
   private boolean atSpeed() {
     return getError() < 100 && getError() > -100;
   }
-
-  public Command reverseIntake() {
-    return runOnce(
-        () -> {
-          setPoint = -1000;
-        });
-  }
-
-  public Command startIntake() {
-    return runOnce(
-        () -> {
-          setPoint = 1000;
-        });
-  }
-
+//rip reverse hopper
   
-  public Command pauseintake() {
+// to do what buttons assign speeds 
+  public Command startHopper(double hopperspeed ) {
+    return runOnce(
+        () -> {
+          setPoint = hopperspeed;
+        });
+  }
+
+  //to do adept to a button
+  public Command pauseHopper() {
     return runOnce(
         () -> {
           setPoint = 0;
@@ -91,7 +85,7 @@ public class Intake extends SubsystemBase {
 
 
 
-
+//no idea what it is maybe needs changing 
   @Override
   public void periodic() {
     if (beamBreak() && !hasCoral) {
@@ -101,10 +95,10 @@ public class Intake extends SubsystemBase {
       hasCoral = false;
     }
 
-    intakeController.setReference(setPoint, ControlType.kVelocity);
+    hopperController.setReference(setPoint, ControlType.kVelocity);
 
-    Logger.recordOutput("intake/Output", intakeMotor.getAppliedOutput());
-    Logger.recordOutput("intake/speed", intakeMotor.getEncoder().getVelocity());
-    Logger.recordOutput("intake/setPoint", setPoint);
+    Logger.recordOutput("Hopper/Output", hopperMotor.getAppliedOutput());
+    Logger.recordOutput("Hopper/speed", hopperMotor.getEncoder().getVelocity());
+    Logger.recordOutput("Hopper/setPoint", setPoint);
   }
 }
