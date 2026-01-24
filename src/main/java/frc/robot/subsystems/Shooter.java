@@ -31,13 +31,11 @@ public class Shooter extends SubsystemBase {
     // Configure turn motor
     ShooterController = ShooterMotor.getClosedLoopController();
     var ShooterConfig = new SparkMaxConfig();
-    ShooterConfig
-        .idleMode(IdleMode.kCoast)
+    ShooterConfig.idleMode(IdleMode.kCoast)
         .smartCurrentLimit(ShooterCurrentLimit)
         .secondaryCurrentLimit(50)
         .voltageCompensation(12.0);
-    ShooterConfig
-        .closedLoop
+    ShooterConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pidf(.00007, 0.0, 0.0, 1.774691358024691e-4);
     // ff: 1.774691358024691e-4
