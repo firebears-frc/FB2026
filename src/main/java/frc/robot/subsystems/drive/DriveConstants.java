@@ -17,8 +17,8 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
   public static final double maxSpeedMetersPerSec = 4.8;
   public static final double odometryFrequency = 100.0; // Hz
-  public static final double trackWidth = Units.inchesToMeters(28-2*1.75);
-  public static final double wheelBase = Units.inchesToMeters(26-2*1.75);
+  public static final double trackWidth = Units.inchesToMeters(28 - 2 * 1.75);
+  public static final double wheelBase = Units.inchesToMeters(26 - 2 * 1.75);
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
@@ -29,13 +29,13 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-90);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(0);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(180);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(90);
+  public static final Rotation2d frontLeftZeroRotation = Rotation2d.fromDegrees(-90);
+  public static final Rotation2d frontRightZeroRotation = Rotation2d.fromDegrees(0);
+  public static final Rotation2d backLeftZeroRotation = Rotation2d.fromDegrees(180);
+  public static final Rotation2d backRightZeroRotation = Rotation2d.fromDegrees(90);
 
   // Device CAN IDs
-  public static final int pigeonCanId = 9;
+  public static final int gyroCanId = 9;
 
   public static final int frontLeftDriveCanId = 1;
   public static final int backLeftDriveCanId = 3;
