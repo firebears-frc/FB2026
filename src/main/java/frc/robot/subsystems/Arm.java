@@ -1,5 +1,12 @@
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -7,24 +14,23 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.*;
 import frc.robot.util.SparkUtil;
-import java.util.function.Supplier;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Arm extends SubsystemBase {
   private static int STALL_CURRENT_LIMIT_SHOULDER = 20;
   private static int FREE_CURRENT_LIMIT_SHOULDER = 20;
+  private static double shoulderP = 0.02;
+  private static double shoulderI = 0.0;
+  private static double shoulderG = 0.35;
+  private static double shoulderD = 0.0;
   private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 30;
   private final SparkMax shoulderMotorRight;
   private final SparkMax shoulderMotorLeft;
@@ -53,7 +59,7 @@ public class Arm extends SubsystemBase {
     shoulderMotorRightConfig.absoluteEncoder.inverted(true).positionConversionFactor(360);
     shoulderMotorRightConfig
         .closedLoop
-        .pid(ArmConstants.shoulderP, ArmConstants.shoulderI, ArmConstants.shoulderD)
+        .pid(shoulderP, shoulderI, shoulderD)
         .positionWrappingEnabled(true)
         .positionWrappingInputRange(0, 360)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
@@ -171,7 +177,7 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double feedForward = Math.cos(getShoulderAngle().getRadians()) * ArmConstants.shoulderG;
+    double feedForward = Math.cos(getShoulderAngle().getRadians()) * shoulderG;
     shoulderPID.setReference(shoulderSetpoint.getDegrees(), ControlType.kPosition);
 
     Logger.recordOutput("arm/MotorLeft", shoulderMotorLeft.getAppliedOutput());
