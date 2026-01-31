@@ -5,12 +5,10 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,9 +24,9 @@ public class Shooter extends SubsystemBase {
   private SparkLimitSwitch beamBreak = ShooterMotor1.getForwardLimitSwitch();
   private double setPoint = 0;
   // Variables that can be updated
-  private static final int smartShooterCurrentLimit = 30;
-  private static final int secondaryShooterCurrentLimit = 50;
-  private final double motorP = 0.0005;
+  private static final int smartShooterCurrentLimit = 75;
+  private static final int secondaryShooterCurrentLimit = 85;
+  private final double motorP = 0.0001;
   private final double motorI = 0.0;
   private final double motorD = 0.0;
   private final double motorFF = 0.00185;
@@ -62,13 +60,12 @@ public class Shooter extends SubsystemBase {
     ShooterController2 = ShooterMotor2.getClosedLoopController();
     var ShooterConfig2 = new SparkFlexConfig();
     ShooterConfig2.idleMode(IdleMode.kCoast)
-        .follow(12)
+        .follow(12, true)
         .inverted(true)
         .smartCurrentLimit(smartShooterCurrentLimit)
         .secondaryCurrentLimit(secondaryShooterCurrentLimit)
         .voltageCompensation(12.0);
-    ShooterConfig2.closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+    ShooterConfig2.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     ShooterConfig2.limitSwitch.forwardLimitSwitchEnabled(false);
 
     SparkUtil.tryUntilOk(
@@ -104,14 +101,14 @@ public class Shooter extends SubsystemBase {
   public Command startShooter() {
     return runOnce(
         () -> {
-          setPoint = -defaultShooterSpeed;
+          setPoint = defaultShooterSpeed;
         });
   }
   // subject to change based on design of the motor and mechanism
   public Command SlowShot() {
     return runOnce(
         () -> {
-          setPoint = -3800;
+          setPoint = 3800;
         });
   }
 
@@ -125,7 +122,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     if (beamBreak() && !FuelReady) {
-      setPoint = 0;
+      //  setPoint = 0;
       FuelReady = true;
     } else if (!beamBreak()) {
       FuelReady = false;
