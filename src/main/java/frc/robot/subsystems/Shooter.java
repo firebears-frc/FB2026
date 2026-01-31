@@ -28,11 +28,11 @@ public class Shooter extends SubsystemBase {
   // Variables that can be updated
   private static final int smartShooterCurrentLimit = 30;
   private static final int secondaryShooterCurrentLimit = 50;
-  private final double motorP = 0.0002;
+  private final double motorP = 0.0005;
   private final double motorI = 0.0;
   private final double motorD = 0.0;
-  private final double motorFF = 0.002;
-  private final double defaultShooterSpeed = 1000;
+  private final double motorFF = 0.00185;
+  private final double defaultShooterSpeed = 5000;
 
   @AutoLogOutput(key = "Shooter/fuel ready")
   private boolean FuelReady = false;
@@ -67,8 +67,7 @@ public class Shooter extends SubsystemBase {
         .secondaryCurrentLimit(secondaryShooterCurrentLimit)
         .voltageCompensation(12.0);
     ShooterConfig2.closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(motorP, motorI, motorD, motorFF);
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     ShooterConfig2.limitSwitch.forwardLimitSwitchEnabled(false);
 
     SparkUtil.tryUntilOk(
@@ -97,21 +96,21 @@ public class Shooter extends SubsystemBase {
   public Command reverseShooter() {
     return runOnce(
         () -> {
-          setPoint = -defaultShooterSpeed;
+          setPoint = 1000;
         });
   }
 
   public Command startShooter() {
     return runOnce(
         () -> {
-          setPoint = defaultShooterSpeed;
+          setPoint = -defaultShooterSpeed;
         });
   }
   // subject to change based on design of the motor and mechanism
   public Command SlowShot() {
     return runOnce(
         () -> {
-          setPoint = 500;
+          setPoint = -3800;
         });
   }
 

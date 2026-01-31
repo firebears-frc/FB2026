@@ -165,6 +165,10 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    controller.leftTrigger().onTrue(m_shooter.startShooter());
+    controller.rightTrigger().onTrue(m_shooter.pauseShooter());
+    controller.y().onTrue(m_shooter.SlowShot());
   }
 
   /**
