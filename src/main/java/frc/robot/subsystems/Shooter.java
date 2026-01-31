@@ -63,6 +63,7 @@ public class Shooter extends SubsystemBase {
     var ShooterConfig2 = new SparkFlexConfig();
     ShooterConfig2.idleMode(IdleMode.kCoast)
         .follow(12)
+        .inverted(true)
         .smartCurrentLimit(smartShooterCurrentLimit)
         .secondaryCurrentLimit(secondaryShooterCurrentLimit)
         .voltageCompensation(12.0);
