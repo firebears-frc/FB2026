@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -138,11 +139,26 @@ public class RobotContainer {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
-            drive, () -> -joy1.getX(), () -> -joy1.getY(), () -> -joy2.getX()));
+            drive, () -> -joy1.getX(), () -> joy1.getY(), () -> -joy2.getX()));
 
-    // Lock to 0° when A button is held
-       
-    }
+    joy2.povUp()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.kZero));
+    joy2.povRight()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(90)));
+    joy2.povDown()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(180)));
+    joy2.povLeft()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(270)));
+
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
