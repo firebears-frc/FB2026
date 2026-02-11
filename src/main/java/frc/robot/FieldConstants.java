@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file at
 // the root directory of this project.
 
-package org.littletonrobotics.frc2026;
+package frc.robot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -24,7 +24,6 @@ import java.nio.file.Path;
  * perspective of the blue alliance station
  */
 public class FieldConstants {
-  public static final FieldType fieldType = FieldType.WELDED;
 
   // AprilTag related constants
   public static final int aprilTagCount = AprilTagLayoutType.OFFICIAL.getLayout().getTags().size();
@@ -330,24 +329,16 @@ public class FieldConstants {
         synchronized (this) {
           if (layout == null) {
             try {
-              Path p =
-                  Constants.disableHAL
-                      ? Path.of(
-                          "src",
-                          "main",
-                          "deploy",
-                          "apriltags",
-                          fieldType.getJsonFolder(),
-                          name + ".json")
-                      : Path.of(
-                          Filesystem.getDeployDirectory().getPath(),
-                          "apriltags",
-                          fieldType.getJsonFolder(),
-                          name + ".json");
-              layout = new AprilTagFieldLayout(p);
-              layoutString = new ObjectMapper().writeValueAsString(layout);
+              Path path =
+                  Filesystem.getDeployDirectory().toPath().resolve("apriltag/" + name + ".json");
+              layout = new ObjectMapper().readValue(path.toFile(), AprilTagFieldLayout.class);
+              layoutString =
+                  Filesystem.getDeployDirectory()
+                      .toPath()
+                      .resolve("apriltag/" + name + ".json")
+                      .toString();
             } catch (IOException e) {
-              throw new RuntimeException(e);
+              throw new RuntimeException("Failed to load AprilTag field layout: " + name, e);
             }
           }
         }
