@@ -21,7 +21,6 @@ public class Hopper extends SubsystemBase {
   private double setPoint = 0;
   private static final int HopperCurrentLimit = 30; // safety limit
 
-
   public Hopper() {
 
     // Configure turn motor
@@ -75,8 +74,6 @@ public class Hopper extends SubsystemBase {
   // no idea what it is maybe needs changing
   @Override
   public void periodic() {
-      setPoint = 0;
-    
 
     hopperController.setSetpoint(setPoint, ControlType.kVelocity);
 
