@@ -169,17 +169,19 @@ public class RobotContainer {
                 () -> joy1.getY(),
                 () ->
                     corrections.makeRotation2D(
-                        corrections.correctAngleValue(
-                            Math.atan(
-                                Math.abs(
-                                        (LinesHorizontal.center
-                                            - corrections.xValueOfComponent(0, 0, drive)))
-                                    / Math.abs(
-                                        (corrections.correctXValue(LinesVertical.hubCenter)
-                                            - corrections.yValueOfComponent(0, 0, drive)))),
-                            corrections.correctXValue(LinesVertical.hubCenter),
-                            LinesHorizontal.center,
-                            drive))));
+                        corrections.correctAngleForComponent(
+                            corrections.correctAngleValue(
+                                Math.atan(
+                                    Math.abs(
+                                            (LinesHorizontal.center
+                                                - corrections.xValueOfComponent(0, 0, drive)))
+                                        / Math.abs(
+                                            (corrections.correctXValue(LinesVertical.hubCenter)
+                                                - corrections.yValueOfComponent(0, 0, drive)))),
+                                corrections.correctXValue(LinesVertical.hubCenter),
+                                LinesHorizontal.center,
+                                drive),
+                            0))));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
