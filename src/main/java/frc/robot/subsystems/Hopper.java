@@ -23,8 +23,6 @@ public class Hopper extends SubsystemBase {
   private double setPoint = 0;
   private static final int HopperCurrentLimit = 30; // safety limit
 
-  @AutoLogOutput(key = "Hopper/hasCoral")
-  private boolean hasCoral = false;
 
   public Hopper() {
 
@@ -69,7 +67,7 @@ public class Hopper extends SubsystemBase {
   public Command startHopper() {
     return runOnce(
         () -> {
-          setPoint = -.25;
+          setPoint = -200;
         });
   }
 
@@ -84,12 +82,12 @@ public class Hopper extends SubsystemBase {
   // no idea what it is maybe needs changing
   @Override
   public void periodic() {
-    if (beamBreak() && !hasCoral) {
+   /*  if (beamBreak() && !hasCoral) {
       setPoint = 0;
       hasCoral = true;
     } else if (!beamBreak()) {
       hasCoral = false;
-    }
+    }*/
 
     hopperController.setReference(setPoint, ControlType.kVelocity);
 
