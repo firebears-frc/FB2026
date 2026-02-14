@@ -168,7 +168,7 @@ public class RobotContainer {
     joy2.povRight()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(90)));
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(270)));
     joy2.povDown()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
@@ -176,7 +176,23 @@ public class RobotContainer {
     joy2.povLeft()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(270)));
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(90)));
+    joy2.povUpLeft()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(45)));
+    joy2.povDownLeft()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(135)));
+    joy2.povDownRight()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(225)));
+    joy2.povUpRight()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(315)));
 
     xboxController.rightTrigger().onTrue(shooter.startShooter()).onFalse(shooter.pauseShooter());
     xboxController.leftTrigger().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
