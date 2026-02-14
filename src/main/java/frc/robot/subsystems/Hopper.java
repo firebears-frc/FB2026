@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -16,10 +17,14 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Hopper extends SubsystemBase {
-  private SparkMax hopperMotor = new SparkMax(12, MotorType.kBrushless); // change can id
+  private SparkMax hopperMotor = new SparkMax(13, MotorType.kBrushless); // change can id
   private final SparkClosedLoopController hopperController;
+  private SparkLimitSwitch beamBreak = hopperMotor.getForwardLimitSwitch();
   private double setPoint = 0;
   private static final int HopperCurrentLimit = 30; // safety limit
+
+  @AutoLogOutput(key = "Hopper/hasCoral")
+  private boolean hasCoral = false;
 
   public Hopper() {
 
@@ -44,6 +49,11 @@ public class Hopper extends SubsystemBase {
                 HopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
 
+  @AutoLogOutput(key = "Hopper/beamBreak")
+  private boolean beamBreak() {
+    return beamBreak.isPressed();
+  }
+
   @AutoLogOutput(key = "Hopper/error")
   private double getError() {
     return setPoint - hopperMotor.getEncoder().getVelocity();
@@ -59,7 +69,7 @@ public class Hopper extends SubsystemBase {
   public Command startHopper() {
     return runOnce(
         () -> {
-          setPoint = 0.35;
+          setPoint = -.25;
         });
   }
 
@@ -74,8 +84,14 @@ public class Hopper extends SubsystemBase {
   // no idea what it is maybe needs changing
   @Override
   public void periodic() {
+    if (beamBreak() && !hasCoral) {
+      setPoint = 0;
+      hasCoral = true;
+    } else if (!beamBreak()) {
+      hasCoral = false;
+    }
 
-    hopperController.setSetpoint(setPoint, ControlType.kVelocity);
+    hopperController.setReference(setPoint, ControlType.kVelocity);
 
     Logger.recordOutput("Hopper/Output", hopperMotor.getAppliedOutput());
     Logger.recordOutput("Hopper/speed", hopperMotor.getEncoder().getVelocity());
