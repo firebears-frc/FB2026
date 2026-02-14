@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.FieldConstants.LinesVertical;
+import frc.robot.FieldConstants.LinesHorizontal;
+import frc.robot.commands.corrections;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -156,6 +159,22 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(270)));
+
+    // Needs updated X and Y offsets for the shooter vs the center of the bot.
+    joy2.trigger()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
+                    corrections.makeRotation2D(
+                        corrections.correctAngleValue(
+                            Math.atan(
+                                (LinesHorizontal.center - corrections.xValueOfComponent(0, 0, drive)) 
+                                / 
+                                (corrections.correctXValue(LinesVertical.hubCenter) - corrections.yValueOfComponent(0, 0, drive))),
+                            corrections.correctXValue(LinesVertical.hubCenter),
+                            LinesHorizontal.center,
+                            drive))));
+                
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
