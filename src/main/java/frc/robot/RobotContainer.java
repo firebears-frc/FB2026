@@ -45,12 +45,12 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  */
 public class RobotContainer {
   // Subsystems
-    private final Drive drive;
-    private final Vision vision;
-    private final Shooter shooter;
-    private final Hopper hopper;
-    private final Intake intake;
-    private final Arm arm;
+  private final Drive drive;
+  private final Vision vision;
+  private final Shooter shooter;
+  private final Hopper hopper;
+  private final Intake intake;
+  private final Arm arm;
   // Controller
   private final CommandJoystick joy1 = new CommandJoystick(0); // right
   private final CommandJoystick joy2 = new CommandJoystick(1); // left
@@ -76,17 +76,11 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 new VisionIOPhotonVision(camera1Name, robotToCamera1));
-        
+
         shooter = new Shooter();
-
         hopper = new Hopper();
-
         intake = new Intake();
-
         arm = new Arm();
-
-
-
 
         break;
 
@@ -105,6 +99,11 @@ public class RobotContainer {
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
+
+        shooter = new Shooter();
+        hopper = new Hopper();
+        intake = new Intake();
+        arm = new Arm();
 
         break;
 
@@ -174,16 +173,14 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(270)));
-    
+
     xboxController.rightTrigger().onTrue(shooter.startShooter()).onFalse(shooter.pauseShooter());
     xboxController.leftTrigger().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
     xboxController.y().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+  }
 
-    }
-  
-  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
