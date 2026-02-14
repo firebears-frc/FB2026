@@ -7,15 +7,11 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Filesystem;
-import java.io.IOException;
-import java.nio.file.Path;
+import frc.robot.subsystems.vision.VisionConstants;
 
 /**
  * Contains information for location of field element and other useful reference points.
@@ -26,13 +22,11 @@ import java.nio.file.Path;
 public class FieldConstants {
 
   // AprilTag related constants
-  public static final int aprilTagCount = AprilTagLayoutType.OFFICIAL.getLayout().getTags().size();
-  public static final double aprilTagWidth = Units.inchesToMeters(6.5);
-  public static final AprilTagLayoutType defaultAprilTagType = AprilTagLayoutType.OFFICIAL;
+  public static final int aprilTagCount = VisionConstants.aprilTagLayout.getTags().size();
 
   // Field dimensions
-  public static final double fieldLength = AprilTagLayoutType.OFFICIAL.getLayout().getFieldLength();
-  public static final double fieldWidth = AprilTagLayoutType.OFFICIAL.getLayout().getFieldWidth();
+  public static final double fieldLength = VisionConstants.aprilTagLayout.getFieldLength();
+  public static final double fieldWidth = VisionConstants.aprilTagLayout.getFieldWidth();
 
   /**
    * Officially defined and relevant vertical lines found on the field (defined by X-axis offset)
@@ -40,16 +34,16 @@ public class FieldConstants {
   public static class LinesVertical {
     public static final double center = fieldLength / 2.0;
     public static final double starting =
-        AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(26).get().getX();
+        VisionConstants.aprilTagLayout.getTagPose(26).get().getX();
     public static final double allianceZone = starting;
     public static final double hubCenter =
-        AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(26).get().getX() + Hub.width / 2.0;
+        VisionConstants.aprilTagLayout.getTagPose(26).get().getX() + Hub.width / 2.0;
     public static final double neutralZoneNear = center - Units.inchesToMeters(120);
     public static final double neutralZoneFar = center + Units.inchesToMeters(120);
     public static final double oppHubCenter =
-        AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(4).get().getX() + Hub.width / 2.0;
+        VisionConstants.aprilTagLayout.getTagPose(4).get().getX() + Hub.width / 2.0;
     public static final double oppAllianceZone =
-        AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(10).get().getX();
+        VisionConstants.aprilTagLayout.getTagPose(10).get().getX();
   }
 
   /**
@@ -88,12 +82,12 @@ public class FieldConstants {
     // Relevant reference points on alliance side
     public static final Translation3d topCenterPoint =
         new Translation3d(
-            AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(26).get().getX() + width / 2.0,
+            VisionConstants.aprilTagLayout.getTagPose(26).get().getX() + width / 2.0,
             fieldWidth / 2.0,
             height);
     public static final Translation3d innerCenterPoint =
         new Translation3d(
-            AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(26).get().getX() + width / 2.0,
+            VisionConstants.aprilTagLayout.getTagPose(26).get().getX() + width / 2.0,
             fieldWidth / 2.0,
             innerHeight);
 
@@ -109,7 +103,7 @@ public class FieldConstants {
     // Relevant reference points on the opposite side
     public static final Translation3d oppTopCenterPoint =
         new Translation3d(
-            AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(4).get().getX() + width / 2.0,
+            VisionConstants.aprilTagLayout.getTagPose(4).get().getX() + width / 2.0,
             fieldWidth / 2.0,
             height);
     public static final Translation2d oppNearLeftCorner =
@@ -123,13 +117,13 @@ public class FieldConstants {
 
     // Hub faces
     public static final Pose2d nearFace =
-        AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(26).get().toPose2d();
+        VisionConstants.aprilTagLayout.getTagPose(26).get().toPose2d();
     public static final Pose2d farFace =
-        AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(20).get().toPose2d();
+        VisionConstants.aprilTagLayout.getTagPose(20).get().toPose2d();
     public static final Pose2d rightFace =
-        AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(18).get().toPose2d();
+        VisionConstants.aprilTagLayout.getTagPose(18).get().toPose2d();
     public static final Pose2d leftFace =
-        AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(21).get().toPose2d();
+        VisionConstants.aprilTagLayout.getTagPose(21).get().toPose2d();
   }
 
   /** Left Bump related constants */
@@ -243,36 +237,34 @@ public class FieldConstants {
 
     // Relevant reference points on alliance side
     public static final Translation2d centerPoint =
-        new Translation2d(
-            frontFaceX, AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(31).get().getY());
+        new Translation2d(frontFaceX, VisionConstants.aprilTagLayout.getTagPose(31).get().getY());
     public static final Translation2d leftUpright =
         new Translation2d(
             frontFaceX,
-            (AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(31).get().getY())
+            (VisionConstants.aprilTagLayout.getTagPose(31).get().getY())
                 + innerOpeningWidth / 2
                 + Units.inchesToMeters(0.75));
     public static final Translation2d rightUpright =
         new Translation2d(
             frontFaceX,
-            (AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(31).get().getY())
+            (VisionConstants.aprilTagLayout.getTagPose(31).get().getY())
                 - innerOpeningWidth / 2
                 - Units.inchesToMeters(0.75));
 
     // Relevant reference points on opposing side
     public static final Translation2d oppCenterPoint =
         new Translation2d(
-            fieldLength - frontFaceX,
-            AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(15).get().getY());
+            fieldLength - frontFaceX, VisionConstants.aprilTagLayout.getTagPose(15).get().getY());
     public static final Translation2d oppLeftUpright =
         new Translation2d(
             fieldLength - frontFaceX,
-            (AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(15).get().getY())
+            (VisionConstants.aprilTagLayout.getTagPose(15).get().getY())
                 + innerOpeningWidth / 2
                 + Units.inchesToMeters(0.75));
     public static final Translation2d oppRightUpright =
         new Translation2d(
             fieldLength - frontFaceX,
-            (AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(15).get().getY())
+            (VisionConstants.aprilTagLayout.getTagPose(15).get().getY())
                 - innerOpeningWidth / 2
                 - Units.inchesToMeters(0.75));
   }
@@ -301,56 +293,6 @@ public class FieldConstants {
 
     // Relevant reference points on alliance side
     public static final Translation2d centerPoint =
-        new Translation2d(0, AprilTagLayoutType.OFFICIAL.getLayout().getTagPose(29).get().getY());
-  }
-
-  /* @RequiredArgsConstructor
-    public enum FieldType {
-      ANDYMARK("andymark"),
-      WELDED("welded");
-
-      @Getter private final String jsonFolder;
-    }
-  */
-  public enum AprilTagLayoutType {
-    OFFICIAL("2026-official"),
-    NONE("2026-none");
-
-    private final String name;
-    private volatile AprilTagFieldLayout layout;
-    private volatile String layoutString;
-
-    AprilTagLayoutType(String name) {
-      this.name = name;
-    }
-
-    public AprilTagFieldLayout getLayout() {
-      if (layout == null) {
-        synchronized (this) {
-          if (layout == null) {
-            try {
-              Path path =
-                  Filesystem.getDeployDirectory().toPath().resolve("apriltag/" + name + ".json");
-              layout = new ObjectMapper().readValue(path.toFile(), AprilTagFieldLayout.class);
-              layoutString =
-                  Filesystem.getDeployDirectory()
-                      .toPath()
-                      .resolve("apriltag/" + name + ".json")
-                      .toString();
-            } catch (IOException e) {
-              throw new RuntimeException("Failed to load AprilTag field layout: " + name, e);
-            }
-          }
-        }
-      }
-      return layout;
-    }
-
-    public String getLayoutString() {
-      if (layoutString == null) {
-        getLayout();
-      }
-      return layoutString;
-    }
+        new Translation2d(0, VisionConstants.aprilTagLayout.getTagPose(29).get().getY());
   }
 }
