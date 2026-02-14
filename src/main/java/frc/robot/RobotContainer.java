@@ -118,6 +118,10 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
+        shooter = new Shooter();
+        hopper = new Hopper();
+        intake = new Intake();
+        arm = new Arm();
 
         break;
     }
