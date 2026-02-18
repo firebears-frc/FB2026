@@ -7,15 +7,13 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,10 +36,13 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.vision.Vision;
+import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -165,48 +166,48 @@ public class RobotContainer {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
-            drive, () -> -joy1.getX(), () -> joy1.getY(), () -> -joy2.getX()));
+            drive, () -> -joy1.getY(), () -> joy1.getX(), () -> -joy2.getX()));
 
     joy2.povUp()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.kZero));
+                drive, () -> -joy1.getY(), () -> joy1.getX(), () -> Rotation2d.fromDegrees(0 + AngleOffset)));
     joy2.povRight()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(270)));
+                drive, () -> -joy1.getY(), () -> joy1.getX(), () -> Rotation2d.fromDegrees(270 + AngleOffset)));
     joy2.povDown()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(180)));
+                drive, () -> -joy1.getY(), () -> joy1.getX(), () -> Rotation2d.fromDegrees(180 + AngleOffset)));
     joy2.povLeft()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(90)));
-    joy2.povUpLeft()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(45)));
-    joy2.povDownLeft()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(135)));
-    joy2.povDownRight()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(225)));
-    joy2.povUpRight()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(315)));
+                drive, () -> -joy1.getY(), () -> joy1.getX(), () -> Rotation2d.fromDegrees(90 + AngleOffset)));
+    // joy2.povUpLeft()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(45)));
+    // joy2.povDownLeft()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(135)));
+    // joy2.povDownRight()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(225)));
+    // joy2.povUpRight()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(315)));
 
     // Needs updated X and Y offsets for the shooter vs the center of the bot.
     joy2.trigger()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getX(),
-                () -> joy1.getY(),
+                () -> -joy1.getY(),
+                () -> joy1.getX(),
                 () ->
                     corrections.makeRotation2D(
                         corrections.correctAngleForComponent(
