@@ -20,7 +20,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.FieldConstants.LinesHorizontal;
+import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.corrections;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
@@ -176,6 +179,30 @@ public class RobotContainer {
     joy2.povLeft()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(270)));
+
+    // Needs updated X and Y offsets for the shooter vs the center of the bot.
+    joy2.trigger()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getX(),
+                () -> joy1.getY(),
+                () ->
+                    corrections.makeRotation2D(
+                        corrections.correctAngleForComponent(
+                            corrections.correctAngleValue(
+                                Math.atan(
+                                    Math.abs(
+                                            (LinesHorizontal.center
+                                                - corrections.yValueOfComponent(0, 0, drive)))
+                                        / Math.abs(
+                                            (corrections.correctXValue(LinesVertical.hubCenter)
+                                                - corrections.xValueOfComponent(0, 0, drive)))),
+                                corrections.correctXValue(LinesVertical.hubCenter),
+                                LinesHorizontal.center,
+                                drive),
+                            0))));
                 drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(90)));
     joy2.povUpLeft()
         .whileTrue(
