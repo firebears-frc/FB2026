@@ -14,8 +14,10 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -158,8 +160,20 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
+  public boolean isFlipped = DriverStation.getAlliance().isPresent()&& DriverStation.getAlliance().get()==Alliance.Red;
+  //isFliped is true then red if false then blu
+  //    READ THIS^^^^^^//    READ THIS^^^^^^//    READ THIS^^^^^^//    READ THIS^^^^^^
   private void configureButtonBindings() {
-    // Default command, normal field-relative drive
+  // Default command, normal field-relative drive
+    double AngleOffset;
+    if (isFlipped == true)
+    {
+       AngleOffset = 180;
+    } 
+    else 
+    {
+        AngleOffset = 0;
+    }
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> -joy2.getX()));
@@ -167,35 +181,35 @@ public class RobotContainer {
     joy2.povUp()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.kZero));
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(0 + AngleOffset)));
     joy2.povRight()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(270)));
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(270 + AngleOffset)));
     joy2.povDown()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(180)));
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(180 + AngleOffset)));
     joy2.povLeft()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(90)));
-    joy2.povUpLeft()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(45)));
-    joy2.povDownLeft()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(135)));
-    joy2.povDownRight()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(225)));
-    joy2.povUpRight()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(315)));
+                drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(90 + AngleOffset)));
+    // joy2.povUpLeft()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(45)));
+    // joy2.povDownLeft()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(135)));
+    // joy2.povDownRight()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(225)));
+    // joy2.povUpRight()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(315)));
 
         // Needs updated X and Y offsets for the shooter vs the center of the bot.
     joy2.trigger()
