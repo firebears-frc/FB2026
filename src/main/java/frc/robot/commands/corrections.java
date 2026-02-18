@@ -4,25 +4,55 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldConstants.LinesVertical;
+import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.subsystems.drive.Drive;
 
 public class corrections {
 
-  // Corrects an x value by flipping it over the center line if and only if current alliance is red.
+  // Corrects a x value by flipping it over the center line if and only if current alliance is red.
   public static double correctXValue(double xValue) {
-    if (DriverStation.getAlliance().get() == Alliance.Red) {
-      return flipAroundCenter(xValue);
+    if (onRedAlliance()) {
+      return flipX(xValue);
     } else {
       return xValue;
     }
   }
 
+  // Corrects a y value by flipping it over the center line if and only if current alliance is red.
+  public static double correctYValue(double yValue) {
+    if (onRedAlliance()) {
+      return flipY(yValue);
+    } else {
+      return yValue;
+    }
+  }
+
+  // Corrects an angle value by changing it PI radians if and only if current alliance is red.
+  public static double correctAngleValue(double angleValue){
+    double newAngle = angleValue;
+    if (onRedAlliance()) {
+      newAngle += Math.PI;
+    }
+    newAngle = makeAngleInBounds(newAngle);
+    return newAngle;
+  }
+
   // Flips a x value around the center line.
-  private static double flipAroundCenter(double xValue) {
-    double newValue = xValue;
-    newValue -= LinesVertical.center;
+  private static double flipX(double xValue) {
+    return flipValueAround(xValue, LinesVertical.center);
+  }
+
+  // Flips a y value around the center line.
+  private static double flipY(double yValue) {
+    return flipValueAround(yValue, LinesHorizontal.center);
+  }
+
+  // Flips a value around another value
+  private static double flipValueAround(double value, double flipAroundValue){
+    double newValue = value;
+    newValue -= flipAroundValue;
     newValue *= -1;
-    newValue += LinesVertical.center;
+    newValue += flipAroundValue;
     return newValue;
   }
 
@@ -81,6 +111,17 @@ public class corrections {
   public static Rotation2d makeRotation2D(double rotation) {
     Rotation2d newRotation2d = new Rotation2d(rotation);
     return newRotation2d;
+  }
+
+  // Returns true if on red alliance
+  public static boolean onRedAlliance() {
+    boolean redAlliance = false;
+    if(DriverStation.getAlliance().isPresent()){
+      if(DriverStation.getAlliance().get() == Alliance.Red){
+        redAlliance = true;
+      }
+    }
+    return redAlliance;
   }
 
   // Makes an angle between PI and -PI
