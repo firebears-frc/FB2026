@@ -8,6 +8,17 @@ import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.subsystems.drive.Drive;
 
 public class corrections {
+  private static double driveSpeed = 1;
+
+
+  public static void setDriveSpeed(double newSpeed){
+    driveSpeed = newSpeed;
+  }
+
+  public static double adjustedDriveSpeed(double oldDriveSpeed){
+    double newDriveSpeed = oldDriveSpeed * driveSpeed;
+    return newDriveSpeed;
+  }
 
   // Corrects a x value by flipping it over the center line if and only if current alliance is red.
   public static double correctXValue(double xValue) {

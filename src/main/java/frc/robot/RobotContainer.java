@@ -249,6 +249,9 @@ public class RobotContainer {
     // xboxController.y().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
     // xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     // xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+    joy1.button(1).onTrue(Commands.runOnce(() -> corrections.setDriveSpeed(1)));
+    joy1.button(2).onTrue(Commands.runOnce(() -> corrections.setDriveSpeed(0.75)));
+    joy1.button(3).onTrue(Commands.runOnce(() -> corrections.setDriveSpeed(0.5)));
   }
 
   /**

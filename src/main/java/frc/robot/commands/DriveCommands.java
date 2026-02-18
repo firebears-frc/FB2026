@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.commands.corrections;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
@@ -70,7 +71,7 @@ public class DriveCommands {
         () -> {
           // Get linear velocity
           Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+              getLinearVelocityFromJoysticks(corrections.adjustedDriveSpeed(xSupplier.getAsDouble()), corrections.adjustedDriveSpeed(ySupplier.getAsDouble()));
 
           // Apply rotation deadband
           double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
@@ -122,7 +123,7 @@ public class DriveCommands {
             () -> {
               // Get linear velocity
               Translation2d linearVelocity =
-                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+                  getLinearVelocityFromJoysticks(corrections.adjustedDriveSpeed(xSupplier.getAsDouble()), corrections.adjustedDriveSpeed(ySupplier.getAsDouble()));
 
               // Calculate angular speed
               double omega =
