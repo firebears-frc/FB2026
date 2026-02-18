@@ -223,6 +223,16 @@ public class RobotContainer {
                                 drive),
                             0))));
 
+    xboxController.leftBumper()
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getX(), 
+                () -> joy1.getY(), 
+                () -> Rotation2d.fromRadians(
+                    corrections.nearestDiagonalAngle(drive))));
+        
+
     //Resets gyro to 0 degrees when b is pressed
     xboxController
         .b()
