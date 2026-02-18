@@ -7,13 +7,14 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,10 +26,6 @@ import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.corrections;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOCanandgyro;
@@ -36,13 +33,10 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.vision.Vision;
-import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,10 +48,10 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-  private final Shooter shooter;
-  private final Hopper hopper;
-  private final Intake intake;
-  private final Arm arm;
+  //   private final Shooter shooter;
+  //   private final Hopper hopper;
+  //   private final Intake intake;
+  //   private final Arm arm;
   // Controller
   private final CommandJoystick joy1 = new CommandJoystick(0); // right
   private final CommandJoystick joy2 = new CommandJoystick(1); // left
@@ -84,10 +78,10 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
-        shooter = new Shooter();
-        hopper = new Hopper();
-        intake = new Intake();
-        arm = new Arm();
+        // shooter = new Shooter();
+        // hopper = new Hopper();
+        // intake = new Intake();
+        // arm = new Arm();
 
         break;
 
@@ -107,10 +101,10 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
 
-        shooter = new Shooter();
-        hopper = new Hopper();
-        intake = new Intake();
-        arm = new Arm();
+        // shooter = new Shooter();
+        // hopper = new Hopper();
+        // intake = new Intake();
+        // arm = new Arm();
 
         break;
 
@@ -125,10 +119,10 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        shooter = new Shooter();
-        hopper = new Hopper();
-        intake = new Intake();
-        arm = new Arm();
+        // shooter = new Shooter();
+        // hopper = new Hopper();
+        // intake = new Intake();
+        // arm = new Arm();
 
         break;
     }
@@ -166,24 +160,36 @@ public class RobotContainer {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
-            drive, () -> -joy1.getY(), () -> joy1.getX(), () -> -joy2.getX()));
+            drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> -joy2.getX()));
 
     joy2.povUp()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getY(), () -> joy1.getX(), () -> Rotation2d.fromDegrees(0 + AngleOffset)));
+                drive,
+                () -> -joy1.getY(),
+                () -> joy1.getX(),
+                () -> Rotation2d.fromRadians(corrections.correctAngleValue(0))));
     joy2.povRight()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getY(), () -> joy1.getX(), () -> Rotation2d.fromDegrees(270 + AngleOffset)));
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> Rotation2d.fromRadians(corrections.correctAngleValue((3 * Math.PI) / 2))));
     joy2.povDown()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getY(), () -> joy1.getX(), () -> Rotation2d.fromDegrees(180 + AngleOffset)));
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI))));
     joy2.povLeft()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getY(), () -> joy1.getX(), () -> Rotation2d.fromDegrees(90 + AngleOffset)));
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
     // joy2.povUpLeft()
     //     .whileTrue(
     //         DriveCommands.joystickDriveAtAngle(
@@ -191,15 +197,18 @@ public class RobotContainer {
     // joy2.povDownLeft()
     //     .whileTrue(
     //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(135)));
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
+    // Rotation2d.fromDegrees(135)));
     // joy2.povDownRight()
     //     .whileTrue(
     //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(225)));
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
+    // Rotation2d.fromDegrees(225)));
     // joy2.povUpRight()
     //     .whileTrue(
     //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(315)));
+    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
+    // Rotation2d.fromDegrees(315)));
 
     // Needs updated X and Y offsets for the shooter vs the center of the bot.
     joy2.trigger()
@@ -207,7 +216,7 @@ public class RobotContainer {
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
-                () -> joy1.getX(),
+                () -> -joy1.getX(),
                 () ->
                     corrections.makeRotation2D(
                         corrections.correctAngleForComponent(
@@ -224,7 +233,7 @@ public class RobotContainer {
                                 drive),
                             0))));
 
-    //Resets gyro to 0 degrees when b is pressed
+    // Resets gyro to 0 degrees when b is pressed
     xboxController
         .b()
         .onTrue(
@@ -235,11 +244,11 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    xboxController.rightTrigger().onTrue(shooter.startShooter()).onFalse(shooter.pauseShooter());
-    xboxController.leftTrigger().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    xboxController.y().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
-    xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
-    xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+    // xboxController.rightTrigger().onTrue(shooter.startShooter()).onFalse(shooter.pauseShooter());
+    // xboxController.leftTrigger().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
+    // xboxController.y().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
+    // xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
+    // xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
   }
 
   /**
