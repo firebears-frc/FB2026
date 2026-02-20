@@ -30,7 +30,6 @@ public class Arm extends SubsystemBase {
   private static double shoulderD = 0.0;
   private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 30;
   private final SparkMax shoulderMotorRight;
-  private final SparkMax shoulderMotorLeft;
   private final SparkAbsoluteEncoder shoulderEncoder;
   private final SparkClosedLoopController shoulderPID;
 
@@ -42,14 +41,12 @@ public class Arm extends SubsystemBase {
   private Debouncer debounce = new Debouncer(0.2);
 
   public Arm() {
-    shoulderMotorRight = new SparkMax(13, MotorType.kBrushless);
-    shoulderMotorLeft = new SparkMax(12, MotorType.kBrushless);
+    shoulderMotorRight = new SparkMax(10, MotorType.kBrushless);
     shoulderEncoder = shoulderMotorRight.getAbsoluteEncoder();
     shoulderPID = shoulderMotorRight.getClosedLoopController();
 
     var shoulderMotorRightConfig = new SparkMaxConfig();
     shoulderMotorRightConfig
-        .inverted(true)
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(STALL_CURRENT_LIMIT_SHOULDER, FREE_CURRENT_LIMIT_SHOULDER)
         .secondaryCurrentLimit(SECONDARY_CURRENT_LIMIT_SHOULDER);
@@ -69,21 +66,7 @@ public class Arm extends SubsystemBase {
                 ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters));
 
-    var shoulderMotorLeftConfig = new SparkMaxConfig();
-    shoulderMotorLeftConfig
-        .inverted(false)
-        .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(STALL_CURRENT_LIMIT_SHOULDER, FREE_CURRENT_LIMIT_SHOULDER)
-        .secondaryCurrentLimit(SECONDARY_CURRENT_LIMIT_SHOULDER)
-        .follow(shoulderMotorRight, true);
-    SparkUtil.tryUntilOk(
-        shoulderMotorLeft,
-        5,
-        () ->
-            shoulderMotorLeft.configure(
-                shoulderMotorLeftConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters));
+    
 
     // shoulderMotorRight.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
     // shoulderMotorRight.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
@@ -98,10 +81,8 @@ public class Arm extends SubsystemBase {
   }
 
   private static final class Constants {
-    private static final Rotation2d pickUp = Rotation2d.fromDegrees(0);
-    private static final Rotation2d ampShoot = Rotation2d.fromDegrees(90);
-    private static final Rotation2d sideShoot = Rotation2d.fromDegrees(33.75);
-    private static final Rotation2d straightShot = Rotation2d.fromDegrees(14.5);
+    private static final Rotation2d armDown = Rotation2d.fromDegrees(0);
+    private static final Rotation2d armUp= Rotation2d.fromDegrees(90);
   }
 
   @AutoLogOutput(key = "arm/Angle")
@@ -110,10 +91,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void setShoulderSetpoint(Rotation2d setpoint) {
-    if (setpoint.getDegrees() < -5) {
-      setpoint = Rotation2d.fromDegrees(-5);
+    if (setpoint.getDegrees() < 0) {
+      setpoint = Rotation2d.fromDegrees(0);
     } else if (setpoint.getDegrees() > 100) {
-      setpoint = Rotation2d.fromDegrees(100);
+      setpoint = Rotation2d.fromDegrees(100);//test robot and then implement correct value
     }
     shoulderSetpoint = setpoint;
   }
@@ -130,25 +111,14 @@ public class Arm extends SubsystemBase {
         });
   }
 
-  public Command pickUp() {
-    return positionCommand(() -> Constants.pickUp, () -> 1.0);
+  public Command armDown() {
+    return positionCommand(() -> Constants.armDown, () -> 1.0);
   }
 
-  public Command speakerShoot() {
-    return positionCommand(() -> Rotation2d.fromDegrees(shootAngle.get()), () -> 1.0);
+  public Command armUp() {
+    return positionCommand(() -> Constants.armUp, () -> 1.0);
   }
-
-  public Command ampShoot() {
-    return positionCommand(() -> Constants.ampShoot, () -> 1.0);
-  }
-
-  public Command sideShoot() {
-    return positionCommand(() -> Constants.sideShoot, () -> 1.0);
-  }
-
-  public Command straightShot() {
-    return positionCommand(() -> Constants.straightShot, () -> 1.0);
-  }
+  
 
   private boolean onTarget(double tolerance) {
     boolean onTarget = Math.abs(getError().getDegrees()) < tolerance;
@@ -165,21 +135,13 @@ public class Arm extends SubsystemBase {
         run(() -> {}).until(() -> onTarget(tolerance.get())));
   }
 
-  public Command groundSlam() {
-    return Commands.sequence(
-        runOnce(() -> setShoulderSetpoint(Constants.pickUp)),
-        Commands.waitSeconds(0.1),
-        run(() -> {}).until(() -> getShoulderAngle().getDegrees() < 5));
-  }
+
 
   @Override
   public void periodic() {
     double feedForward = Math.cos(getShoulderAngle().getRadians()) * shoulderG;
     shoulderPID.setReference(shoulderSetpoint.getDegrees(), ControlType.kPosition);
-
-    Logger.recordOutput("arm/MotorLeft", shoulderMotorLeft.getAppliedOutput());
     Logger.recordOutput("arm/MotorRight", shoulderMotorRight.getAppliedOutput());
-    Logger.recordOutput("arm/MotorLeftCurrent", shoulderMotorLeft.getOutputCurrent());
     Logger.recordOutput("arm/MotorRightCurrent", shoulderMotorRight.getOutputCurrent());
     Logger.recordOutput("arm/setPointDegrees", shoulderSetpoint.getDegrees());
     Logger.recordOutput("arm/angleDegrees", getShoulderAngle().getDegrees());
