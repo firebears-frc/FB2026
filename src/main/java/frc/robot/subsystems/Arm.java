@@ -50,7 +50,10 @@ public class Arm extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(STALL_CURRENT_LIMIT_SHOULDER, FREE_CURRENT_LIMIT_SHOULDER)
         .secondaryCurrentLimit(SECONDARY_CURRENT_LIMIT_SHOULDER);
-    shoulderMotorRightConfig.absoluteEncoder.inverted(true).positionConversionFactor(360);//check if this needed to be inverted 
+    shoulderMotorRightConfig
+        .absoluteEncoder
+        .inverted(true)
+        .positionConversionFactor(360); // check if this needed to be inverted
     shoulderMotorRightConfig
         .closedLoop
         .pid(shoulderP, shoulderI, shoulderD)
@@ -66,8 +69,6 @@ public class Arm extends SubsystemBase {
                 ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters));
 
-    
-
     // shoulderMotorRight.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 20);
     // shoulderMotorRight.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
     // shoulderMotorRight.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
@@ -82,7 +83,7 @@ public class Arm extends SubsystemBase {
 
   private static final class Constants {
     private static final Rotation2d armDown = Rotation2d.fromDegrees(0);
-    private static final Rotation2d armUp= Rotation2d.fromDegrees(90);
+    private static final Rotation2d armUp = Rotation2d.fromDegrees(90);
   }
 
   @AutoLogOutput(key = "arm/Angle")
@@ -91,10 +92,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void setShoulderSetpoint(Rotation2d setpoint) {
-    if (setpoint.getDegrees() < -5){
+    if (setpoint.getDegrees() < -5) {
       setpoint = Rotation2d.fromDegrees(-5);
     } else if (setpoint.getDegrees() > 120) {
-      setpoint = Rotation2d.fromDegrees(120);//test robot and then implement correct value
+      setpoint = Rotation2d.fromDegrees(120); // test robot and then implement correct value
     }
     shoulderSetpoint = setpoint;
   }
@@ -118,7 +119,6 @@ public class Arm extends SubsystemBase {
   public Command armUp() {
     return positionCommand(() -> Constants.armUp, () -> 1.0);
   }
-  
 
   private boolean onTarget(double tolerance) {
     boolean onTarget = Math.abs(getError().getDegrees()) < tolerance;
@@ -134,8 +134,6 @@ public class Arm extends SubsystemBase {
         Commands.waitSeconds(0.1),
         run(() -> {}).until(() -> onTarget(tolerance.get())));
   }
-
-
 
   @Override
   public void periodic() {

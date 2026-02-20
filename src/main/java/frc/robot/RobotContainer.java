@@ -7,12 +7,10 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -26,6 +24,8 @@ import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.corrections;
+import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOCanandgyro;
@@ -33,10 +33,13 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.vision.Vision;
+import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -48,8 +51,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-  //   private final Shooter shooter;
-  //   private final Hopper hopper;
+  private final Shooter shooter;
+  private final Hopper hopper;
   //   private final Intake intake;
   //   private final Arm arm;
   // Controller
@@ -78,8 +81,8 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 new VisionIOPhotonVision(camera1Name, robotToCamera1));
 
-        // shooter = new Shooter();
-        // hopper = new Hopper();
+        shooter = new Shooter();
+        hopper = new Hopper();
         // intake = new Intake();
         // arm = new Arm();
 
@@ -101,8 +104,8 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
 
-        // shooter = new Shooter();
-        // hopper = new Hopper();
+        shooter = new Shooter();
+        hopper = new Hopper();
         // intake = new Intake();
         // arm = new Arm();
 
@@ -119,8 +122,8 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        // shooter = new Shooter();
-        // hopper = new Hopper();
+        shooter = new Shooter();
+        hopper = new Hopper();
         // intake = new Intake();
         // arm = new Arm();
 
@@ -244,11 +247,27 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // xboxController.rightTrigger().onTrue(shooter.startShooter()).onFalse(shooter.pauseShooter());
-    // xboxController.leftTrigger().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    // xboxController.y().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
+        
+        //Aimed Shoot please fix
+        xboxController.rightTrigger().onTrue(Commands.parallel(
+            shooter.startShooter(),
+            Commands.waitSeconds(.1),
+            hopper.startHopper()
+        )).onFalse(Commands.sequence(
+            hopper.pauseHopper(),
+            shooter.pauseShooter()
+        ));
+        
+        //Regular Shoot
+        xboxController.leftTrigger().onTrue(
+            shooter.startShooter()).onFalse(Commands.sequence(
+            hopper.pauseHopper(),
+            shooter.pauseShooter()
+        ));
+    xboxController.b().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
+    xboxController.y().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
     // xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
-    // xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+    xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
   }
 
   /**
