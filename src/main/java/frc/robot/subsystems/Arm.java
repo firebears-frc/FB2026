@@ -50,7 +50,7 @@ public class Arm extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(STALL_CURRENT_LIMIT_SHOULDER, FREE_CURRENT_LIMIT_SHOULDER)
         .secondaryCurrentLimit(SECONDARY_CURRENT_LIMIT_SHOULDER);
-    shoulderMotorRightConfig.absoluteEncoder.inverted(true).positionConversionFactor(360);
+    shoulderMotorRightConfig.absoluteEncoder.inverted(true).positionConversionFactor(360);//check if this needed to be inverted 
     shoulderMotorRightConfig
         .closedLoop
         .pid(shoulderP, shoulderI, shoulderD)
@@ -91,10 +91,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void setShoulderSetpoint(Rotation2d setpoint) {
-    if (setpoint.getDegrees() < 0) {
-      setpoint = Rotation2d.fromDegrees(0);
-    } else if (setpoint.getDegrees() > 100) {
-      setpoint = Rotation2d.fromDegrees(100);//test robot and then implement correct value
+    if (setpoint.getDegrees() < -5){
+      setpoint = Rotation2d.fromDegrees(-5);
+    } else if (setpoint.getDegrees() > 120) {
+      setpoint = Rotation2d.fromDegrees(120);//test robot and then implement correct value
     }
     shoulderSetpoint = setpoint;
   }
