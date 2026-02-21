@@ -223,7 +223,7 @@ public class RobotContainer {
                                 drive),
                             0))));
 
-    xboxController.leftBumper()
+    joy2.button(2)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
