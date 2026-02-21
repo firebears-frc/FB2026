@@ -22,13 +22,13 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Arm extends SubsystemBase {
-  private static int STALL_CURRENT_LIMIT_SHOULDER = 20;
-  private static int FREE_CURRENT_LIMIT_SHOULDER = 20;
+  private static int STALL_CURRENT_LIMIT_SHOULDER = 5;
+  private static int FREE_CURRENT_LIMIT_SHOULDER = 5;
   private static double shoulderP = 0.02;
   private static double shoulderI = 0.0;
   private static double shoulderG = 0.35;
   private static double shoulderD = 0.0;
-  private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 30;
+  private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 15;
   private static boolean up = true;
   private final SparkMax shoulderMotorRight;
   private final SparkAbsoluteEncoder shoulderEncoder;
@@ -49,11 +49,12 @@ public class Arm extends SubsystemBase {
     var shoulderMotorRightConfig = new SparkMaxConfig();
     shoulderMotorRightConfig
         .idleMode(IdleMode.kBrake)
+        .inverted(true)
         .smartCurrentLimit(STALL_CURRENT_LIMIT_SHOULDER, FREE_CURRENT_LIMIT_SHOULDER)
         .secondaryCurrentLimit(SECONDARY_CURRENT_LIMIT_SHOULDER);
     shoulderMotorRightConfig
         .absoluteEncoder
-        .inverted(true)
+        .inverted(false)
         .positionConversionFactor(360); // check if this needed to be inverted
     shoulderMotorRightConfig
         .closedLoop
@@ -129,6 +130,7 @@ public class Arm extends SubsystemBase {
     up = true;
     return positionCommand(() -> Constants.armUp, () -> 1.0);
   }
+
   private boolean onTarget(double tolerance) {
     boolean onTarget = Math.abs(getError().getDegrees()) < tolerance;
     Logger.recordOutput("arm/onTargt", onTarget);

@@ -59,14 +59,14 @@ public class Intake extends SubsystemBase {
   public Command reverseIntake() {
     return runOnce(
         () -> {
-          setPoint = -1000;
+          setPoint = 1000;
         });
   }
 
   public Command startIntake() {
     return runOnce(
         () -> {
-          setPoint = 1000;
+          setPoint = -2500;
         });
   }
 
