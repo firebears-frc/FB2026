@@ -284,9 +284,11 @@ public class RobotContainer {
 
     xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
     xboxController.leftBumper().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
-    xboxController.y().onTrue(arm.ToggleArm());
+    // xboxController.y().onTrue(arm.ToggleArm());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
+    xboxController.povDown().onTrue(arm.armDown());
+    xboxController.povUp().onTrue(arm.armUp());
   }
 
   /**
