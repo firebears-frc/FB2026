@@ -5,8 +5,8 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,8 +20,6 @@ public class Intake extends SubsystemBase {
   private final SparkClosedLoopController intakeController;
   private double setPoint = 0;
   private static final int intakeCurrentLimit = 30;
-
- 
 
   public Intake() {
 
@@ -47,8 +45,6 @@ public class Intake extends SubsystemBase {
             intakeMotor.configure(
                 intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
   }
-
-  
 
   @AutoLogOutput(key = "intake/error")
   private double getError() {
@@ -83,7 +79,6 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
 
     intakeController.setReference(setPoint, ControlType.kVelocity);
 
