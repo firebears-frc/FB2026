@@ -24,7 +24,9 @@ import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.corrections;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -53,8 +55,8 @@ public class RobotContainer {
   private final Vision vision;
   private final Shooter shooter;
   private final Hopper hopper;
-  //   private final Intake intake;
-  //   private final Arm arm;
+  private final Intake intake;
+  private final Arm arm;
   // Controller
   private final CommandJoystick joy1 = new CommandJoystick(0); // right
   private final CommandJoystick joy2 = new CommandJoystick(1); // left
@@ -83,8 +85,8 @@ public class RobotContainer {
 
         shooter = new Shooter();
         hopper = new Hopper();
-        // intake = new Intake();
-        // arm = new Arm();
+        intake = new Intake();
+        arm = new Arm();
 
         break;
 
@@ -106,8 +108,8 @@ public class RobotContainer {
 
         shooter = new Shooter();
         hopper = new Hopper();
-        // intake = new Intake();
-        // arm = new Arm();
+        intake = new Intake();
+        arm = new Arm();
 
         break;
 
@@ -124,8 +126,8 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
         shooter = new Shooter();
         hopper = new Hopper();
-        // intake = new Intake();
-        // arm = new Arm();
+        intake = new Intake();
+        arm = new Arm();
 
         break;
     }
@@ -249,11 +251,11 @@ public class RobotContainer {
 
         
         //Aimed Shoot please fix
-        xboxController.rightTrigger().onTrue(Commands.parallel(
+        xboxController.rightTrigger().onTrue(Commands.sequence(
             shooter.startShooter(),
             Commands.waitSeconds(.1),
             hopper.startHopper()
-        )).onFalse(Commands.sequence(
+        )).onFalse(Commands.parallel(
             hopper.pauseHopper(),
             shooter.pauseShooter()
         ));
@@ -266,7 +268,7 @@ public class RobotContainer {
         ));
     xboxController.b().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
     xboxController.y().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
-    // xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
+    xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
   }
 
