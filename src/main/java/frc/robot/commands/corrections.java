@@ -56,6 +56,22 @@ public class corrections {
     return newValue;
   }
 
+  // returns the nearest PI / 2 radian angle to the bots current position
+  public static double nearestDiagonalAngle(Drive drive){
+    double newAngle = 0;
+    if(Math.abs(drive.getPose().getRotation().getRadians() - (Math.PI / 2)) <= (Math.PI / 2)){
+      newAngle = Math.PI / 2;
+    } else if(Math.abs(drive.getPose().getRotation().getRadians() - (-Math.PI / 2)) <= (Math.PI / 2)){
+      newAngle = - Math.PI / 2;
+    } else if(Math.abs(drive.getPose().getRotation().getRadians() - (3 * Math.PI / 2)) <= (Math.PI / 2)){
+      newAngle = 3 * Math.PI / 2;
+    } else if(Math.abs(drive.getPose().getRotation().getRadians() - (-3 * Math.PI / 2)) <= (Math.PI / 2)){
+      newAngle = -3 * Math.PI / 2;
+    }
+  
+    return newAngle;
+  }
+
   // Corrects the X for the location of a part of the bot given an offset between it and the center
   // of the bot
   // Offsets are based on the offsets when the bot is at angle 0, following field rules for positive
