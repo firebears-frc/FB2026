@@ -122,10 +122,6 @@ public class Arm extends SubsystemBase {
     return positionCommand(() -> Constants.armUp, () -> 1.0);
   }
 
-  // public Command ToggleArm() {
-  //   return Commands.either(armDown(), armUp(), () -> up);
-  // }
-
   private boolean onTarget(double tolerance) {
     boolean onTarget = Math.abs(getError().getDegrees()) < tolerance;
     Logger.recordOutput("arm/onTargt", onTarget);
