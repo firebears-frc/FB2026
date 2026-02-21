@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.2239229671897287,
+        "y": 2.8122967189728967
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.5991440798858774,
+        "y": 2.566462196861627
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.791269614835947,
+        "y": 2.4111982881597713
+      },
+      "prevControl": {
+        "x": 7.4548644793152645,
+        "y": 2.1136091298145514
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "ShootReloadRP1"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -49.53777250790663
+  },
+  "useDefaultConstraints": true
+}

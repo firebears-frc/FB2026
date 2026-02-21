@@ -17,6 +17,7 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera3;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -44,6 +45,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import java.util.Map;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -69,6 +71,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -158,10 +161,17 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // Configure the button bindings
     configureButtonBindings();
+    configureAutoCommands();
   }
 
+  private void configureAutoCommands() {
+    NamedCommands.registerCommands(
+        Map.of(
+            "shoot",
+            Commands.sequence(
+                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper())));
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
