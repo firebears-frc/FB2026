@@ -15,6 +15,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.FieldConstants;
+import frc.robot.commands.corrections;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.SparkUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -122,13 +123,7 @@ public class Shooter extends SubsystemBase {
         () -> {
           setPoint =
               speedCalculator.get(
-                  drive
-                      .getPose()
-                      .getTranslation()
-                      .getDistance(
-                          new Translation2d(
-                              FieldConstants.LinesHorizontal.center,
-                              FieldConstants.LinesVertical.hubCenter)));
+                  corrections.distanceToHub(drive));
         });
   }
   // subject to change based on design of the motor and mechanism
