@@ -195,25 +195,6 @@ public class RobotContainer {
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
-    // joy2.povUpLeft()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(45)));
-    // joy2.povDownLeft()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
-    // Rotation2d.fromDegrees(135)));
-    // joy2.povDownRight()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
-    // Rotation2d.fromDegrees(225)));
-    // joy2.povUpRight()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
-    // Rotation2d.fromDegrees(315)));
 
     // Needs updated X and Y offsets for the shooter vs the center of the bot.
     joy2.trigger()
@@ -249,25 +230,49 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-        
-        //Aimed Shoot please fix
-        xboxController.rightTrigger().onTrue(Commands.sequence(
-            shooter.startShooter(),
-            Commands.waitSeconds(.1),
-            hopper.startHopper()
-        )).onFalse(Commands.parallel(
+    // Aimed Shoot please fix
+    xboxController
+        .rightTrigger()
+        .onTrue(
+            Commands.sequence(
+                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () ->
+                    corrections.makeRotation2D(
+                        corrections.correctAngleForComponent(
+                            corrections.correctAngleValue(
+                                Math.atan(
+                                    Math.abs(
+                                            (LinesHorizontal.center
+                                                - corrections.yValueOfComponent(0, 0, drive)))
+                                        / Math.abs(
+                                            (corrections.correctXValue(LinesVertical.hubCenter)
+                                                - corrections.xValueOfComponent(0, 0, drive)))),
+                                corrections.correctXValue(LinesVertical.hubCenter),
+                                LinesHorizontal.center,
+                                drive),
+                            0))))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+
+    xboxController
+        .leftTrigger()
+        .onTrue(
+            Commands.sequence(
+                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+        .onFalse(Commands.sequence(
             hopper.pauseHopper(),
-            shooter.pauseShooter()
-        ));
-        
-        //Regular Shoot
-        xboxController.leftTrigger().onTrue(
-            shooter.startShooter()).onFalse(Commands.sequence(
-            hopper.pauseHopper(),
-            shooter.pauseShooter()
-        ));
-    xboxController.b().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    xboxController.y().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
+            shooter.pauseShooter()));
+
+
+    xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
+    xboxController.leftBumper().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
+    xboxController.y().onTrue(arm.ToggleArm());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
   }

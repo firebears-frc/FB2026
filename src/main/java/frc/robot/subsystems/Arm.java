@@ -29,6 +29,7 @@ public class Arm extends SubsystemBase {
   private static double shoulderG = 0.35;
   private static double shoulderD = 0.0;
   private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 30;
+  private static boolean up = true;
   private final SparkMax shoulderMotorRight;
   private final SparkAbsoluteEncoder shoulderEncoder;
   private final SparkClosedLoopController shoulderPID;
@@ -120,6 +121,14 @@ public class Arm extends SubsystemBase {
     return positionCommand(() -> Constants.armUp, () -> 1.0);
   }
 
+  public Command ToggleArm() {
+    if (up) {
+      up = false;
+      return positionCommand(() -> Constants.armDown, () -> 1.0);
+    }
+    up = true;
+    return positionCommand(() -> Constants.armUp, () -> 1.0);
+  }
   private boolean onTarget(double tolerance) {
     boolean onTarget = Math.abs(getError().getDegrees()) < tolerance;
     Logger.recordOutput("arm/onTargt", onTarget);
