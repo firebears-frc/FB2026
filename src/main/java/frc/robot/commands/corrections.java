@@ -3,8 +3,8 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.FieldConstants.LinesHorizontal;
+import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
 
 public class corrections {
@@ -28,7 +28,7 @@ public class corrections {
   }
 
   // Corrects an angle value by changing it PI radians if and only if current alliance is red.
-  public static double correctAngleValue(double angleValue){
+  public static double correctAngleValue(double angleValue) {
     double newAngle = angleValue;
     if (onRedAlliance()) {
       newAngle += Math.PI;
@@ -48,7 +48,7 @@ public class corrections {
   }
 
   // Flips a value around another value
-  private static double flipValueAround(double value, double flipAroundValue){
+  private static double flipValueAround(double value, double flipAroundValue) {
     double newValue = value;
     newValue -= flipAroundValue;
     newValue *= -1;
@@ -132,8 +132,8 @@ public class corrections {
   // Returns true if on red alliance
   public static boolean onRedAlliance() {
     boolean redAlliance = false;
-    if(DriverStation.getAlliance().isPresent()){
-      if(DriverStation.getAlliance().get() == Alliance.Red){
+    if (DriverStation.getAlliance().isPresent()) {
+      if (DriverStation.getAlliance().get() == Alliance.Red) {
         redAlliance = true;
       }
     }
