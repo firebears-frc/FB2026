@@ -16,7 +16,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Hopper extends SubsystemBase {
-  private SparkMax hopperMotor = new SparkMax(12, MotorType.kBrushless); // change can id
+  private SparkMax hopperMotor = new SparkMax(13, MotorType.kBrushless); // change can id
   private final SparkClosedLoopController hopperController;
   private double setPoint = 0;
   private static final int HopperCurrentLimit = 30; // safety limit
