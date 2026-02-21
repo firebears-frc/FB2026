@@ -115,20 +115,32 @@ public class Arm extends SubsystemBase {
   }
 
   public Command armDown() {
-    return positionCommand(() -> Constants.armDown, () -> 1.0);
+    return runOnce(
+        () -> {
+          up = false;
+          positionCommand(() -> Constants.armDown, () -> 1.0);
+        });
   }
 
   public Command armUp() {
-    return positionCommand(() -> Constants.armUp, () -> 1.0);
+    return runOnce(
+        () -> {
+          up = true;
+          positionCommand(() -> Constants.armUp, () -> 1.0);
+        });
   }
 
   public Command ToggleArm() {
-    if (up) {
-      up = false;
-      return positionCommand(() -> Constants.armDown, () -> 1.0);
-    }
-    up = true;
-    return positionCommand(() -> Constants.armUp, () -> 1.0);
+    return runOnce(
+        () -> {
+          if (up) {
+            up = false;
+            positionCommand(() -> Constants.armDown, () -> 1.0);
+          }
+          up = true;
+          positionCommand(() -> Constants.armUp, () -> 1.0);
+        });
+
   }
 
   private boolean onTarget(double tolerance) {
