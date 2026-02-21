@@ -172,7 +172,7 @@ public class RobotContainer {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
-            drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> -joy2.getX()));
+            drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> joy2.getX()));
 
     joy2.povUp()
         .whileTrue(
@@ -230,11 +230,10 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getX(), 
-                () -> joy1.getY(), 
-                () -> Rotation2d.fromRadians(
-                    corrections.nearestDiagonalAngle(drive))));
-        
+                () -> -joy1.getX(),
+                () -> joy1.getY(),
+                () -> Rotation2d.fromRadians(corrections.nearestDiagonalAngle(drive))));
+
     // Resets gyro to 0 degrees when b is pressed
     xboxController
         .b()
@@ -287,7 +286,7 @@ public class RobotContainer {
     xboxController.leftBumper().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
     xboxController.y().onTrue(arm.ToggleArm());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
-    xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+    xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
   }
 
   /**

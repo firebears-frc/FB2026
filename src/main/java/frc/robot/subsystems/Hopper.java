@@ -71,6 +71,12 @@ public class Hopper extends SubsystemBase {
         });
   }
 
+  public Command reverseHopper() {
+    return runOnce(
+        () -> {
+          setPoint = 0.35;
+        });
+  }
   // no idea what it is maybe needs changing
   @Override
   public void periodic() {

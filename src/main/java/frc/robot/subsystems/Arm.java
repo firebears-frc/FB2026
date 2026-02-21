@@ -140,7 +140,7 @@ public class Arm extends SubsystemBase {
           up = true;
           positionCommand(() -> Constants.armUp, () -> 1.0);
         });
-
+        
   }
 
   private boolean onTarget(double tolerance) {
