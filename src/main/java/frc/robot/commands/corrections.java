@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -8,6 +10,21 @@ import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
 
 public class corrections {
+
+  // Gets the distance from the robots current location to the hub
+  public static double distanceToHub(Drive drive){
+    double distance = distanceTo(drive, correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
+    Logger.recordOutput("Odometry/distance to hub", distance);
+    return distance;
+  }
+
+  // Gets the distance from the robot to a specified X and Y
+  public static double distanceTo(Drive drive, double X, double Y){
+    double xDifference = drive.getPose().getX() - X;
+    double yDifference = drive.getPose().getY() - Y;
+    double distance = Math.sqrt((xDifference * xDifference) + (yDifference * yDifference));
+    return distance;
+  }
 
   // Corrects a x value by flipping it over the center line if and only if current alliance is red.
   public static double correctXValue(double xValue) {

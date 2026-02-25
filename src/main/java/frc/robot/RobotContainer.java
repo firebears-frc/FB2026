@@ -250,7 +250,7 @@ public class RobotContainer {
         .rightTrigger()
         .onTrue(
             Commands.sequence(
-                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+                shooter.startShooter(drive), Commands.waitSeconds(.1), hopper.startHopper()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -279,7 +279,7 @@ public class RobotContainer {
         .leftTrigger()
         .onTrue(
             Commands.sequence(
-                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+                shooter.startShooter(drive), Commands.waitSeconds(.1), hopper.startHopper()))
         .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
     xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());

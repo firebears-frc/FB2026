@@ -10,11 +10,17 @@ import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.FieldConstants;
+import frc.robot.commands.corrections;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.SparkUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.math.util.Units;
 
 public class Shooter extends SubsystemBase {
   private SparkFlex ShooterMotor1 = new SparkFlex(14, MotorType.kBrushless);
@@ -30,7 +36,7 @@ public class Shooter extends SubsystemBase {
   private final double motorI = 0.0;
   private final double motorD = 0.0;
   private final double motorFF = 0.00185;
-  private final double defaultShooterSpeed = 5000;
+  InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
   @AutoLogOutput(key = "Shooter/fuel ready")
   private boolean FuelReady = false;
@@ -73,6 +79,12 @@ public class Shooter extends SubsystemBase {
         () ->
             ShooterMotor2.configure(
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+
+    // Populate speed calculator with values (subject to change based on testing)
+    speedCalculator.put(Units.feetToMeters(15), 3500.0);
+    speedCalculator.put(Units.feetToMeters(12), 3000.0);
+    speedCalculator.put(Units.feetToMeters(8), 2700.0);
+    speedCalculator.put(Units.inchesToMeters(80), 2600.0);
   }
 
   @AutoLogOutput(key = "Shooter/beamBreak")
@@ -97,10 +109,12 @@ public class Shooter extends SubsystemBase {
         });
   }
 
-  public Command startShooter() {
+  public Command startShooter(Drive drive) {
     return runOnce(
         () -> {
-          setPoint = 3800;
+          setPoint =
+              speedCalculator.get(
+                  corrections.distanceToHub(drive));
         });
   }
   // subject to change based on design of the motor and mechanism
