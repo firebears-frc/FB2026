@@ -20,6 +20,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.SparkUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.math.util.Units;
 
 public class Shooter extends SubsystemBase {
   private SparkFlex ShooterMotor1 = new SparkFlex(14, MotorType.kBrushless);
@@ -80,20 +81,10 @@ public class Shooter extends SubsystemBase {
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Populate speed calculator with values (subject to change based on testing)
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
-    speedCalculator.put(0.0, 3800.0);
+    speedCalculator.put(Units.feetToMeters(15), 3500.0);
+    speedCalculator.put(Units.feetToMeters(12), 3000.0);
+    speedCalculator.put(Units.feetToMeters(8), 2700.0);
+    speedCalculator.put(Units.inchesToMeters(80), 2600.0);
   }
 
   @AutoLogOutput(key = "Shooter/beamBreak")
