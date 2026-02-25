@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -12,6 +14,7 @@ public class corrections {
   // Gets the distance from the robots current location to the hub
   public static double distanceToHub(Drive drive){
     double distance = distanceTo(drive, correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
+    Logger.recordOutput("Odometry/distance to hub", distance);
     return distance;
   }
 
