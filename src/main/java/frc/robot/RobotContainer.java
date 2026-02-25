@@ -9,8 +9,12 @@ package frc.robot;
 
 import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
 import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera3Name;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera3;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,6 +30,10 @@ import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.corrections;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOCanandgyro;
@@ -48,10 +56,10 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Vision vision;
-  //   private final Shooter shooter;
-  //   private final Hopper hopper;
-  //   private final Intake intake;
-  //   private final Arm arm;
+  private final Shooter shooter;
+  private final Hopper hopper;
+  private final Intake intake;
+  private final Arm arm;
   // Controller
   private final CommandJoystick joy1 = new CommandJoystick(0); // right
   private final CommandJoystick joy2 = new CommandJoystick(1); // left
@@ -76,12 +84,14 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1));
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera2Name, robotToCamera2),
+                new VisionIOPhotonVision(camera3Name, robotToCamera3));
 
-        // shooter = new Shooter();
-        // hopper = new Hopper();
-        // intake = new Intake();
-        // arm = new Arm();
+        shooter = new Shooter();
+        hopper = new Hopper();
+        intake = new Intake();
+        arm = new Arm();
 
         break;
 
@@ -99,12 +109,14 @@ public class RobotContainer {
             new Vision(
                 drive::addVisionMeasurement,
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
-                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose));
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
+                new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
+                new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
 
-        // shooter = new Shooter();
-        // hopper = new Hopper();
-        // intake = new Intake();
-        // arm = new Arm();
+        shooter = new Shooter();
+        hopper = new Hopper();
+        intake = new Intake();
+        arm = new Arm();
 
         break;
 
@@ -119,10 +131,10 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        // shooter = new Shooter();
-        // hopper = new Hopper();
-        // intake = new Intake();
-        // arm = new Arm();
+        shooter = new Shooter();
+        hopper = new Hopper();
+        intake = new Intake();
+        arm = new Arm();
 
         break;
     }
@@ -190,25 +202,6 @@ public class RobotContainer {
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
-    // joy2.povUpLeft()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () -> Rotation2d.fromDegrees(45)));
-    // joy2.povDownLeft()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
-    // Rotation2d.fromDegrees(135)));
-    // joy2.povDownRight()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
-    // Rotation2d.fromDegrees(225)));
-    // joy2.povUpRight()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive, () -> -joy1.getX(), () -> joy1.getY(), () ->
-    // Rotation2d.fromDegrees(315)));
 
     // Needs updated X and Y offsets for the shooter vs the center of the bot.
     joy2.trigger()
@@ -233,6 +226,15 @@ public class RobotContainer {
                                 drive),
                             0))));
 
+    joy2.button(2)
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getX(), 
+                () -> joy1.getY(), 
+                () -> Rotation2d.fromRadians(
+                    corrections.nearestDiagonalAngle(drive))));
+        
     // Resets gyro to 0 degrees when b is pressed
     xboxController
         .b()
@@ -244,11 +246,48 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // xboxController.rightTrigger().onTrue(shooter.startShooter()).onFalse(shooter.pauseShooter());
-    // xboxController.leftTrigger().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    // xboxController.y().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
-    // xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
-    // xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+    // Aimed Shoot please fix
+    xboxController
+        .rightTrigger()
+        .onTrue(
+            Commands.sequence(
+                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () ->
+                    corrections.makeRotation2D(
+                        corrections.correctAngleForComponent(
+                            corrections.correctAngleValue(
+                                Math.atan(
+                                    Math.abs(
+                                            (LinesHorizontal.center
+                                                - corrections.yValueOfComponent(0, 0, drive)))
+                                        / Math.abs(
+                                            (corrections.correctXValue(LinesVertical.hubCenter)
+                                                - corrections.xValueOfComponent(0, 0, drive)))),
+                                corrections.correctXValue(LinesVertical.hubCenter),
+                                LinesHorizontal.center,
+                                drive),
+                            0))))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+
+    xboxController
+        .leftTrigger()
+        .onTrue(
+            Commands.sequence(
+                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
+
+    xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
+    xboxController.leftBumper().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
+    xboxController.y().onTrue(arm.ToggleArm());
+    xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
+    xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
   }
 
   /**

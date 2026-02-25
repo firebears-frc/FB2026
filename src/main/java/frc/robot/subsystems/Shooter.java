@@ -65,7 +65,7 @@ public class Shooter extends SubsystemBase {
     ShooterController2 = ShooterMotor2.getClosedLoopController();
     var ShooterConfig2 = new SparkFlexConfig();
     ShooterConfig2.idleMode(IdleMode.kCoast)
-        .follow(14, false)
+        .follow(14, true)
         .smartCurrentLimit(smartShooterCurrentLimit)
         .secondaryCurrentLimit(secondaryShooterCurrentLimit)
         .voltageCompensation(12.0);
@@ -114,7 +114,7 @@ public class Shooter extends SubsystemBase {
   public Command reverseShooter() {
     return runOnce(
         () -> {
-          setPoint = 1000;
+          setPoint = -1000;
         });
   }
 
@@ -130,7 +130,7 @@ public class Shooter extends SubsystemBase {
   public Command SlowShot() {
     return runOnce(
         () -> {
-          setPoint = -2000;
+          setPoint = 2000;
         });
   }
 
