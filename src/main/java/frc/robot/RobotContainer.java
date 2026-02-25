@@ -16,9 +16,13 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera3;
 
+import com.lumynlabs.connection.usb.USBPort;
+import com.lumynlabs.devices.ConnectorXAnimate;
+import com.lumynlabs.domain.led.Animation;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,6 +64,8 @@ public class RobotContainer {
   private final Hopper hopper;
   private final Intake intake;
   private final Arm arm;
+  // Lights
+  private ConnectorXAnimate m_leds = new ConnectorXAnimate();
   // Controller
   private final CommandJoystick joy1 = new CommandJoystick(0); // right
   private final CommandJoystick joy2 = new CommandJoystick(1); // left
@@ -160,6 +166,15 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    boolean connected = m_leds.Connect(USBPort.kUSB1);
+    System.out.println("ConnectorX connected: " + connected);
+
+    m_leds.leds.SetAnimation(Animation.Fill)
+        .ForZone("matrix 1")
+        .WithColor(corrections.allianceColor())
+        .WithDelay(Units.Milliseconds.of(0))
+        .RunOnce(false);
   }
 
   /**
@@ -230,11 +245,10 @@ public class RobotContainer {
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getX(), 
-                () -> joy1.getY(), 
-                () -> Rotation2d.fromRadians(
-                    corrections.nearestDiagonalAngle(drive))));
-        
+                () -> -joy1.getX(),
+                () -> joy1.getY(),
+                () -> Rotation2d.fromRadians(corrections.nearestDiagonalAngle(drive))));
+
     // Resets gyro to 0 degrees when b is pressed
     xboxController
         .b()

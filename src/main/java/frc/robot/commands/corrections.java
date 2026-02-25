@@ -3,11 +3,28 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
 
 public class corrections {
+
+  // Creates a red/blue color depending on which alliance we're on
+  public static Color allianceColor() {
+    Color8Bit color8Bit;
+    Color color;
+    if (onRedAlliance()) {
+      color8Bit = new Color8Bit(255, 0, 0);
+      color = new Color(color8Bit);
+    } else {
+      color8Bit = new Color8Bit(0, 0, 255);
+      color = new Color(color8Bit);
+    }
+
+    return color;
+  }
 
   // Corrects a x value by flipping it over the center line if and only if current alliance is red.
   public static double correctXValue(double xValue) {
@@ -57,18 +74,21 @@ public class corrections {
   }
 
   // returns the nearest PI / 2 radian angle to the bots current position
-  public static double nearestDiagonalAngle(Drive drive){
+  public static double nearestDiagonalAngle(Drive drive) {
     double newAngle = 0;
-    if(Math.abs(drive.getPose().getRotation().getRadians() - (Math.PI / 2)) <= (Math.PI / 2)){
+    if (Math.abs(drive.getPose().getRotation().getRadians() - (Math.PI / 2)) <= (Math.PI / 2)) {
       newAngle = Math.PI / 2;
-    } else if(Math.abs(drive.getPose().getRotation().getRadians() - (-Math.PI / 2)) <= (Math.PI / 2)){
-      newAngle = - Math.PI / 2;
-    } else if(Math.abs(drive.getPose().getRotation().getRadians() - (3 * Math.PI / 2)) <= (Math.PI / 2)){
+    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (-Math.PI / 2))
+        <= (Math.PI / 2)) {
+      newAngle = -Math.PI / 2;
+    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (3 * Math.PI / 2))
+        <= (Math.PI / 2)) {
       newAngle = 3 * Math.PI / 2;
-    } else if(Math.abs(drive.getPose().getRotation().getRadians() - (-3 * Math.PI / 2)) <= (Math.PI / 2)){
+    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (-3 * Math.PI / 2))
+        <= (Math.PI / 2)) {
       newAngle = -3 * Math.PI / 2;
     }
-  
+
     return newAngle;
   }
 
