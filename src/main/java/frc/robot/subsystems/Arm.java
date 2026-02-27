@@ -84,8 +84,8 @@ public class Arm extends SubsystemBase {
   }
 
   private static final class Constants {
-    private static final Rotation2d armDown = Rotation2d.fromDegrees(-8);
-    private static final Rotation2d armUp = Rotation2d.fromDegrees(90);
+    private static final Rotation2d armDown = Rotation2d.fromDegrees(-8.75);
+    private static final Rotation2d armUp = Rotation2d.fromDegrees(125);
   }
 
   @AutoLogOutput(key = "arm/Angle")

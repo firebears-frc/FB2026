@@ -14,7 +14,6 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.corrections;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.SparkUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -30,10 +29,10 @@ public class Shooter extends SubsystemBase {
   // Variables that can be updated
   private static final int smartShooterCurrentLimit = 75;
   private static final int secondaryShooterCurrentLimit = 85;
-  private final double motorP = 0.0001;
+  private final double motorP = 0.000175;
   private final double motorI = 0.0;
   private final double motorD = 0.0;
-  private final double motorFF = 0.00185;
+  private final double motorFF = 0.0018;
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
   @AutoLogOutput(key = "Shooter/fuel ready")
@@ -110,7 +109,7 @@ public class Shooter extends SubsystemBase {
   public Command startShooter(Drive drive) {
     return runOnce(
         () -> {
-          setPoint = speedCalculator.get(corrections.distanceToHub(drive));
+          setPoint = 4000; // speedCalculator.get(corrections.distanceToHub(drive));
         });
   }
   // subject to change based on design of the motor and mechanism
