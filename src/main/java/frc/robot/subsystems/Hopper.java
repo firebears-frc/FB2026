@@ -59,7 +59,7 @@ public class Hopper extends SubsystemBase {
   public Command startHopper() {
     return runOnce(
         () -> {
-          setPoint = -0.35;
+          setPoint = -900;
         });
   }
 
@@ -74,14 +74,15 @@ public class Hopper extends SubsystemBase {
   public Command reverseHopper() {
     return runOnce(
         () -> {
-          setPoint = 0.35;
+          setPoint = 450;
         });
   }
-  // no idea what it is maybe needs changing
+
+  
   @Override
   public void periodic() {
 
-    hopperController.setSetpoint(setPoint, ControlType.kDutyCycle);
+    hopperController.setSetpoint(setPoint, ControlType.kVelocity);
 
     Logger.recordOutput("Hopper/Output", hopperMotor.getAppliedOutput());
     Logger.recordOutput("Hopper/speed", hopperMotor.getEncoder().getVelocity());
