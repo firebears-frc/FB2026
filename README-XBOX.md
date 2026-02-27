@@ -1,5 +1,17 @@
 # FRC Robot Controller Mapping
 
+## Reference Documentation
+
+| Resource | Link |
+|---|---|
+| 🗺️ Xbox Series X\|S Controller Diagram | [support.xbox.com — Get to know your controller](https://support.xbox.com/en-US/help/hardware-network/controller/get-to-know-your-xbox-series-x-s-controller) |
+| 🗺️ Xbox One Controller Diagram | [support.xbox.com — Xbox One Wireless Controller](https://support.xbox.com/en-US/help/hardware-network/controller/xbox-one-wireless-controller) |
+| 📄 WPILib XboxController API (Java) | [github.wpilib.org — XboxController](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/XboxController.html) |
+| 📄 WPILib Joystick & Controller Docs | [docs.wpilib.org — Joysticks](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html) |
+| 🎮 Xbox Controller Button Names (community reference) | [github.com/palmerj — Button Names & Layout](https://gist.github.com/palmerj/586375bcc5bc83ccdaf00c6f5f863e86) |
+
+---
+
 ## Xbox Controller — Driver (Port 0)
 
 > Controls robot drivetrain and primary movement.
