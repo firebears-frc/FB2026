@@ -7,16 +7,10 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -41,10 +35,20 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.vision.Vision;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -86,7 +90,9 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera1Name, robotToCamera1),
                 new VisionIOPhotonVision(camera2Name, robotToCamera2),
                 new VisionIOPhotonVision(camera4Name, robotToCamera4),
-                new VisionIOPhotonVision(camera6Name, robotToCamera6));
+                new VisionIOPhotonVision(camera6Name, robotToCamera6),
+                new VisionIOPhotonVision(camera7Name, robotToCamera7),
+                new VisionIOPhotonVision(camera8Name, robotToCamera8));
 
         shooter = new Shooter();
         hopper = new Hopper();
@@ -108,10 +114,12 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
-                new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
-                new VisionIOPhotonVisionSim(camera4Name, robotToCamera4, drive::getPose),
-                new VisionIOPhotonVisionSim(camera6Name, robotToCamera6, drive::getPose));
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera2Name, robotToCamera2),
+                new VisionIOPhotonVision(camera4Name, robotToCamera4),
+                new VisionIOPhotonVision(camera6Name, robotToCamera6),
+                new VisionIOPhotonVision(camera7Name, robotToCamera7),
+                new VisionIOPhotonVision(camera8Name, robotToCamera8));
 
         shooter = new Shooter();
         hopper = new Hopper();
@@ -172,14 +180,14 @@ public class RobotContainer {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
-            drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> joy2.getX()));
+            drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> -joy2.getX()));
 
     joy2.povUp()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
-                () -> joy1.getX(),
+                () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(0))));
     joy2.povRight()
         .whileTrue(
@@ -231,7 +239,7 @@ public class RobotContainer {
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getX(),
-                () -> joy1.getY(),
+                () -> -joy1.getY(),
                 () -> Rotation2d.fromRadians(corrections.nearestDiagonalAngle(drive))));
 
     // Resets gyro to 0 degrees when b is pressed

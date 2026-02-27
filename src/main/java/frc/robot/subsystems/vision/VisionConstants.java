@@ -21,8 +21,10 @@ public class VisionConstants {
   // Camera names, must match names configured on coprocessor
   public static String camera1Name = "VisionCam1";
   public static String camera2Name = "VisionCam2";
-  public static String camera4Name = "VisionCam4"; //
-  public static String camera6Name = "VisionCam6"; //
+  public static String camera4Name = "VisionCam4"; // Back Right
+  public static String camera6Name = "VisionCam6"; // Front Right
+  public static String camera7Name = "VisionCam7"; // Front Left
+  public static String camera8Name = "VisionCam8"; // Back Left
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
   public static Transform3d robotToCamera1 =
@@ -41,7 +43,18 @@ public class VisionConstants {
           Units.inchesToMeters(-12.75),
           Units.inchesToMeters(13.125),
           new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(225)));
-
+  public static Transform3d robotToCamera7 =
+      new Transform3d(
+          Units.inchesToMeters(8.5),
+          Units.inchesToMeters(13.5),
+          Units.inchesToMeters(14.625),
+          new Rotation3d(0, 0, Math.PI / 2));
+  public static Transform3d robotToCamera8 =
+      new Transform3d(
+          Units.inchesToMeters(-11.5),
+          Units.inchesToMeters(12.75),
+          Units.inchesToMeters(13.5),
+          new Rotation3d(0, Math.PI / 12, 3 * Math.PI / 4));
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;
   public static double maxZError = 0.75;
