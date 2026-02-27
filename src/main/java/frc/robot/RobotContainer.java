@@ -88,7 +88,7 @@ public class RobotContainer {
                 new VisionIOPhotonVision(camera2Name, robotToCamera2),
                 new VisionIOPhotonVision(camera3Name, robotToCamera3));
 
-        shooter = new Shooter();
+        shooter = new Shooter(() -> corrections.distanceToHub(drive));
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -113,7 +113,7 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
                 new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
 
-        shooter = new Shooter();
+        shooter = new Shooter(() -> corrections.distanceToHub(drive));
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -131,7 +131,7 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        shooter = new Shooter();
+        shooter = new Shooter(() -> corrections.distanceToHub(drive));
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -250,7 +250,7 @@ public class RobotContainer {
         .rightTrigger()
         .onTrue(
             Commands.sequence(
-                shooter.startShooter(drive), Commands.waitSeconds(.1), hopper.startHopper()))
+                shooter.autoShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -279,11 +279,11 @@ public class RobotContainer {
         .leftTrigger()
         .onTrue(
             Commands.sequence(
-                shooter.startShooter(drive), Commands.waitSeconds(.1), hopper.startHopper()))
+                shooter.autoShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
         .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
     xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    xboxController.leftBumper().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
+    xboxController.leftBumper().onTrue(shooter.slowShot()).onFalse(shooter.pauseShooter());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
     xboxController.y().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
