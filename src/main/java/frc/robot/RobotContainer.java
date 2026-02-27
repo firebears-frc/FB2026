@@ -177,49 +177,52 @@ public class RobotContainer {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
-            drive, () -> joy1.getY(), () -> joy1.getX(), () -> joy2.getX()));
+            drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> -joy2.getX()));
 
     joy2.povUp()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> joy1.getY(),
-                () -> joy1.getX(),
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(0))));
     joy2.povRight()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> joy1.getY(),
-                () -> joy1.getX(),
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue((3 * Math.PI) / 2))));
     joy2.povDown()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> joy1.getY(),
-                () -> joy1.getX(),
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI))));
     joy2.povLeft()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> joy1.getY(),
-                () -> joy1.getX(),
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
 
     // Needs updated X and Y offsets for the shooter vs the center of the bot.
     joy2.trigger()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> joy1.getY(), () -> joy1.getX(), () -> corrections.angleToHub(drive)));
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> corrections.angleToHub(drive)));
 
     joy2.button(2)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> joy1.getX(),
-                () -> joy1.getY(),
+                () -> -joy1.getX(),
+                () -> -joy1.getY(),
                 () -> Rotation2d.fromRadians(corrections.nearestDiagonalAngle(drive))));
 
     // Resets gyro to 0 degrees when b is pressed
@@ -241,7 +244,7 @@ public class RobotContainer {
                 shooter.startShooter(drive), Commands.waitSeconds(.1), hopper.startHopper()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> joy1.getY(), () -> joy1.getX(), () -> corrections.angleToHub(drive)))
+                drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.angleToHub(drive)))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
