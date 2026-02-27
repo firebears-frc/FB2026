@@ -210,21 +210,7 @@ public class RobotContainer {
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () ->
-                    corrections.makeRotation2D(
-                        corrections.correctAngleForComponent(
-                            corrections.correctAngleValue(
-                                Math.atan(
-                                    Math.abs(
-                                            (LinesHorizontal.center
-                                                - corrections.yValueOfComponent(0, 0, drive)))
-                                        / Math.abs(
-                                            (corrections.correctXValue(LinesVertical.hubCenter)
-                                                - corrections.xValueOfComponent(0, 0, drive)))),
-                                corrections.correctXValue(LinesVertical.hubCenter),
-                                LinesHorizontal.center,
-                                drive),
-                            0))));
+                () -> corrections.angleToHub(drive)));
 
     joy2.button(2)
         .whileTrue(
@@ -256,21 +242,7 @@ public class RobotContainer {
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () ->
-                    corrections.makeRotation2D(
-                        corrections.correctAngleForComponent(
-                            corrections.correctAngleValue(
-                                Math.atan(
-                                    Math.abs(
-                                            (LinesHorizontal.center
-                                                - corrections.yValueOfComponent(0, 0, drive)))
-                                        / Math.abs(
-                                            (corrections.correctXValue(LinesVertical.hubCenter)
-                                                - corrections.xValueOfComponent(0, 0, drive)))),
-                                corrections.correctXValue(LinesVertical.hubCenter),
-                                LinesHorizontal.center,
-                                drive),
-                            0))))
+                () -> corrections.angleToHub(drive)))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));

@@ -11,6 +11,29 @@ import frc.robot.subsystems.drive.Drive;
 
 public class corrections {
 
+
+  // Returns the angle from the shooter to the hub
+  public static Rotation2d angleToHub(Drive drive){
+    // ~CONSTANTS~ 
+    double shooterXOffset = 0;
+    double shooterYOffset = 0;
+    double shooterAngleOffset = 0;
+    return corrections.makeRotation2D(
+                            corrections.correctAngleValue(
+                              corrections.correctAngleForComponent(
+                                Math.atan(
+                                  Math.abs(
+                                          (LinesHorizontal.center
+                                              - corrections.yValueOfComponent(shooterXOffset, shooterYOffset, drive)))
+                                      / Math.abs(
+                                          (corrections.correctXValue(LinesVertical.hubCenter)
+                                              - corrections.xValueOfComponent(shooterXOffset, shooterYOffset, drive)))),
+                                  shooterAngleOffset),
+                              corrections.correctXValue(LinesVertical.hubCenter),
+                              LinesHorizontal.center,
+                              drive));
+  }
+
   // Gets the distance from the robots current location to the hub
   public static double distanceToHub(Drive drive){
     double distance = distanceTo(drive, correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
