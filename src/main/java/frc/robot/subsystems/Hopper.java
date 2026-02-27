@@ -59,7 +59,7 @@ public class Hopper extends SubsystemBase {
   public Command startHopper() {
     return runOnce(
         () -> {
-          setPoint = -100;
+          setPoint = -900;
         });
   }
 
@@ -74,7 +74,7 @@ public class Hopper extends SubsystemBase {
   public Command reverseHopper() {
     return runOnce(
         () -> {
-          setPoint = 100;
+          setPoint = 450;
         });
   }
 
