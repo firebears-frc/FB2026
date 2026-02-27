@@ -60,7 +60,7 @@ public class Arm extends SubsystemBase {
         .closedLoop
         .pid(shoulderP, shoulderI, shoulderD)
         .positionWrappingEnabled(true)
-        .positionWrappingInputRange(0, 360)
+        .positionWrappingInputRange(-180, 180)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     SparkUtil.tryUntilOk(
         shoulderMotorRight,
