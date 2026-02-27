@@ -7,10 +7,20 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -20,8 +30,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.FieldConstants.LinesHorizontal;
-import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.corrections;
 import frc.robot.subsystems.Arm;
@@ -35,20 +43,9 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.vision.Vision;
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -180,52 +177,49 @@ public class RobotContainer {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
-            drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> -joy2.getX()));
+            drive, () -> joy1.getY(), () -> joy1.getX(), () -> joy2.getX()));
 
     joy2.povUp()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
+                () -> joy1.getY(),
+                () -> joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(0))));
     joy2.povRight()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
+                () -> joy1.getY(),
+                () -> joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue((3 * Math.PI) / 2))));
     joy2.povDown()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
+                () -> joy1.getY(),
+                () -> joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI))));
     joy2.povLeft()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
+                () -> joy1.getY(),
+                () -> joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
 
     // Needs updated X and Y offsets for the shooter vs the center of the bot.
     joy2.trigger()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
-                () -> corrections.angleToHub(drive)));
+                drive, () -> joy1.getY(), () -> joy1.getX(), () -> corrections.angleToHub(drive)));
 
     joy2.button(2)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getX(),
-                () -> -joy1.getY(),
+                () -> joy1.getX(),
+                () -> joy1.getY(),
                 () -> Rotation2d.fromRadians(corrections.nearestDiagonalAngle(drive))));
 
     // Resets gyro to 0 degrees when b is pressed
@@ -247,10 +241,7 @@ public class RobotContainer {
                 shooter.startShooter(drive), Commands.waitSeconds(.1), hopper.startHopper()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
-                () -> corrections.angleToHub(drive)))
+                drive, () -> joy1.getY(), () -> joy1.getX(), () -> corrections.angleToHub(drive)))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
