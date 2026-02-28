@@ -170,7 +170,7 @@ public class DriveCommands {
                   corrections.makeAngleInBoundsDegrees(
                       (drive.getPose().getRotation().getDegrees() - angle.getDegrees())));
           // ~CONSTANTS~ |  acceptable error in degrees
-          double acceptableError = 5;
+          double acceptableError = 10;
           while (angleError > acceptableError) {
 
             // Calculate angular speed, FROM OTHER DRIVE COMMANDS
