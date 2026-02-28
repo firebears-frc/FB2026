@@ -87,10 +87,10 @@ public class Shooter extends SubsystemBase {
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Populate speed calculator with values (subject to change based on testing)
-    speedCalculator.put(Units.feetToMeters(15), 3600.0);
-    speedCalculator.put(Units.feetToMeters(12), 3100.0);
-    speedCalculator.put(Units.feetToMeters(8), 2800.0);
-    speedCalculator.put(Units.inchesToMeters(80), 2700.0);
+    speedCalculator.put(Units.feetToMeters(15), 3650.0);
+    speedCalculator.put(Units.feetToMeters(12), 3150.0);
+    speedCalculator.put(Units.feetToMeters(8), 2850.0);
+    speedCalculator.put(Units.inchesToMeters(80), 2750.0);
   }
 
   @AutoLogOutput(key = "Shooter/beamBreak")
