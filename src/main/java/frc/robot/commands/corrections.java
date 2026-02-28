@@ -1,25 +1,50 @@
 package frc.robot.commands;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
+import org.littletonrobotics.junction.Logger;
 
 public class corrections {
 
+  // Returns the angle from the shooter to the hub
+  public static Rotation2d angleToHub(Drive drive) {
+    // ~CONSTANTS~in meters / radians
+    double shooterXOffset = Units.inchesToMeters(-5);
+    double shooterYOffset = Units.inchesToMeters(6);
+    double shooterAngleOffset = Units.degreesToRadians(90);
+    return corrections.makeRotation2D(
+        corrections.correctAngleValue(
+            corrections.correctAngleForComponent(
+                Math.atan(
+                    Math.abs(
+                            (LinesHorizontal.center
+                                - corrections.yValueOfComponent(
+                                    shooterXOffset, shooterYOffset, drive)))
+                        / Math.abs(
+                            (corrections.correctXValue(LinesVertical.hubCenter)
+                                - corrections.xValueOfComponent(
+                                    shooterXOffset, shooterYOffset, drive)))),
+                shooterAngleOffset),
+            corrections.correctXValue(LinesVertical.hubCenter),
+            LinesHorizontal.center,
+            drive));
+  }
+
   // Gets the distance from the robots current location to the hub
-  public static double distanceToHub(Drive drive){
-    double distance = distanceTo(drive, correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
+  public static double distanceToHub(Drive drive) {
+    double distance =
+        distanceTo(drive, correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
     Logger.recordOutput("Odometry/distance to hub", distance);
     return distance;
   }
 
   // Gets the distance from the robot to a specified X and Y
-  public static double distanceTo(Drive drive, double X, double Y){
+  public static double distanceTo(Drive drive, double X, double Y) {
     double xDifference = drive.getPose().getX() - X;
     double yDifference = drive.getPose().getY() - Y;
     double distance = Math.sqrt((xDifference * xDifference) + (yDifference * yDifference));
@@ -125,18 +150,18 @@ public class corrections {
     return newAngle;
   }
 
-  // Corrects the angle towards a target based on the bots position around the target
+  // Corrects the angle towards a target based on the bots position around the target, starting angle as if in 
   public static double correctAngleValue(
-      double angleValue, double targetLocationX, double targetLocationY, Drive drive) {
+      double angleValue, double targetLocationX, double targetLocationY, double offsetX, double offsetY, Drive drive) {
     double newAngleValue = angleValue;
 
-    if (drive.getPose().getX() > targetLocationX) {
+    if (xValueOfComponent(offsetX, offsetY, drive) > targetLocationX) {
       newAngleValue = Math.PI - newAngleValue;
     }
 
     newAngleValue = makeAngleInBounds(newAngleValue);
 
-    if (drive.getPose().getY() > targetLocationY) {
+    if (yValueOfComponent(offsetX, offsetY, drive) > targetLocationY) {
       newAngleValue *= -1;
     }
 
