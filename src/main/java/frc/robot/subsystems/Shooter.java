@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.corrections;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.SparkUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import java.util.function.DoubleSupplier;
 
 public class Shooter extends SubsystemBase {
   private SparkFlex ShooterMotor1 = new SparkFlex(14, MotorType.kBrushless);
@@ -34,13 +36,16 @@ public class Shooter extends SubsystemBase {
   private final double motorI = 0.0;
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
+  private String mode = "";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
   @AutoLogOutput(key = "Shooter/fuel ready")
   private boolean FuelReady = false;
 
-  public Shooter() {
+  private final DoubleSupplier distanceToHubSupplier;
 
+  public Shooter(DoubleSupplier distanceToHubSupplier) {
+    this.distanceToHubSupplier = distanceToHubSupplier;
     // Configure Motor 1
     ShooterController1 = ShooterMotor1.getClosedLoopController();
     var ShooterConfig1 = new SparkFlexConfig();
@@ -103,28 +108,35 @@ public class Shooter extends SubsystemBase {
   public Command reverseShooter() {
     return runOnce(
         () -> {
-          setPoint = -1000;
+          mode = "reverse";
         });
   }
 
-  public Command startShooter(Drive drive) {
+  public Command autoShooter() {
     return runOnce(
         () -> {
-          setPoint = speedCalculator.get(corrections.distanceToHub(drive));
+          mode = "auto";
         });
   }
+
+  public Command fastShot() {
+    return runOnce(
+      () -> {
+        mode = "fast";
+      });
+  }
   // subject to change based on design of the motor and mechanism
-  public Command SlowShot() {
+  public Command slowShot() {
     return runOnce(
         () -> {
-          setPoint = 2000;
+          mode = "slow";
         });
   }
 
   public Command pauseShooter() {
     return runOnce(
         () -> {
-          setPoint = 0;
+          mode = "off";
         });
   }
 
@@ -135,6 +147,18 @@ public class Shooter extends SubsystemBase {
       FuelReady = true;
     } else if (!beamBreak()) {
       FuelReady = false;
+    }
+
+    if (mode == "fast") {
+      setPoint = 3500;
+    } else if (mode == "slow") {
+      setPoint = 2600;
+    } else if (mode == "reverse") {
+      setPoint = -2600;
+    } else if (mode == "auto") {
+      setPoint = speedCalculator.get(distanceToHubSupplier.getAsDouble());
+    } else {
+      setPoint = 0;
     }
 
     ShooterController1.setReference(setPoint, ControlType.kVelocity);
