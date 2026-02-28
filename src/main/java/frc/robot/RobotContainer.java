@@ -19,13 +19,9 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
-import java.util.Map;
-
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -48,16 +44,10 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.vision.Vision;
-import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera3Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera3;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import java.util.Map;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -185,11 +175,15 @@ public class RobotContainer {
         Map.of(
             "shoot",
             Commands.sequence(
-                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper()),
-            "startIntake", intake.startIntake(),
-            "pauseIntake", intake.pauseintake(),
-            "armDown", arm.armDown(),
-            "armUp", arm.armUp()));
+                shooter.autoShooter(), Commands.waitSeconds(.1), hopper.startHopper()),
+            "startIntake",
+            intake.startIntake(),
+            "pauseIntake",
+            intake.pauseintake(),
+            "armDown",
+            arm.armDown(),
+            "armUp",
+            arm.armUp()));
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by

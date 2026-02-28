@@ -18,8 +18,8 @@ public class corrections {
     double shooterYOffset = Units.inchesToMeters(6);
     double shooterAngleOffset = Units.degreesToRadians(90);
     return corrections.makeRotation2D(
-        corrections.correctAngleValue(
-            corrections.correctAngleForComponent(
+        corrections.correctAngleForComponent(
+            corrections.correctAngleValue(
                 Math.atan(
                     Math.abs(
                             (LinesHorizontal.center
@@ -29,10 +29,12 @@ public class corrections {
                             (corrections.correctXValue(LinesVertical.hubCenter)
                                 - corrections.xValueOfComponent(
                                     shooterXOffset, shooterYOffset, drive)))),
-                shooterAngleOffset),
-            corrections.correctXValue(LinesVertical.hubCenter),
-            LinesHorizontal.center,
-            drive));
+                corrections.correctXValue(LinesVertical.hubCenter),
+                LinesHorizontal.center,
+                shooterXOffset,
+                shooterYOffset,
+                drive),
+            shooterAngleOffset));
   }
 
   // Gets the distance from the robots current location to the hub
@@ -150,9 +152,15 @@ public class corrections {
     return newAngle;
   }
 
-  // Corrects the angle towards a target based on the bots position around the target, starting angle as if in 
+  // Corrects the angle towards a target based on the bots position around the target, starting
+  // angle as if in
   public static double correctAngleValue(
-      double angleValue, double targetLocationX, double targetLocationY, double offsetX, double offsetY, Drive drive) {
+      double angleValue,
+      double targetLocationX,
+      double targetLocationY,
+      double offsetX,
+      double offsetY,
+      Drive drive) {
     double newAngleValue = angleValue;
 
     if (xValueOfComponent(offsetX, offsetY, drive) > targetLocationX) {

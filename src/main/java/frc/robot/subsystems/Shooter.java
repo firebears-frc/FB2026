@@ -12,15 +12,12 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.corrections;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.SparkUtil;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import java.util.function.DoubleSupplier;
 
 public class Shooter extends SubsystemBase {
   private SparkFlex ShooterMotor1 = new SparkFlex(14, MotorType.kBrushless);
@@ -121,9 +118,9 @@ public class Shooter extends SubsystemBase {
 
   public Command fastShot() {
     return runOnce(
-      () -> {
-        mode = "fast";
-      });
+        () -> {
+          mode = "fast";
+        });
   }
   // subject to change based on design of the motor and mechanism
   public Command slowShot() {
