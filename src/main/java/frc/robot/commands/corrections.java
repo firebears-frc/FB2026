@@ -13,7 +13,7 @@ public class corrections {
 
   // Returns the angle from the shooter to the hub
   public static Rotation2d angleToHub(Drive drive) {
-    // ~CONSTANTS~
+    // ~CONSTANTS~in meters / radians
     double shooterXOffset = Units.inchesToMeters(-5);
     double shooterYOffset = Units.inchesToMeters(6);
     double shooterAngleOffset = Units.degreesToRadians(90);
@@ -150,18 +150,18 @@ public class corrections {
     return newAngle;
   }
 
-  // Corrects the angle towards a target based on the bots position around the target
+  // Corrects the angle towards a target based on the bots position around the target, starting angle as if in 
   public static double correctAngleValue(
-      double angleValue, double targetLocationX, double targetLocationY, Drive drive) {
+      double angleValue, double targetLocationX, double targetLocationY, double offsetX, double offsetY, Drive drive) {
     double newAngleValue = angleValue;
 
-    if (drive.getPose().getX() > targetLocationX) {
+    if (xValueOfComponent(offsetX, offsetY, drive) > targetLocationX) {
       newAngleValue = Math.PI - newAngleValue;
     }
 
     newAngleValue = makeAngleInBounds(newAngleValue);
 
-    if (drive.getPose().getY() > targetLocationY) {
+    if (yValueOfComponent(offsetX, offsetY, drive) > targetLocationY) {
       newAngleValue *= -1;
     }
 
