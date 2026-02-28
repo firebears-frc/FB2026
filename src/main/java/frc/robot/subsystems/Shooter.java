@@ -34,6 +34,7 @@ public class Shooter extends SubsystemBase {
   private final double motorI = 0.0;
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
+  private final double maxStaticSpeed = 4500;
   private String mode = "";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
@@ -41,7 +42,8 @@ public class Shooter extends SubsystemBase {
   private boolean FuelReady = false;
 
   // Dashboard Input
-  private LoggedNetworkNumber staticShooterSpeed = new LoggedNetworkNumber("Static Shooter Speed", 3000);
+  private LoggedNetworkNumber staticShooterSpeed =
+      new LoggedNetworkNumber("Static Shooter Speed", 3000);
 
   private final DoubleSupplier distanceToHubSupplier;
 
@@ -136,23 +138,29 @@ public class Shooter extends SubsystemBase {
 
   public Command staticShot() {
     return runOnce(
-      () -> {
-        mode = "static";
-      });
+        () -> {
+          mode = "static";
+        });
   }
 
   public Command decreaseStaticSpeed() {
     return runOnce(
-      () -> {
-        staticShooterSpeed.set(staticShooterSpeed.get() - 50);
-      });
+        () -> {
+          staticShooterSpeed.set(staticShooterSpeed.get() - 50);
+          if (staticShooterSpeed.get() > maxStaticSpeed) {
+            staticShooterSpeed.set(maxStaticSpeed);
+          }
+        });
   }
 
   public Command increaseStaticSpeed() {
     return runOnce(
-      () -> {
-        staticShooterSpeed.set(staticShooterSpeed.get() + 50);
-      });
+        () -> {
+          staticShooterSpeed.set(staticShooterSpeed.get() + 50);
+          if (staticShooterSpeed.get() > maxStaticSpeed) {
+            staticShooterSpeed.set(maxStaticSpeed);
+          }
+        });
   }
 
   public Command pauseShooter() {
@@ -180,6 +188,9 @@ public class Shooter extends SubsystemBase {
     } else if (mode == "auto") {
       setPoint = speedCalculator.get(distanceToHubSupplier.getAsDouble());
     } else if (mode == "static") {
+      if (staticShooterSpeed.get() > maxStaticSpeed) {
+        staticShooterSpeed.set(maxStaticSpeed);
+      }
       setPoint = staticShooterSpeed.get();
     } else {
       setPoint = 0;
