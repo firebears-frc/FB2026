@@ -7,6 +7,18 @@
 
 package frc.robot;
 
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
 import java.util.Map;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -23,8 +35,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.FieldConstants.LinesHorizontal;
-import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.corrections;
 import frc.robot.subsystems.Arm;
@@ -48,7 +58,6 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera3;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -88,10 +97,12 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 new VisionIOPhotonVision(camera1Name, robotToCamera1),
                 new VisionIOPhotonVision(camera2Name, robotToCamera2),
-                new VisionIOPhotonVision(camera3Name, robotToCamera3));
+                new VisionIOPhotonVision(camera4Name, robotToCamera4),
+                new VisionIOPhotonVision(camera6Name, robotToCamera6),
+                new VisionIOPhotonVision(camera7Name, robotToCamera7),
+                new VisionIOPhotonVision(camera8Name, robotToCamera8));
 
         shooter = new Shooter();
         hopper = new Hopper();
@@ -113,10 +124,12 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, drive::getPose),
-                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, drive::getPose),
-                new VisionIOPhotonVisionSim(camera2Name, robotToCamera2, drive::getPose),
-                new VisionIOPhotonVisionSim(camera3Name, robotToCamera3, drive::getPose));
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOPhotonVision(camera2Name, robotToCamera2),
+                new VisionIOPhotonVision(camera4Name, robotToCamera4),
+                new VisionIOPhotonVision(camera6Name, robotToCamera6),
+                new VisionIOPhotonVision(camera7Name, robotToCamera7),
+                new VisionIOPhotonVision(camera8Name, robotToCamera8));
 
         shooter = new Shooter();
         hopper = new Hopper();
@@ -195,7 +208,7 @@ public class RobotContainer {
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
-                () -> joy1.getX(),
+                () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(0))));
     joy2.povRight()
         .whileTrue(
@@ -226,31 +239,16 @@ public class RobotContainer {
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () ->
-                    corrections.makeRotation2D(
-                        corrections.correctAngleForComponent(
-                            corrections.correctAngleValue(
-                                Math.atan(
-                                    Math.abs(
-                                            (LinesHorizontal.center
-                                                - corrections.yValueOfComponent(0, 0, drive)))
-                                        / Math.abs(
-                                            (corrections.correctXValue(LinesVertical.hubCenter)
-                                                - corrections.xValueOfComponent(0, 0, drive)))),
-                                corrections.correctXValue(LinesVertical.hubCenter),
-                                LinesHorizontal.center,
-                                drive),
-                            0))));
+                () -> corrections.angleToHub(drive)));
 
     joy2.button(2)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getX(), 
-                () -> joy1.getY(), 
-                () -> Rotation2d.fromRadians(
-                    corrections.nearestDiagonalAngle(drive))));
-        
+                () -> -joy1.getX(),
+                () -> -joy1.getY(),
+                () -> Rotation2d.fromRadians(corrections.nearestDiagonalAngle(drive))));
+
     // Resets gyro to 0 degrees when b is pressed
     xboxController
         .b()
@@ -267,27 +265,10 @@ public class RobotContainer {
         .rightTrigger()
         .onTrue(
             Commands.sequence(
-                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+                shooter.startShooter(drive), Commands.waitSeconds(.1), hopper.startHopper()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
-                () ->
-                    corrections.makeRotation2D(
-                        corrections.correctAngleForComponent(
-                            corrections.correctAngleValue(
-                                Math.atan(
-                                    Math.abs(
-                                            (LinesHorizontal.center
-                                                - corrections.yValueOfComponent(0, 0, drive)))
-                                        / Math.abs(
-                                            (corrections.correctXValue(LinesVertical.hubCenter)
-                                                - corrections.xValueOfComponent(0, 0, drive)))),
-                                corrections.correctXValue(LinesVertical.hubCenter),
-                                LinesHorizontal.center,
-                                drive),
-                            0))))
+                drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.angleToHub(drive)))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
@@ -296,14 +277,16 @@ public class RobotContainer {
         .leftTrigger()
         .onTrue(
             Commands.sequence(
-                shooter.startShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+                shooter.startShooter(drive), Commands.waitSeconds(.1), hopper.startHopper()))
         .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
     xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
     xboxController.leftBumper().onTrue(shooter.SlowShot()).onFalse(shooter.pauseShooter());
-    xboxController.y().onTrue(arm.ToggleArm());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
-    xboxController.x().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+    xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
+    xboxController.y().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+    xboxController.povDown().onTrue(arm.armDown());
+    xboxController.povUp().onTrue(arm.armUp());
   }
 
   /**
