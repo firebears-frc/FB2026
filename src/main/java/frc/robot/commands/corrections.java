@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldConstants.LinesHorizontal;
@@ -13,9 +14,9 @@ public class corrections {
   // Returns the angle from the shooter to the hub
   public static Rotation2d angleToHub(Drive drive) {
     // ~CONSTANTS~
-    double shooterXOffset = 0;
-    double shooterYOffset = 0;
-    double shooterAngleOffset = 0;
+    double shooterXOffset = Units.inchesToMeters(-5);
+    double shooterYOffset = Units.inchesToMeters(6);
+    double shooterAngleOffset = Units.degreesToRadians(90);
     return corrections.makeRotation2D(
         corrections.correctAngleValue(
             corrections.correctAngleForComponent(
