@@ -37,25 +37,25 @@ public class VisionConstants {
           Units.inchesToMeters(-12.625),
           Units.inchesToMeters(14.25),
           new Rotation3d(
-              Units.degreesToRadians(15), Units.degreesToRadians(10), Units.degreesToRadians(300)));
+              Units.degreesToRadians(12), Units.degreesToRadians(-4), Units.degreesToRadians(296)));
   public static Transform3d robotToCamera6 =
       new Transform3d(
           Units.inchesToMeters(-11.5),
           Units.inchesToMeters(-12.75),
           Units.inchesToMeters(13.125),
-          new Rotation3d(0, Units.degreesToRadians(20), Units.degreesToRadians(225)));
+          new Rotation3d(0, Units.degreesToRadians(-18), Units.degreesToRadians(225)));
   public static Transform3d robotToCamera7 =
       new Transform3d(
           Units.inchesToMeters(8.5),
           Units.inchesToMeters(13.5),
           Units.inchesToMeters(14.625),
-          new Rotation3d(0, 0, Math.PI / 2));
+          new Rotation3d(0, 0, Units.degreesToRadians(90)));
   public static Transform3d robotToCamera8 =
       new Transform3d(
           Units.inchesToMeters(-11.5),
           Units.inchesToMeters(12.75),
           Units.inchesToMeters(13.5),
-          new Rotation3d(0, Math.PI / 12, 3 * Math.PI / 4));
+          new Rotation3d(0, Units.degreesToRadians(-21), Units.degreesToRadians(135)));
   // Basic filtering thresholds
   public static double maxAmbiguity = 0.3;
   public static double maxZError = 0.75;
