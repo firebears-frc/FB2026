@@ -41,9 +41,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.5
+            "pathName": "ShootReloadLFix"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootReloadLP2"
+            "pathName": "ShootReloadLend"
           }
         },
         {
@@ -67,37 +67,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 1.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stopShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShootReloadLP3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
           }
         }
       ]
