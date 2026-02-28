@@ -23,21 +23,17 @@
             "/AdvantageKit",
             "/AdvantageKit/RadioStatus/Status",
             "/AdvantageKit/RadioStatus/Status/networkStatus6",
-            "/AdvantageKit/URCL/Spark-13/Fault",
             "/AdvantageKit/Vision/Camera3/PoseObservations/0",
-            "/AdvantageKit/RealOutputs",
             "/AdvantageKit/RealOutputs/Vision/Camera0/TagPoses",
             "/AdvantageKit/RealOutputs/Vision/Camera1/TagPoses",
             "/AdvantageKit/RealOutputs/Vision/Camera2/TagPoses",
-            "/AdvantageKit/RealOutputs/Vision/Camera4/TagPoses",
-            "/AdvantageKit/RealOutputs/Vision/Camera3",
-            "/AdvantageKit/RealOutputs/Vision/Camera3/TagPoses",
             "/AdvantageKit/RealOutputs/SwerveChassisSpeeds/Setpoints",
-            "/AdvantageKit/RealOutputs/SwerveChassisSpeeds/Measured"
+            "/AdvantageKit/RealOutputs/SwerveChassisSpeeds/Measured",
+            "/AdvantageKit/RealOutputs"
           ]
         },
         "tabs": {
-          "selected": 1,
+          "selected": 2,
           "tabs": [
             {
               "type": 0,
@@ -146,9 +142,9 @@
                 "cameraIndex": -1,
                 "orbitFov": 50,
                 "cameraPosition": [
-                  8.395443111951362,
-                  2.734723698464875,
-                  4.109012529278995
+                  7.861058602745796,
+                  2.915943594225639,
+                  -5.797380073804594
                 ],
                 "cameraTarget": [
                   4.167408170967929,
@@ -212,7 +208,7 @@
                     "visible": true,
                     "options": {
                       "color": "#2b66a2",
-                      "size": "normal"
+                      "size": "verybold"
                     }
                   },
                   {
@@ -222,7 +218,7 @@
                     "visible": true,
                     "options": {
                       "color": "#e5b31b",
-                      "size": "normal"
+                      "size": "bold"
                     }
                   }
                 ],
@@ -231,7 +227,7 @@
                     "type": "stepped",
                     "logKey": "NT:/AdvantageKit/URCL/Spark-14/CurrentOutput",
                     "logType": "Number",
-                    "visible": true,
+                    "visible": false,
                     "options": {
                       "color": "#80588e",
                       "size": "normal"
@@ -241,7 +237,7 @@
                     "type": "stepped",
                     "logKey": "NT:/AdvantageKit/URCL/Spark-15/CurrentOutput",
                     "logType": "Number",
-                    "visible": true,
+                    "visible": false,
                     "options": {
                       "color": "#e48b32",
                       "size": "normal"
@@ -278,6 +274,82 @@
             },
             {
               "type": 1,
+              "title": "Hopper",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Hopper/setPoint",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "verybold"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Hopper/speed",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "bold"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/URCL/Spark-13/CurrentOutput",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/URCL/Spark-13/AppliedOutput",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Hopper/atSpeed",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "r1lkh10ftbxs7uswsadedxvlcqusy5w1",
+              "renderer": null,
+              "controlsHeight": 200
+            },
+            {
+              "type": 1,
               "title": "Intake",
               "controller": {
                 "leftSources": [
@@ -288,7 +360,7 @@
                     "visible": true,
                     "options": {
                       "color": "#2b66a2",
-                      "size": "normal"
+                      "size": "verybold"
                     }
                   },
                   {
@@ -298,12 +370,43 @@
                     "visible": true,
                     "options": {
                       "color": "#e5b31b",
+                      "size": "bold"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/intake/Output",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/URCL/Spark-12/CurrentOutput",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#e48b32",
                       "size": "normal"
                     }
                   }
                 ],
-                "rightSources": [],
-                "discreteSources": [],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/intake/atSpeed",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437"
+                    }
+                  }
+                ],
                 "leftLockedRange": null,
                 "rightLockedRange": null,
                 "leftUnitConversion": {
@@ -323,28 +426,48 @@
             },
             {
               "type": 1,
-              "title": "Hopper",
+              "title": "Arm",
               "controller": {
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Hopper/setPoint",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/arm/Angle/value",
                     "logType": "Number",
                     "visible": true,
                     "options": {
                       "color": "#2b66a2",
-                      "size": "normal"
+                      "size": "verybold"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/arm/setPoint/value",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "bold"
                     }
                   }
                 ],
                 "rightSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/URCL/Spark-13/CurrentOutput",
+                    "logKey": "NT:/AdvantageKit/URCL/Spark-10/AppliedOutput",
                     "logType": "Number",
-                    "visible": true,
+                    "visible": false,
                     "options": {
                       "color": "#af2437",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "stepped",
+                    "logKey": "NT:/AdvantageKit/URCL/Spark-10/CurrentOutput",
+                    "logType": "Number",
+                    "visible": false,
+                    "options": {
+                      "color": "#80588e",
                       "size": "normal"
                     }
                   }
@@ -353,7 +476,7 @@
                 "leftLockedRange": null,
                 "rightLockedRange": null,
                 "leftUnitConversion": {
-                  "autoTarget": null,
+                  "autoTarget": "degrees",
                   "preset": null
                 },
                 "rightUnitConversion": {
@@ -363,7 +486,7 @@
                 "leftFilter": 0,
                 "rightFilter": 0
               },
-              "controllerUUID": "r1lkh10ftbxs7uswsadedxvlcqusy5w1",
+              "controllerUUID": "tae8ltqz873kwsij0ewasqwuysxg0ko9",
               "renderer": null,
               "controlsHeight": 200
             }
