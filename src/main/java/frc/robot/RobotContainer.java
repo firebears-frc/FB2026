@@ -48,6 +48,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import java.util.Map;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -69,6 +70,8 @@ public class RobotContainer {
   private final CommandXboxController xboxController = new CommandXboxController(2);
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
+ 
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -275,7 +278,9 @@ public class RobotContainer {
         .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
     xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    xboxController.leftBumper().onTrue(shooter.slowShot()).onFalse(shooter.pauseShooter());
+    xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
+    joy1.button(5).onTrue(shooter.increaseStaticSpeed());
+    joy2.button(10).onTrue(shooter.decreaseStaticSpeed());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
     xboxController.y().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());

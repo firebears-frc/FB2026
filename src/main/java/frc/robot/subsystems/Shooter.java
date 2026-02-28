@@ -18,6 +18,7 @@ import frc.robot.util.SparkUtil;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Shooter extends SubsystemBase {
   private SparkFlex ShooterMotor1 = new SparkFlex(14, MotorType.kBrushless);
@@ -38,6 +39,9 @@ public class Shooter extends SubsystemBase {
 
   @AutoLogOutput(key = "Shooter/fuel ready")
   private boolean FuelReady = false;
+
+  // Dashboard Input
+  private LoggedNetworkNumber staticShooterSpeed = new LoggedNetworkNumber("Static Shooter Speed", 3000);
 
   private final DoubleSupplier distanceToHubSupplier;
 
@@ -81,10 +85,10 @@ public class Shooter extends SubsystemBase {
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Populate speed calculator with values (subject to change based on testing)
-    speedCalculator.put(Units.feetToMeters(15), 3500.0);
-    speedCalculator.put(Units.feetToMeters(12), 3000.0);
-    speedCalculator.put(Units.feetToMeters(8), 2700.0);
-    speedCalculator.put(Units.inchesToMeters(80), 2600.0);
+    speedCalculator.put(Units.feetToMeters(15), 3600.0);
+    speedCalculator.put(Units.feetToMeters(12), 3100.0);
+    speedCalculator.put(Units.feetToMeters(8), 2800.0);
+    speedCalculator.put(Units.inchesToMeters(80), 2700.0);
   }
 
   @AutoLogOutput(key = "Shooter/beamBreak")
@@ -130,6 +134,27 @@ public class Shooter extends SubsystemBase {
         });
   }
 
+  public Command staticShot() {
+    return runOnce(
+      () -> {
+        mode = "static";
+      });
+  }
+
+  public Command decreaseStaticSpeed() {
+    return runOnce(
+      () -> {
+        staticShooterSpeed.set(staticShooterSpeed.get() - 50);
+      });
+  }
+
+  public Command increaseStaticSpeed() {
+    return runOnce(
+      () -> {
+        staticShooterSpeed.set(staticShooterSpeed.get() + 50);
+      });
+  }
+
   public Command pauseShooter() {
     return runOnce(
         () -> {
@@ -154,6 +179,8 @@ public class Shooter extends SubsystemBase {
       setPoint = -2600;
     } else if (mode == "auto") {
       setPoint = speedCalculator.get(distanceToHubSupplier.getAsDouble());
+    } else if (mode == "static") {
+      setPoint = staticShooterSpeed.get();
     } else {
       setPoint = 0;
     }
@@ -163,6 +190,7 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Shooter1/Output", ShooterMotor1.getAppliedOutput());
     Logger.recordOutput("Shooter2/Output", ShooterMotor2.getAppliedOutput());
     Logger.recordOutput("Shooter/speed", ShooterMotor1.getEncoder().getVelocity());
+    Logger.recordOutput("Odometry/distance to hub", distanceToHubSupplier.getAsDouble());
     Logger.recordOutput("Shooter/setPoint", setPoint);
   }
 }
