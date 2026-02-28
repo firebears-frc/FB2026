@@ -31,7 +31,7 @@ public class Shooter extends SubsystemBase {
   private static final int smartShooterCurrentLimit = 75;
   private static final int secondaryShooterCurrentLimit = 85;
   private final double motorP = 0.000175;
-  private final double motorI = 0.0;
+  private final double motorI = 0.0;                                            
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
   private final double maxStaticSpeed = 4500;

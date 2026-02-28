@@ -151,8 +151,9 @@ public class DriveCommands {
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
   }
 
-  // Calls drive at angle with no speed until bot is facing within an acceptable error range of given angle
-  public static Command turnToAngle(Drive drive, Rotation2d angle){
+  // Calls drive at angle with no speed until bot is facing within an acceptable error range of
+  // given angle
+  public static Command turnToAngle(Drive drive, Rotation2d angle) {
     // Create PID controller, FROM OTHER DRIVE COMMANDS
     ProfiledPIDController angleController =
         new ProfiledPIDController(
@@ -163,38 +164,36 @@ public class DriveCommands {
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     return Commands.runOnce(
-      () -> {
-        double angleError = Math.abs(corrections.makeAngleInBoundsDegrees((drive.getPose().getRotation().getDegrees() - angle.getDegrees())));
-        // ~CONSTANTS~ |  acceptable error in degrees
-        double acceptableError = 5;
-        while(angleError > acceptableError){
+        () -> {
+          double angleError =
+              Math.abs(
+                  corrections.makeAngleInBoundsDegrees(
+                      (drive.getPose().getRotation().getDegrees() - angle.getDegrees())));
+          // ~CONSTANTS~ |  acceptable error in degrees
+          double acceptableError = 5;
+          while (angleError > acceptableError) {
 
-          // Calculate angular speed, FROM OTHER DRIVE COMMANDS
-          double omega =
-              angleController.calculate(
-                  drive.getRotation().getRadians(), angle.getRadians());
+            // Calculate angular speed, FROM OTHER DRIVE COMMANDS
+            double omega =
+                angleController.calculate(drive.getRotation().getRadians(), angle.getRadians());
 
-          // Convert to field relative speeds & send command, FROM OTHER DRIVE COMMANDS
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  0,
-                  0,
-                  omega);
-          boolean isFlipped =
-              DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
-          drive.runVelocity(
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds,
-                  isFlipped
-                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
+            // Convert to field relative speeds & send command, FROM OTHER DRIVE COMMANDS
+            ChassisSpeeds speeds = new ChassisSpeeds(0, 0, omega);
+            boolean isFlipped =
+                DriverStation.getAlliance().isPresent()
+                    && DriverStation.getAlliance().get() == Alliance.Red;
+            drive.runVelocity(
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                    speeds,
+                    isFlipped
+                        ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                        : drive.getRotation()));
 
-          // sets the angle error to the new angle error
-          angleError = drive.getPose().getRotation().getDegrees() - angle.getDegrees();
-        }
-      },
-      drive);
+            // sets the angle error to the new angle error
+            angleError = drive.getPose().getRotation().getDegrees() - angle.getDegrees();
+          }
+        },
+        drive);
   }
 
   /**
