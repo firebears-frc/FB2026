@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -138.8140748342904
+    "rotation": 32.73522627210753
   },
   "reversed": false,
-  "folder": null,
+  "folder": "ShootReload",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
