@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 3.1776867469879515,
-        "y": 4.854578313253012
+        "x": 2.7187228915662653,
+        "y": 4.920144578313253
       },
       "prevControl": {
-        "x": 3.666759036144578,
-        "y": 4.876433734939758
+        "x": 3.2077951807228917,
+        "y": 4.941999999999999
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,10 +58,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -126.15818543980834
+    "rotation": 56.30993247402023
   },
   "reversed": false,
-  "folder": null,
+  "folder": "ShootReload",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

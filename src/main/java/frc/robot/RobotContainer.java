@@ -7,21 +7,13 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
+import java.util.Map;
+
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -44,6 +36,18 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.vision.Vision;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import java.util.Map;
@@ -174,7 +178,7 @@ public class RobotContainer {
     NamedCommands.registerCommands(
         Map.of(
             "shoot",
-            Commands.sequence(
+            Commands.sequence(DriveCommands.turnToAngle(drive, corrections.angleToHub(drive)), Commands.waitSeconds(.2),
                 shooter.autoShooter(), Commands.waitSeconds(.1), hopper.startHopper()),
             "stopShoot",
             Commands.sequence(

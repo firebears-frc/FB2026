@@ -61,7 +61,7 @@
     "rotation": -75.80890345097599
   },
   "reversed": false,
-  "folder": null,
+  "folder": "ShootReload",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

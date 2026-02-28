@@ -5,9 +5,51 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "armUp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot's Start"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "DepotReload"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pauseIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
           }
         },
         {
@@ -19,13 +61,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": null
+            "name": "startIntake"
           }
         }
       ]

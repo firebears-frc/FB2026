@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3274322396576315,
-        "y": 5.374151212553495
+        "x": 3.3853132530120478,
+        "y": 6.034771084337349
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.168445078463652,
-        "y": 5.658801711836909
+        "x": 4.22632609181807,
+        "y": 6.319421583620763
       },
       "isLocked": false,
       "linkedName": "ShootReloadP2"
@@ -45,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "ShootReload",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -138.8140748342904
+    "rotation": 32.73522627210753
   },
   "useDefaultConstraints": true
 }
