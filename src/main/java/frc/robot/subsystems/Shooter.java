@@ -104,7 +104,7 @@ public class Shooter extends SubsystemBase {
   }
 
   @AutoLogOutput(key = "Shooter/atSpeed")
-  private boolean atSpeed() {
+  public boolean atSpeed() {
     return getError() < 100 && getError() > -100;
   }
 
