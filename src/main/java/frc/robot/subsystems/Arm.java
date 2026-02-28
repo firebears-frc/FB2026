@@ -1,11 +1,13 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -26,7 +28,7 @@ public class Arm extends SubsystemBase {
   private static int FREE_CURRENT_LIMIT_SHOULDER = 5;
   private static double shoulderP = 0.02;
   private static double shoulderI = 0.0;
-  private static double shoulderG = 0.35;
+  private static double shoulderG = 0.5;
   private static double shoulderD = 0.0;
   private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 15;
   // private static boolean up = true;
@@ -60,7 +62,7 @@ public class Arm extends SubsystemBase {
         .closedLoop
         .pid(shoulderP, shoulderI, shoulderD)
         .positionWrappingEnabled(true)
-        .positionWrappingInputRange(0, 360)
+        .positionWrappingInputRange(-180, 180)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     SparkUtil.tryUntilOk(
         shoulderMotorRight,
@@ -84,8 +86,8 @@ public class Arm extends SubsystemBase {
   }
 
   private static final class Constants {
-    private static final Rotation2d armDown = Rotation2d.fromDegrees(0);
-    private static final Rotation2d armUp = Rotation2d.fromDegrees(90);
+    private static final Rotation2d armDown = Rotation2d.fromDegrees(-8.75);
+    private static final Rotation2d armUp = Rotation2d.fromDegrees(125);
   }
 
   @AutoLogOutput(key = "arm/Angle")
@@ -94,8 +96,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void setShoulderSetpoint(Rotation2d setpoint) {
-    if (setpoint.getDegrees() < -5) {
-      setpoint = Rotation2d.fromDegrees(-5);
+    if (setpoint.getDegrees() < -10) {
+      setpoint = Rotation2d.fromDegrees(-10);
     } else if (setpoint.getDegrees() > 120) {
       setpoint = Rotation2d.fromDegrees(120); // test robot and then implement correct value
     }
@@ -140,7 +142,12 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     double feedForward = Math.cos(getShoulderAngle().getRadians()) * shoulderG;
-    shoulderPID.setReference(shoulderSetpoint.getDegrees(), ControlType.kPosition);
+    shoulderPID.setSetpoint(
+        shoulderSetpoint.getDegrees(),
+        ControlType.kPosition,
+        ClosedLoopSlot.kSlot0,
+        feedForward,
+        ArbFFUnits.kVoltage);
     Logger.recordOutput("arm/MotorRight", shoulderMotorRight.getAppliedOutput());
     Logger.recordOutput("arm/MotorRightCurrent", shoulderMotorRight.getOutputCurrent());
     Logger.recordOutput("arm/setPointDegrees", shoulderSetpoint.getDegrees());
