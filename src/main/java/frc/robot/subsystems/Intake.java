@@ -34,8 +34,7 @@ public class Intake extends SubsystemBase {
     intakeConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(.00007, 0.0, 0.0, 1.774691358024691e-4);
-    // ff: 1.774691358024691e-4
+        .pidf(0.0003, 0.0, 0.0, 0.001875);
     intakeConfig.limitSwitch.forwardLimitSwitchEnabled(false);
 
     SparkUtil.tryUntilOk(

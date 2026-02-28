@@ -19,7 +19,7 @@ public class Hopper extends SubsystemBase {
   private SparkMax hopperMotor = new SparkMax(13, MotorType.kBrushless); // change can id
   private final SparkClosedLoopController hopperController;
   private double setPoint = 0;
-  private static final int HopperCurrentLimit = 30; // safety limit
+  private static final int HopperCurrentLimit = 40; // safety limit
 
   public Hopper() {
 
@@ -32,8 +32,7 @@ public class Hopper extends SubsystemBase {
         .voltageCompensation(12.0);
     HopperConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(.00007, 0.0, 0.0, 1.774691358024691e-4); // need changes
-    // ff: 1.774691358024691e-4
+        .pidf(0.000175, 0.0, 0.0, 0.0022);
     HopperConfig.limitSwitch.forwardLimitSwitchEnabled(false);
 
     SparkUtil.tryUntilOk(
@@ -59,7 +58,7 @@ public class Hopper extends SubsystemBase {
   public Command startHopper() {
     return runOnce(
         () -> {
-          setPoint = -0.35;
+          setPoint = -900;
         });
   }
 
@@ -74,14 +73,14 @@ public class Hopper extends SubsystemBase {
   public Command reverseHopper() {
     return runOnce(
         () -> {
-          setPoint = 0.35;
+          setPoint = 450;
         });
   }
-  // no idea what it is maybe needs changing
+
   @Override
   public void periodic() {
 
-    hopperController.setSetpoint(setPoint, ControlType.kDutyCycle);
+    hopperController.setSetpoint(setPoint, ControlType.kVelocity);
 
     Logger.recordOutput("Hopper/Output", hopperMotor.getAppliedOutput());
     Logger.recordOutput("Hopper/speed", hopperMotor.getEncoder().getVelocity());
