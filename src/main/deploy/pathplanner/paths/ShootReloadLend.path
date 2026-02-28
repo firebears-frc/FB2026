@@ -8,36 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.630193561697588,
-        "y": 4.866036041452088
+        "x": 8.095156626506025,
+        "y": 3.947578313253013
       },
       "isLocked": false,
       "linkedName": "shootLfix"
     },
     {
       "anchor": {
-        "x": 4.663855421686747,
-        "y": 2.330277108433736
+        "x": 4.674783132530121,
+        "y": 2.5488313253012054
       },
       "prevControl": {
-        "x": 5.308590361445783,
-        "y": 2.3521325301204823
+        "x": 5.434881568704649,
+        "y": 2.6552451063656393
       },
       "nextControl": {
-        "x": 4.138603522370092,
-        "y": 2.312471959304358
+        "x": 4.128397590361446,
+        "y": 2.472337349397591
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootReloadP2"
     },
     {
       "anchor": {
-        "x": 3.2213975903614456,
-        "y": 2.7673855421686757
+        "x": 2.8826385542168675,
+        "y": 2.5488313253012054
       },
       "prevControl": {
-        "x": 3.0816922296392857,
-        "y": 2.9747075433781256
+        "x": 2.8264236775421776,
+        "y": 2.3052335263775503
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,12 +58,12 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 138.05869757409587
+    "rotation": 135.0000000000001
   },
   "reversed": false,
   "folder": "ShootReload",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": -121.60750224624891
   },
   "useDefaultConstraints": true
