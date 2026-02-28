@@ -179,6 +179,9 @@ public class RobotContainer {
             "shoot",
             Commands.sequence(
                 shooter.autoShooter(), Commands.waitSeconds(.1), hopper.startHopper()),
+            "stopShoot",
+            Commands.sequence(
+                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()),
             "startIntake",
             intake.startIntake(),
             "pauseIntake",
