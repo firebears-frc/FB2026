@@ -62,7 +62,7 @@ public class Arm extends SubsystemBase {
         .closedLoop
         .pid(shoulderP, shoulderI, shoulderD)
         .positionWrappingEnabled(true)
-        .positionWrappingInputRange(-180, 180)
+        .positionWrappingInputRange(0, 360)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     SparkUtil.tryUntilOk(
         shoulderMotorRight,
@@ -86,20 +86,24 @@ public class Arm extends SubsystemBase {
   }
 
   private static final class Constants {
-    private static final Rotation2d armDown = Rotation2d.fromDegrees(-8.75);
+    private static final Rotation2d armDown = Rotation2d.fromDegrees(-8);
     private static final Rotation2d armUp = Rotation2d.fromDegrees(125);
   }
 
   @AutoLogOutput(key = "arm/Angle")
   public Rotation2d getShoulderAngle() {
-    return Rotation2d.fromDegrees(shoulderEncoder.getPosition());
+    double rawDegrees = shoulderEncoder.getPosition();
+    if (rawDegrees >= 180) {
+      rawDegrees -= 360;
+    }
+    return Rotation2d.fromDegrees(rawDegrees);
   }
 
   public void setShoulderSetpoint(Rotation2d setpoint) {
     if (setpoint.getDegrees() < -10) {
       setpoint = Rotation2d.fromDegrees(-10);
     } else if (setpoint.getDegrees() > 120) {
-      setpoint = Rotation2d.fromDegrees(120); // test robot and then implement correct value
+      setpoint = Rotation2d.fromDegrees(120);
     }
     shoulderSetpoint = setpoint;
   }
@@ -117,7 +121,7 @@ public class Arm extends SubsystemBase {
   }
 
   public Command armDown() {
-    return positionCommand(() -> Constants.armDown, () -> 1.0);
+    return positionCommand(() -> Constants.armDown, () -> 3.0);
   }
 
   public Command armUp() {
