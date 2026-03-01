@@ -151,6 +151,13 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+    autoChooser.addOption(
+        "turn n shoot!",
+        Commands.sequence(
+            DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+            Commands.waitSeconds(.2),
+            shooter.autoShooter()));
+
     // Set up SysId routines
     autoChooser.addOption(
         "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));

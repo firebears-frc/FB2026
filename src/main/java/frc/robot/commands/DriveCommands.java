@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
   private static final double DEADBAND = 0.1;
@@ -169,6 +170,7 @@ public class DriveCommands {
               double omega =
                   angleController.calculate(
                       drive.getRotation().getRadians(), angle.get().getRadians());
+              Logger.recordOutput("DriveCommands/turnToAngle/omega", omega);
 
               // Convert to field relative speeds & send command, FROM OTHER DRIVE COMMANDS
               ChassisSpeeds speeds = new ChassisSpeeds(0, 0, omega);
@@ -184,12 +186,17 @@ public class DriveCommands {
             },
             drive)
         .until(
-            () ->
-                Math.abs(
-                        corrections.makeAngleInBoundsDegrees(
-                            (drive.getPose().getRotation().getDegrees()
-                                - angle.get().getDegrees())))
-                    < 10);
+            () -> {
+              Rotation2d angleToHub = angle.get();
+              Logger.recordOutput("DriveCommands/turnToAngle/angleToHub", angleToHub);
+              double delta = drive.getPose().getRotation().getDegrees() - angleToHub.getDegrees();
+              Logger.recordOutput("DriveCommands/turnToAngle/delta", delta);
+              double abs = Math.abs(delta);
+              Logger.recordOutput("DriveCommands/turnToAngle/abs", abs);
+              boolean good = abs < 3;
+              Logger.recordOutput("DriveCommands/turnToAngle/good", good);
+              return good;
+            });
   }
 
   /**
