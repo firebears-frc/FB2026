@@ -151,6 +151,51 @@ public class DriveCommands {
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
   }
 
+  // Calls drive at angle with no speed until bot is facing within an acceptable error range of
+  // given angle
+  public static Command turnToAngle(Drive drive, Rotation2d angle) {
+    // Create PID controller, FROM OTHER DRIVE COMMANDS
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    return Commands.runOnce(
+        () -> {
+          double angleError =
+              Math.abs(
+                  corrections.makeAngleInBoundsDegrees(
+                      (drive.getPose().getRotation().getDegrees() - angle.getDegrees())));
+          // ~CONSTANTS~ |  acceptable error in degrees
+          double acceptableError = 10;
+          while (angleError > acceptableError) {
+
+            // Calculate angular speed, FROM OTHER DRIVE COMMANDS
+            double omega =
+                angleController.calculate(drive.getRotation().getRadians(), angle.getRadians());
+
+            // Convert to field relative speeds & send command, FROM OTHER DRIVE COMMANDS
+            ChassisSpeeds speeds = new ChassisSpeeds(0, 0, omega);
+            boolean isFlipped =
+                DriverStation.getAlliance().isPresent()
+                    && DriverStation.getAlliance().get() == Alliance.Red;
+            drive.runVelocity(
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                    speeds,
+                    isFlipped
+                        ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                        : drive.getRotation()));
+
+            // sets the angle error to the new angle error
+            angleError = drive.getPose().getRotation().getDegrees() - angle.getDegrees();
+          }
+        },
+        drive);
+  }
+
   /**
    * Measures the velocity feedforward constants for the drive motors.
    *

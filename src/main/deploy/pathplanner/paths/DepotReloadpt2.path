@@ -3,32 +3,85 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6232524964336661,
-        "y": 6.551569186875891
+        "x": 0.7655777460770326,
+        "y": 6.784465049928674
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7397004279600568,
-        "y": 6.305734664764623
+        "x": 1.1019828815977175,
+        "y": 6.163409415121254
       },
       "isLocked": false,
       "linkedName": "Depot End"
     },
     {
       "anchor": {
-        "x": 7.2219686162624805,
-        "y": 5.425905848787448
+        "x": 4.6419999999999995,
+        "y": 5.477457831325301
       },
       "prevControl": {
-        "x": 6.2219686162624805,
-        "y": 5.425905848787448
+        "x": 4.0409759036144575,
+        "y": 5.608590361445783
+      },
+      "nextControl": {
+        "x": 5.5510751114573536,
+        "y": 5.279114170643697
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.54877108433735,
+        "y": 6.963626506024096
+      },
+      "prevControl": {
+        "x": 6.9847314316743585,
+        "y": 7.151639723578426
+      },
+      "nextControl": {
+        "x": 8.27,
+        "y": 6.72321686746988
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.843819277108434,
+        "y": 4.668807228915662
+      },
+      "prevControl": {
+        "x": 8.991228915662651,
+        "y": 5.16055421686747
+      },
+      "nextControl": {
+        "x": 7.289931925325766,
+        "y": 4.4314269352945175
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.522024096385542,
+        "y": 5.63044578313253
+      },
+      "prevControl": {
+        "x": 2.7842891566265062,
+        "y": 6.275180722891566
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2.9709543568464447,
+      "rotationDegrees": -115.80682262530051
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +95,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 5.92458198198243
+    "rotation": 50.96448710125312
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Depot Autos",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -157.46674992099582
+    "rotation": 53.53076560994813
   },
   "useDefaultConstraints": true
 }

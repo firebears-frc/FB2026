@@ -146,7 +146,8 @@ public class RobotContainer {
 
         break;
     }
-
+    configureButtonBindings();
+    configureAutoCommands();
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -165,9 +166,6 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    configureButtonBindings();
-    configureAutoCommands();
   }
 
   private void configureAutoCommands() {
@@ -175,7 +173,14 @@ public class RobotContainer {
         Map.of(
             "shoot",
             Commands.sequence(
-                shooter.autoShooter(), Commands.waitSeconds(.1), hopper.startHopper()),
+                DriveCommands.turnToAngle(drive, corrections.angleToHub(drive)),
+                Commands.waitSeconds(.2),
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                hopper.startHopper()),
+            "stopShoot",
+            Commands.sequence(
+                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()),
             "startIntake",
             intake.startIntake(),
             "pauseIntake",
@@ -259,7 +264,9 @@ public class RobotContainer {
         .rightTrigger()
         .onTrue(
             Commands.sequence(
-                shooter.autoShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                hopper.startHopper()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.angleToHub(drive)))
@@ -271,11 +278,15 @@ public class RobotContainer {
         .leftTrigger()
         .onTrue(
             Commands.sequence(
-                shooter.autoShooter(), Commands.waitSeconds(.1), hopper.startHopper()))
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                hopper.startHopper()))
         .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
     xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    xboxController.leftBumper().onTrue(shooter.slowShot()).onFalse(shooter.pauseShooter());
+    xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
+    joy1.button(5).onTrue(shooter.increaseStaticSpeed());
+    joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
     xboxController.y().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());

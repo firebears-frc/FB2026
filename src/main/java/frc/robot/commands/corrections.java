@@ -205,4 +205,17 @@ public class corrections {
     }
     return newAngle;
   }
+
+  // Makes an angle between -180 and 180
+  public static double makeAngleInBoundsDegrees(double Angle) {
+    double newAngle = Angle;
+    while (newAngle > 180) {
+      newAngle -= 360;
+    }
+
+    while (newAngle < -180) {
+      newAngle += 360;
+    }
+    return newAngle;
+  }
 }

@@ -19,7 +19,7 @@ public class Intake extends SubsystemBase {
   private SparkFlex intakeMotor = new SparkFlex(12, MotorType.kBrushless);
   private final SparkClosedLoopController intakeController;
   private double setPoint = 0;
-  private static final int intakeCurrentLimit = 30;
+  private static final int intakeCurrentLimit = 60;
 
   public Intake() {
 
@@ -29,7 +29,7 @@ public class Intake extends SubsystemBase {
     intakeConfig
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(intakeCurrentLimit)
-        .secondaryCurrentLimit(50)
+        .secondaryCurrentLimit(80)
         .voltageCompensation(12.0);
     intakeConfig
         .closedLoop
@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
   public Command startIntake() {
     return runOnce(
         () -> {
-          setPoint = -3000;
+          setPoint = -2000;
         });
   }
 

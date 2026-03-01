@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4945903614457823,
-        "y": 7.127542168674699
+        "x": 3.4727349397590364,
+        "y": 7.2368192771084345
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.713144578313253,
-        "y": 8.06732530120482
+        "x": 2.892608834168502,
+        "y": 7.013476493398963
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.789180722891565,
-        "y": 3.860156626506024
+        "x": 0.6232524964336661,
+        "y": 5.024807417974323
       },
       "prevControl": {
-        "x": 9.067722891566264,
-        "y": 7.19310843373494
+        "x": 1.0164835435168396,
+        "y": 5.347564292697654
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TrenchReloadFix"
+      "linkedName": "DepotStart"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.39253112033195026,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -46,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": -109.61787940811823
+    "velocity": 0,
+    "rotation": 106.89864869403826
   },
   "reversed": false,
-  "folder": "ShootReload",
+  "folder": "Depot Autos",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 21.801409486351655
+    "rotation": 16.82140989004069
   },
   "useDefaultConstraints": true
 }

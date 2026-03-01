@@ -8,28 +8,47 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0761055634807417,
-        "y": 5.2059486447931524
+        "x": 0.9567214909005622,
+        "y": 5.246839097853828
       },
       "isLocked": false,
       "linkedName": "DepotStart"
     },
     {
       "anchor": {
-        "x": 0.6232524964336661,
-        "y": 6.551569186875891
+        "x": 0.7655777460770326,
+        "y": 6.784465049928674
       },
       "prevControl": {
-        "x": 0.3967067114348497,
-        "y": 6.4458478205431105
+        "x": 0.7124127763296904,
+        "y": 6.54018347880272
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Depot End"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4713804713804708,
+      "rotationDegrees": 130.0182964579468
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -42,10 +61,10 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -157.46674992099582
+    "rotation": 53.53076560994813
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Depot Autos",
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": 106.89864869403826

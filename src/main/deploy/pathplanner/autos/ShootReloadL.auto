@@ -5,21 +5,75 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "armDown"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "ShootReloadL"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "ShootReloadLP2"
+            "name": "startIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootReloadLP3"
+            "pathName": "ShootReloadLFix"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pauseIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootReloadLend"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
           }
         }
       ]
