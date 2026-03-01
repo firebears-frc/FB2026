@@ -238,7 +238,6 @@ public class RobotContainer {
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
 
-    // Needs updated X and Y offsets for the shooter vs the center of the bot.
     joy2.trigger()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
