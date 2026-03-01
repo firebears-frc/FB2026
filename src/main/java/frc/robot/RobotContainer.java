@@ -173,7 +173,7 @@ public class RobotContainer {
         Map.of(
             "shoot",
             Commands.sequence(
-                DriveCommands.turnToAngle(drive, corrections.angleToHub(drive)),
+                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
                 Commands.waitSeconds(.2),
                 shooter.autoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
