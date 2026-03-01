@@ -11,7 +11,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.SparkUtil;
@@ -34,7 +33,7 @@ public class Shooter extends SubsystemBase {
   private final double motorI = 0.0;
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
-  private final double maxStaticSpeed = 4500;
+  private final double maxStaticSpeed = 5500;
   private String mode = "";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
@@ -91,7 +90,6 @@ public class Shooter extends SubsystemBase {
     speedCalculator.put(3.657, 3150.0);
     speedCalculator.put(2.438, 2850.0);
     speedCalculator.put(2.032, 2750.0);
-
   }
 
   @AutoLogOutput(key = "Shooter/beamBreak")
