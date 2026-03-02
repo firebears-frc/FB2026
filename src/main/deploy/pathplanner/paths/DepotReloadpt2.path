@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8,
-        "y": 7.2661875
+        "x": 0.7655777460770326,
+        "y": 6.784465049928674
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.136405135520685,
-        "y": 6.645131865192581
+        "x": 1.1019828815977175,
+        "y": 6.163409415121254
       },
       "isLocked": false,
       "linkedName": "Depot End"
@@ -98,7 +98,7 @@
     "rotation": 50.96448710125312
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Depot Paths",
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": 53.53076560994813

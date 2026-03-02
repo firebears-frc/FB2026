@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.210012048192771,
-        "y": 6.428168674698795
+        "x": 3.7026533523537797,
+        "y": 0.6515406562054205
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.575975903614458,
-        "y": 7.564650602409639
+        "x": 2.739047946804953,
+        "y": 0.9108415198977046
       },
       "isLocked": false,
-      "linkedName": "ShootReloadP1"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.789180722891565,
-        "y": 4.581385542168674
+        "x": 1.839486447931526,
+        "y": 0.8844365192582018
       },
       "prevControl": {
-        "x": 8.062373493975903,
-        "y": 4.920144578313252
+        "x": 2.743434470955327,
+        "y": 1.0048570019583214
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shootLfix"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": -121.60750224624891
+    "velocity": 0,
+    "rotation": 143.97262661489614
   },
   "reversed": false,
   "folder": "Shoot Reloads",
   "idealStartingState": {
-    "velocity": 2.0,
-    "rotation": -46.273030020056574
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
