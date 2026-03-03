@@ -4,12 +4,13 @@
   "holonomicMode": true,
   "pathFolders": [
     "Depot Paths",
-    "Shoot Reloads",
-    "Shoot Move"
+    "MoveShoot",
+    "Shoot Reloads"
   ],
   "autoFolders": [
-    "Depot",
+    "Depots",
     "MoveShoot",
+    "Medium",
     "Shoot Reloads"
   ],
   "defaultMaxVel": 5.83,

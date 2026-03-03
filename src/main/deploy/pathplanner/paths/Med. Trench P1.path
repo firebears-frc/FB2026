@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6120827389443653,
-        "y": 5.749372325249644
+        "x": 3.5991440798858774,
+        "y": 7.392582025677603
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3631094373274393,
-        "y": 5.7267383887390135
+        "x": 3.3541751342732504,
+        "y": 7.44722293707536
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.1370756062767473,
-        "y": 5.076562054208274
+        "x": 2.266462196861626,
+        "y": 7.392582025677603
       },
       "prevControl": {
-        "x": 2.3822207751994777,
-        "y": 5.125591087992818
+        "x": 3.30993709275488,
+        "y": 7.355185011605024
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Med. Trench L"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 68.90766049417252
+    "rotation": 26.565051177078058
   },
   "reversed": false,
-  "folder": "MoveShoot",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

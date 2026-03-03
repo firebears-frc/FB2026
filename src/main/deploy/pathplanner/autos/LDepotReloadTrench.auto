@@ -53,21 +53,21 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "DepotReloadTrenchP2"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "startIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotReloadTrenchP2"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Depot",
+  "folder": "Depots",
   "choreoAuto": false
 }

@@ -13,7 +13,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Depot's Start"
+            "pathName": "Med. Trench P1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
           }
         },
         {
@@ -25,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DepotReload"
+            "pathName": "Med. Trench P2"
           }
         },
         {
@@ -43,7 +61,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.5
+            "waitTime": 5.0
           }
         },
         {
@@ -51,23 +69,11 @@
           "data": {
             "name": "stopShoot"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotReloadTrenchP2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Depot",
+  "folder": "Medium",
   "choreoAuto": false
 }
