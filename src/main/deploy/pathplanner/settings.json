@@ -2,8 +2,16 @@
   "robotWidth": 0.902,
   "robotLength": 0.851,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [],
+  "pathFolders": [
+    "Depot Paths",
+    "Shoot Reloads",
+    "Shoot Move"
+  ],
+  "autoFolders": [
+    "Depot",
+    "MoveShoot",
+    "Shoot Reloads"
+  ],
   "defaultMaxVel": 5.83,
   "defaultMaxAccel": 8.0,
   "defaultMaxAngVel": 720.0,
