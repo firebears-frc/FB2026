@@ -45,7 +45,7 @@
     "rotation": 115.51387042753429
   },
   "reversed": false,
-  "folder": "Shoot Move",
+  "folder": "MoveShoot",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 177.70938995736157
