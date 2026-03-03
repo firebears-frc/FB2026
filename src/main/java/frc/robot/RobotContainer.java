@@ -244,15 +244,15 @@ public class RobotContainer {
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () -> corrections.angleToHub(drive)));
+                () -> corrections.autoAimAngle(drive)));
 
     joy2.button(2)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getX(),
                 () -> -joy1.getY(),
-                () -> Rotation2d.fromRadians(corrections.nearestDiagonalAngle(drive))));
+                () -> -joy1.getX(),
+                () -> corrections.nearestDiagonalAngle(drive)));
 
     // Resets gyro to 0 degrees when b is pressed
     xboxController
@@ -272,10 +272,14 @@ public class RobotContainer {
             Commands.sequence(
                 shooter.autoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
+                Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
                 hopper.startHopper()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.angleToHub(drive)))
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> corrections.autoAimAngle(drive)))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
