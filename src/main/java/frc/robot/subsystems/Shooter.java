@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -24,7 +23,6 @@ public class Shooter extends SubsystemBase {
   private SparkFlex ShooterMotor2 = new SparkFlex(15, MotorType.kBrushless);
   private final SparkClosedLoopController ShooterController1;
   private final SparkClosedLoopController ShooterController2;
-  private SparkLimitSwitch beamBreak = ShooterMotor1.getForwardLimitSwitch();
   private double setPoint = 0;
   // Variables that can be updated
   private static final int smartShooterCurrentLimit = 75;
@@ -36,9 +34,6 @@ public class Shooter extends SubsystemBase {
   private final double maxStaticSpeed = 5500;
   private String mode = "";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
-
-  @AutoLogOutput(key = "Shooter/fuel ready")
-  private boolean FuelReady = false;
 
   // Dashboard Input
   private LoggedNetworkNumber staticShooterSpeed =
@@ -90,11 +85,6 @@ public class Shooter extends SubsystemBase {
     speedCalculator.put(3.657, 3150.0);
     speedCalculator.put(2.438, 2850.0);
     speedCalculator.put(2.032, 2750.0);
-  }
-
-  @AutoLogOutput(key = "Shooter/beamBreak")
-  private boolean beamBreak() {
-    return beamBreak.isPressed();
   }
 
   @AutoLogOutput(key = "Shooter/error")
@@ -171,12 +161,6 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (beamBreak() && !FuelReady) {
-      //  setPoint = 0;
-      FuelReady = true;
-    } else if (!beamBreak()) {
-      FuelReady = false;
-    }
 
     if (mode == "fast") {
       setPoint = 3500;

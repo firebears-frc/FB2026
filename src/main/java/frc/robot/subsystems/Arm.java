@@ -21,7 +21,6 @@ import frc.robot.util.SparkUtil;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Arm extends SubsystemBase {
   private static int STALL_CURRENT_LIMIT_SHOULDER = 5;
@@ -38,8 +37,6 @@ public class Arm extends SubsystemBase {
 
   @AutoLogOutput(key = "arm/setPoint")
   private Rotation2d shoulderSetpoint = new Rotation2d();
-
-  private final LoggedNetworkNumber shootAngle = new LoggedNetworkNumber("arm/shootAngle", 13.5);
 
   private Debouncer debounce = new Debouncer(0.2);
 
