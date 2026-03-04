@@ -13,25 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Depot's Start"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotReload"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
+            "pathName": "MoveTrenchShootL"
           }
         },
         {
@@ -43,25 +25,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.5
+            "waitTime": 5.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stopShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotReloadTrenchP2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
           }
         }
       ]

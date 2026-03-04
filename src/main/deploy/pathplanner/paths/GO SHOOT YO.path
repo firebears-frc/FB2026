@@ -3,32 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4727349397590364,
-        "y": 7.2368192771084345
+        "x": 7.406710843373492,
+        "y": 6.603012048192771
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.892608834168502,
-        "y": 7.013476493398963
+        "x": 5.8440481927710834,
+        "y": 7.892481927710843
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "END INTAKE YO CHUD"
     },
     {
       "anchor": {
-        "x": 0.6232524964336661,
-        "y": 5.024807417974323
+        "x": 1.0467831325301202,
+        "y": 7.1493975903614455
       },
       "prevControl": {
-        "x": 1.0164835435168396,
-        "y": 5.347564292697654
+        "x": 3.800566265060241,
+        "y": 7.313313253012049
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "DepotStart"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3726141078838234,
+      "rotationDegrees": -0.5231326365270461
+    },
+    {
+      "waypointRelativePos": 0.8190871369294593,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 106.89864869403826
+    "rotation": 49.46715906138926
   },
   "reversed": false,
-  "folder": "Depot Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 16.82140989004069
+    "rotation": 68.45902408146137
   },
   "useDefaultConstraints": true
 }

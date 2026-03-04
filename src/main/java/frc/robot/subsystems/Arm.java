@@ -21,7 +21,6 @@ import frc.robot.util.SparkUtil;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Arm extends SubsystemBase {
   private static int STALL_CURRENT_LIMIT_SHOULDER = 5;
@@ -38,8 +37,6 @@ public class Arm extends SubsystemBase {
 
   @AutoLogOutput(key = "arm/setPoint")
   private Rotation2d shoulderSetpoint = new Rotation2d();
-
-  private final LoggedNetworkNumber shootAngle = new LoggedNetworkNumber("arm/shootAngle", 13.5);
 
   private Debouncer debounce = new Debouncer(0.2);
 
@@ -62,7 +59,7 @@ public class Arm extends SubsystemBase {
         .closedLoop
         .pid(shoulderP, shoulderI, shoulderD)
         .positionWrappingEnabled(true)
-        .positionWrappingInputRange(-180, 180)
+        .positionWrappingInputRange(0, 360)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     SparkUtil.tryUntilOk(
         shoulderMotorRight,
@@ -86,20 +83,24 @@ public class Arm extends SubsystemBase {
   }
 
   private static final class Constants {
-    private static final Rotation2d armDown = Rotation2d.fromDegrees(-8.75);
+    private static final Rotation2d armDown = Rotation2d.fromDegrees(-8);
     private static final Rotation2d armUp = Rotation2d.fromDegrees(125);
   }
 
   @AutoLogOutput(key = "arm/Angle")
   public Rotation2d getShoulderAngle() {
-    return Rotation2d.fromDegrees(shoulderEncoder.getPosition());
+    double rawDegrees = shoulderEncoder.getPosition();
+    if (rawDegrees >= 180) {
+      rawDegrees -= 360;
+    }
+    return Rotation2d.fromDegrees(rawDegrees);
   }
 
   public void setShoulderSetpoint(Rotation2d setpoint) {
     if (setpoint.getDegrees() < -10) {
       setpoint = Rotation2d.fromDegrees(-10);
     } else if (setpoint.getDegrees() > 120) {
-      setpoint = Rotation2d.fromDegrees(120); // test robot and then implement correct value
+      setpoint = Rotation2d.fromDegrees(120);
     }
     shoulderSetpoint = setpoint;
   }
@@ -117,7 +118,7 @@ public class Arm extends SubsystemBase {
   }
 
   public Command armDown() {
-    return positionCommand(() -> Constants.armDown, () -> 1.0);
+    return positionCommand(() -> Constants.armDown, () -> 3.0);
   }
 
   public Command armUp() {

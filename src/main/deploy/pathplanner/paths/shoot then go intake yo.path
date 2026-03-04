@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4727349397590364,
-        "y": 7.2368192771084345
+        "x": 3.866132530120482,
+        "y": 0.680192771084337
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.892608834168502,
-        "y": 7.013476493398963
+        "x": 7.994028947236917,
+        "y": 0.4272297594493976
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6232524964336661,
-        "y": 5.024807417974323
+        "x": 7.188156626508106,
+        "y": 1.117301204818134
       },
       "prevControl": {
-        "x": 1.0164835435168396,
-        "y": 5.347564292697654
+        "x": 6.489426184164501,
+        "y": 1.0726278674490655
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "DepotStart"
+      "linkedName": "START THAT FIGGIN INTAKE YO"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5485477178423227,
+      "rotationDegrees": -179.1217034672654
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 106.89864869403826
+    "rotation": 56.30993247402011
   },
   "reversed": false,
-  "folder": "Depot Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 16.82140989004069
+    "rotation": 171.46923439005167
   },
   "useDefaultConstraints": true
 }

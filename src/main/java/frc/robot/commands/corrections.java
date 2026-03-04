@@ -10,31 +10,105 @@ import frc.robot.subsystems.drive.Drive;
 import org.littletonrobotics.junction.Logger;
 
 public class corrections {
+  // ~CONSTANTS~in meters / radians
+  static final double shooterXOffset = Units.inchesToMeters(-5);
+  static final double shooterYOffset = Units.inchesToMeters(6);
+  static final double shooterAngleOffset = Units.degreesToRadians(90);
 
+  // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
+  // in any other zone
+  public static boolean aimedAtAutoTarget(Drive drive) {
+    if (currentZone(drive) <= 0) {
+      return Math.abs(angleToHub(drive).getDegrees() - drive.getPose().getRotation().getDegrees())
+          < 3;
+    } else {
+      return Math.abs(
+              angleToNearestBump(drive).getDegrees() - drive.getPose().getRotation().getDegrees())
+          < 3;
+    }
+  }
+  // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
+  // angle from the shooter to the nearest bump otherwise
+  public static Rotation2d autoAimAngle(Drive drive) {
+    if (currentZone(drive) <= 0) {
+      return angleToHub(drive);
+    } else {
+      return angleToNearestBump(drive);
+    }
+  }
   // Returns the angle from the shooter to the hub
   public static Rotation2d angleToHub(Drive drive) {
-    // ~CONSTANTS~in meters / radians
-    double shooterXOffset = Units.inchesToMeters(-5);
-    double shooterYOffset = Units.inchesToMeters(6);
-    double shooterAngleOffset = Units.degreesToRadians(90);
+    double hubX = correctXValue(LinesVertical.hubCenter);
+    double hubY = LinesHorizontal.center;
+    Rotation2d angleToHub =
+        angleTo(drive, hubX, hubY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+    Logger.recordOutput("corrections/angle to hub", angleToHub);
+    return angleToHub;
+  }
+
+  public static Rotation2d angleTo(
+      Drive drive,
+      double targetX,
+      double targetY,
+      double componentX,
+      double componentY,
+      double componentAngle) {
     return corrections.makeRotation2D(
         corrections.correctAngleForComponent(
             corrections.correctAngleValue(
                 Math.atan(
                     Math.abs(
-                            (LinesHorizontal.center
-                                - corrections.yValueOfComponent(
-                                    shooterXOffset, shooterYOffset, drive)))
+                            (targetY
+                                - corrections.yValueOfComponent(componentX, componentY, drive)))
                         / Math.abs(
-                            (corrections.correctXValue(LinesVertical.hubCenter)
-                                - corrections.xValueOfComponent(
-                                    shooterXOffset, shooterYOffset, drive)))),
-                corrections.correctXValue(LinesVertical.hubCenter),
-                LinesHorizontal.center,
-                shooterXOffset,
-                shooterYOffset,
+                            (targetX
+                                - corrections.xValueOfComponent(componentX, componentY, drive)))),
+                targetX,
+                targetY,
+                componentX,
+                componentY,
                 drive),
-            shooterAngleOffset));
+            componentAngle));
+  }
+
+  // Returns the angle to the center of the nearest bump dividing your alliance zone and the center
+  public static Rotation2d angleToNearestBump(Drive drive) {
+    double nearestBumpY = 0;
+    double nearestBumpX = correctXValue(LinesVertical.hubCenter);
+    if (drive.getPose().getY() > LinesHorizontal.center) {
+      nearestBumpY = (LinesHorizontal.leftBumpStart + LinesHorizontal.leftBumpEnd) / 2;
+    } else {
+      nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
+    }
+    Rotation2d angleToBump =
+        angleTo(
+            drive, nearestBumpX, nearestBumpY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+    Logger.recordOutput("corrections/angle to bump", angleToBump);
+    return angleToBump;
+  }
+
+  // Returns the zone the robot is currently in. 0 = alliance side, 1 = center, 2 = opposing side.
+  // -1 = failed to find zone.
+  public static int currentZone(Drive drive) {
+    int currentZone = -1;
+    double currentX = drive.getPose().getX();
+    if (currentX < LinesVertical.hubCenter) {
+      if (onRedAlliance()) {
+        currentZone = 2;
+      } else {
+        currentZone = 0;
+      }
+    } else if (currentX > LinesVertical.oppHubCenter) {
+      if (onRedAlliance()) {
+        currentZone = 0;
+      } else {
+        currentZone = 2;
+      }
+    } else if (currentX < LinesVertical.oppHubCenter && currentX > LinesVertical.hubCenter) {
+      currentZone = 1;
+    }
+    Logger.recordOutput("corrections/currentZone", currentZone);
+    return currentZone;
   }
 
   // Gets the distance from the robots current location to the hub
@@ -101,22 +175,22 @@ public class corrections {
   }
 
   // returns the nearest PI / 2 radian angle to the bots current position
-  public static double nearestDiagonalAngle(Drive drive) {
+  public static Rotation2d nearestDiagonalAngle(Drive drive) {
     double newAngle = 0;
-    if (Math.abs(drive.getPose().getRotation().getRadians() - (Math.PI / 2)) <= (Math.PI / 2)) {
-      newAngle = Math.PI / 2;
-    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (-Math.PI / 2))
-        <= (Math.PI / 2)) {
-      newAngle = -Math.PI / 2;
-    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (3 * Math.PI / 2))
-        <= (Math.PI / 2)) {
-      newAngle = 3 * Math.PI / 2;
-    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (-3 * Math.PI / 2))
-        <= (Math.PI / 2)) {
-      newAngle = -3 * Math.PI / 2;
+    if (Math.abs(drive.getPose().getRotation().getRadians() - (Math.PI / 4)) <= (Math.PI / 4)) {
+      newAngle = Math.PI / 4;
+    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (-Math.PI / 4))
+        <= (Math.PI / 4)) {
+      newAngle = -Math.PI / 4;
+    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (3 * Math.PI / 4))
+        <= (Math.PI / 4)) {
+      newAngle = 3 * Math.PI / 4;
+    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (-3 * Math.PI / 4))
+        <= (Math.PI / 4)) {
+      newAngle = -3 * Math.PI / 4;
     }
 
-    return newAngle;
+    return makeRotation2D(newAngle);
   }
 
   // Corrects the X for the location of a part of the bot given an offset between it and the center

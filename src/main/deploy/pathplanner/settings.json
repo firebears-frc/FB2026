@@ -1,22 +1,31 @@
 {
-  "robotWidth": 0.9,
-  "robotLength": 0.9,
+  "robotWidth": 0.902,
+  "robotLength": 0.851,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [],
-  "defaultMaxVel": 3.0,
-  "defaultMaxAccel": 3.0,
-  "defaultMaxAngVel": 540.0,
-  "defaultMaxAngAccel": 720.0,
+  "pathFolders": [
+    "Depot Paths",
+    "MoveShoot",
+    "Shoot Reloads"
+  ],
+  "autoFolders": [
+    "Depots",
+    "MoveShoot",
+    "Medium",
+    "Shoot Reloads"
+  ],
+  "defaultMaxVel": 5.83,
+  "defaultMaxAccel": 8.0,
+  "defaultMaxAngVel": 720.0,
+  "defaultMaxAngAccel": 1440.0,
   "defaultNominalVoltage": 12.0,
-  "robotMass": 74.088,
+  "robotMass": 48.988,
   "robotMOI": 6.883,
   "robotTrackwidth": 0.546,
-  "driveWheelRadius": 0.048,
-  "driveGearing": 5.143,
-  "maxDriveSpeed": 5.45,
+  "driveWheelRadius": 0.0381,
+  "driveGearing": 4.714,
+  "maxDriveSpeed": 5.83,
   "driveMotorType": "vortex",
-  "driveCurrentLimit": 60.0,
+  "driveCurrentLimit": 50.0,
   "wheelCOF": 1.2,
   "flModuleX": 0.28575,
   "flModuleY": 0.3115,
@@ -28,5 +37,7 @@
   "brModuleY": -0.311,
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
-  "robotFeatures": []
+  "robotFeatures": [
+    "{\"name\":\"Line\",\"type\":\"line\",\"data\":{\"start\":{\"x\":0.591,\"y\":0.283},\"end\":{\"x\":0.591,\"y\":-0.283},\"strokeWidth\":0.02}}"
+  ]
 }

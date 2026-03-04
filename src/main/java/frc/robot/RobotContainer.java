@@ -151,6 +151,13 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+    autoChooser.addOption(
+        "turn n shoot!",
+        Commands.sequence(
+            DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+            Commands.waitSeconds(.2),
+            shooter.autoShooter()));
+
     // Set up SysId routines
     autoChooser.addOption(
         "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
@@ -231,22 +238,21 @@ public class RobotContainer {
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
 
-    // Needs updated X and Y offsets for the shooter vs the center of the bot.
     joy2.trigger()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () -> corrections.angleToHub(drive)));
+                () -> corrections.autoAimAngle(drive)));
 
     joy2.button(2)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -joy1.getX(),
                 () -> -joy1.getY(),
-                () -> Rotation2d.fromRadians(corrections.nearestDiagonalAngle(drive))));
+                () -> -joy1.getX(),
+                () -> corrections.nearestDiagonalAngle(drive)));
 
     // Resets gyro to 0 degrees when b is pressed
     xboxController
@@ -266,10 +272,14 @@ public class RobotContainer {
             Commands.sequence(
                 shooter.autoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
+                Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
                 hopper.startHopper()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.angleToHub(drive)))
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> corrections.autoAimAngle(drive)))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
