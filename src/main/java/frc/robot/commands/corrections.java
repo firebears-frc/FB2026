@@ -75,9 +75,9 @@ public class corrections {
     double nearestBumpY = 0;
     double nearestBumpX = correctXValue(LinesVertical.hubCenter);
     if (drive.getPose().getY() > LinesHorizontal.center) {
-      nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
-    } else {
       nearestBumpY = (LinesHorizontal.leftBumpStart + LinesHorizontal.leftBumpEnd) / 2;
+    } else {
+      nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
     }
     Rotation2d angleToBump = angleTo(
         drive, nearestBumpX, nearestBumpY, shooterXOffset, shooterYOffset, shooterAngleOffset);
@@ -102,7 +102,7 @@ public class corrections {
       } else {
         currentZone = 2;
       }
-    } else if (currentX < LinesVertical.oppHubCenter && currentX > LinesVertical.oppHubCenter) {
+    } else if (currentX < LinesVertical.oppHubCenter && currentX > LinesVertical.hubCenter) {
       currentZone = 1;
     }
     Logger.recordOutput("corrections/currentZone", currentZone);
