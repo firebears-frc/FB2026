@@ -6,12 +6,10 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.SparkUtil;
@@ -25,7 +23,6 @@ public class Shooter extends SubsystemBase {
   private SparkFlex ShooterMotor2 = new SparkFlex(15, MotorType.kBrushless);
   private final SparkClosedLoopController ShooterController1;
   private final SparkClosedLoopController ShooterController2;
-  private SparkLimitSwitch beamBreak = ShooterMotor1.getForwardLimitSwitch();
   private double setPoint = 0;
   // Variables that can be updated
   private static final int smartShooterCurrentLimit = 75;
@@ -34,12 +31,9 @@ public class Shooter extends SubsystemBase {
   private final double motorI = 0.0;
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
-  private final double maxStaticSpeed = 4500;
+  private final double maxStaticSpeed = 5500;
   private String mode = "";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
-
-  @AutoLogOutput(key = "Shooter/fuel ready")
-  private boolean FuelReady = false;
 
   // Dashboard Input
   private LoggedNetworkNumber staticShooterSpeed =
@@ -86,16 +80,11 @@ public class Shooter extends SubsystemBase {
             ShooterMotor2.configure(
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
-    // Populate speed calculator with values (subject to change based on testing)
-    speedCalculator.put(Units.feetToMeters(15), 3650.0);
-    speedCalculator.put(Units.feetToMeters(12), 3150.0);
-    speedCalculator.put(Units.feetToMeters(8), 2850.0);
-    speedCalculator.put(Units.inchesToMeters(80), 2750.0);
-  }
-
-  @AutoLogOutput(key = "Shooter/beamBreak")
-  private boolean beamBreak() {
-    return beamBreak.isPressed();
+    // Populate speed calculator with values (subject to change based on testing) (Meters,RPM)
+    speedCalculator.put(4.572, 3650.0);
+    speedCalculator.put(3.657, 3150.0);
+    speedCalculator.put(2.438, 2850.0);
+    speedCalculator.put(2.032, 2750.0);
   }
 
   @AutoLogOutput(key = "Shooter/error")
@@ -172,12 +161,6 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (beamBreak() && !FuelReady) {
-      //  setPoint = 0;
-      FuelReady = true;
-    } else if (!beamBreak()) {
-      FuelReady = false;
-    }
 
     if (mode == "fast") {
       setPoint = 3500;
