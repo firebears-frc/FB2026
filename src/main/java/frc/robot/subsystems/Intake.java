@@ -65,7 +65,7 @@ public class Intake extends SubsystemBase {
   public Command startIntake() {
     return runOnce(
         () -> {
-          setPoint = -2000;
+          setPoint = -1500;
         });
   }
 
