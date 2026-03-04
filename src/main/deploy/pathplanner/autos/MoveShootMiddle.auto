@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "armDown"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Middle Shoot"

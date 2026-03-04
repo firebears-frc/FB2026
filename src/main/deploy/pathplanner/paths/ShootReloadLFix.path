@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.575975903614458,
-        "y": 7.564650602409639
+        "x": 8.451400000000001,
+        "y": 6.846699999999999
       },
       "isLocked": false,
       "linkedName": "ShootReloadP1"
@@ -29,7 +29,21 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 8.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1440.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -45,7 +59,7 @@
     "rotation": -121.60750224624891
   },
   "reversed": false,
-  "folder": "Shoot Reloads",
+  "folder": null,
   "idealStartingState": {
     "velocity": 2.0,
     "rotation": -46.273030020056574
