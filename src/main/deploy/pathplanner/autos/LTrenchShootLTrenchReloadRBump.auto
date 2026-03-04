@@ -19,7 +19,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 2.0
           }
         },
         {
@@ -29,27 +29,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "ShootBumpReload"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "startIntake"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
+            "pathName": "ShootBumpReload"
           }
         },
         {
@@ -67,7 +55,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 5.0
           }
         },
         {
@@ -80,6 +68,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Shoot Reloads",
+  "folder": null,
   "choreoAuto": false
 }

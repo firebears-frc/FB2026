@@ -19,13 +19,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 4.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stopShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootReloadL"
           }
         },
         {
@@ -37,19 +43,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootBumpReload"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
+            "pathName": "ShootReloadLFix"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootBumpReloadP2"
+            "pathName": "ShootReloadLend"
           }
         },
         {
@@ -61,7 +61,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 5.0
           }
         },
         {
@@ -74,6 +74,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Shoot Reloads",
+  "folder": null,
   "choreoAuto": false
 }
