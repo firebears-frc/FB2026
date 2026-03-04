@@ -13,7 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Med. Trench P1"
+            "pathName": "DepotReloadBumpStart"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotReload"
           }
         },
         {
@@ -35,21 +47,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Med. Trench P2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
+            "pathName": "DepotReloadpt2"
           }
         },
         {
@@ -74,6 +74,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Medium",
+  "folder": null,
   "choreoAuto": false
 }
