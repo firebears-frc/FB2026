@@ -1,0 +1,59 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.866132530120482,
+        "y": 0.680192771084337
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.994028947236917,
+        "y": 0.4272297594493976
+      },
+      "isLocked": true,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.188156626508106,
+        "y": 1.117301204818134
+      },
+      "prevControl": {
+        "x": 6.489426184164501,
+        "y": 1.0726278674490655
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "START THAT FIGGIN INTAKE YO"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5485477178423227,
+      "rotationDegrees": -179.1217034672654
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.83,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1440.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 56.30993247402011
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 171.46923439005167
+  },
+  "useDefaultConstraints": true
+}
