@@ -51,6 +51,18 @@
           "data": {
             "pathName": "DepotReloadTrenchP2"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterReloadGetBackTrench "
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
         }
       ]
     }

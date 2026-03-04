@@ -11,21 +11,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopShoot"
+            "pathName": "Depot's Start"
           }
         },
         {
@@ -37,13 +25,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootBumpReload"
+            "pathName": "DepotReload"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootBumpReloadP2"
+            "pathName": "DepotReloadpt2"
           }
         },
         {
