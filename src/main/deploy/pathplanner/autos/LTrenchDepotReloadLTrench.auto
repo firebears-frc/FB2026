@@ -31,19 +31,13 @@
         {
           "type": "named",
           "data": {
-            "name": "pauseIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shoot"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 4.5
           }
         },
         {
@@ -53,21 +47,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "startIntake"
+            "pathName": "DepotReloadTrenchP2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "DepotReloadpt2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
+            "pathName": "CenterReloadGetBackTrench "
           }
         },
         {
@@ -80,6 +68,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Depots",
+  "folder": null,
   "choreoAuto": false
 }

@@ -58,7 +58,7 @@ public class Hopper extends SubsystemBase {
   public Command startHopper() {
     return runOnce(
         () -> {
-          setPoint = -2700;
+          setPoint = -2500;
         });
   }
 

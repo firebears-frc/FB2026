@@ -19,7 +19,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 2.0
           }
         },
         {
@@ -41,12 +41,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "ShootBumpReloadP2"
@@ -57,23 +51,11 @@
           "data": {
             "name": "shoot"
           }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopShoot"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Shoot Reloads",
+  "folder": null,
   "choreoAuto": false
 }

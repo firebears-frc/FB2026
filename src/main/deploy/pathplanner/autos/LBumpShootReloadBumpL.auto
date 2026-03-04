@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Med. Trench P1"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "shoot"
@@ -25,13 +19,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 4.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "stopShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootReloadL"
           }
         },
         {
@@ -43,13 +43,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Med. Trench P2"
+            "pathName": "ShootReloadLFix"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "pauseIntake"
+            "pathName": "ShootReloadLend"
           }
         },
         {
@@ -57,23 +57,11 @@
           "data": {
             "name": "shoot"
           }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopShoot"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Medium",
+  "folder": null,
   "choreoAuto": false
 }

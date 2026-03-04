@@ -11,27 +11,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopShoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "ShootReloadL"
+            "pathName": "DepotReloadBumpStart"
           }
         },
         {
@@ -43,19 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootReloadLFix"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShootReloadLend"
+            "pathName": "DepotReload"
           }
         },
         {
@@ -67,7 +37,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 5.0
           }
         },
         {
@@ -75,11 +45,23 @@
           "data": {
             "name": "stopShoot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotReloadpt2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Shoot Reloads",
+  "folder": null,
   "choreoAuto": false
 }

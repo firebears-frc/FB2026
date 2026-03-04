@@ -7,36 +7,6 @@
         {
           "type": "named",
           "data": {
-            "name": "armDown"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotReloadBumpStart"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotReload"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shoot"
           }
         },
@@ -53,21 +23,27 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "DepotReloadpt2"
+            "pathName": "RShootBumpReload"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "pauseIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RReloadBumpShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startIntake"
           }
         },
         {
@@ -80,6 +56,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Depots",
+  "folder": null,
   "choreoAuto": false
 }

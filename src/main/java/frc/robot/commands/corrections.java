@@ -40,7 +40,8 @@ public class corrections {
   public static Rotation2d angleToHub(Drive drive) {
     double hubX = correctXValue(LinesVertical.hubCenter);
     double hubY = LinesHorizontal.center;
-    Rotation2d angleToHub = angleTo(drive, hubX, hubY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+    Rotation2d angleToHub =
+        angleTo(drive, hubX, hubY, shooterXOffset, shooterYOffset, shooterAngleOffset);
     Logger.recordOutput("corrections/angle to hub", angleToHub);
     return angleToHub;
   }
@@ -79,8 +80,9 @@ public class corrections {
     } else {
       nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
     }
-    Rotation2d angleToBump = angleTo(
-        drive, nearestBumpX, nearestBumpY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+    Rotation2d angleToBump =
+        angleTo(
+            drive, nearestBumpX, nearestBumpY, shooterXOffset, shooterYOffset, shooterAngleOffset);
     Logger.recordOutput("corrections/angle to bump", angleToBump);
     return angleToBump;
   }

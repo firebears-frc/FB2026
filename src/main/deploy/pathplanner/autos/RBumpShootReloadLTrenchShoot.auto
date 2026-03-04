@@ -7,19 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "armDown"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shoot"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 3.0
           }
         },
         {
@@ -31,19 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootReloadL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShootReloadLFix"
+            "pathName": "RShootBumpReload"
           }
         },
         {
@@ -55,7 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootReloadLend"
+            "pathName": "RReloadTrenchShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startIntake"
           }
         },
         {
@@ -63,23 +51,11 @@
           "data": {
             "name": "shoot"
           }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopShoot"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Shoot Reloads",
+  "folder": null,
   "choreoAuto": false
 }
