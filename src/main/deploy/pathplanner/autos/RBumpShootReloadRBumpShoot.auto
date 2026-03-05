@@ -7,37 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "armDown"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot's Start"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotReload"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shoot"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.5
+            "waitTime": 3.0
           }
         },
         {
@@ -49,13 +25,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DepotReloadTrenchP2"
+            "pathName": "RShootBumpReload"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pauseIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CenterReloadGetBackTrench "
+            "pathName": "RReloadBumpShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startIntake"
           }
         },
         {
@@ -68,6 +56,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Depots",
+  "folder": "Shoot Reloads",
   "choreoAuto": false
 }

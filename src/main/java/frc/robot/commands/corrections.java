@@ -7,13 +7,17 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.Module;
 import org.littletonrobotics.junction.Logger;
+
 
 public class corrections {
   // ~CONSTANTS~in meters / radians
   static final double shooterXOffset = Units.inchesToMeters(-5);
   static final double shooterYOffset = Units.inchesToMeters(6);
-  static final double shooterAngleOffset = Units.degreesToRadians(90);
+  static final double shooterAngleOffset = math.pi/2;
+
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
   // in any other zone
@@ -40,12 +44,41 @@ public class corrections {
   public static Rotation2d angleToHub(Drive drive) {
     double hubX = correctXValue(LinesVertical.hubCenter);
     double hubY = LinesHorizontal.center;
+
+    double xVel = Math.cos(Module.getVelocityMetersPerSec());
+    double xCorrectionPose = ((xVel * 0.02));
+    double xAirResistance = (xVel*xVel) * 17.578125 * Math.PI;
+    double hubXCorrection = (hubX - xCorrectionPose - xAirResistance);
+
+    double yVel = Math.sin(Module.getVelocityMetersPerSec());;
+    double yCorrectionPose = (yVel * 0.02);
+    double yAirResistance = (yVel*yVel) * 17.578125 * Math.PI;
+    double hubYCorrection = (hubY - yCorrectionPose - yAirResistance);
     Rotation2d angleToHub =
-        angleTo(drive, hubX, hubY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+        angleTo(drive, hubXCorrection, hubYCorrection, shooterXOffset, shooterYOffset, shooterAngleOffset);
     Logger.recordOutput("corrections/angle to hub", angleToHub);
+  
     return angleToHub;
   }
 
+/*public static Rotation2d hubVelCorrection(){
+
+  double hubX = correctXValue(LinesVertical.hubCenter);
+  double hubY = LinesHorizontal.center;
+
+  double xVel = Math.cos(Module.getVelocityMetersPerSec());
+  double xCorrectionPose = ((xVel * 0.02));
+  double xAirResistance = (xVel*xVel) * 17.578125 * Math.PI;
+  double hubXCorrection = (hubX - xCorrectionPose - xAirResistance);
+
+  double yVel = Math.sin(Module.getVelocityMetersPerSec());
+  double yCorrectionPose = (yVel * 0.02);
+  double yAirResistance = (yVel*yVel) * 17.578125 * Math.PI;
+  double hubYCorrection = (hubY - yCorrectionPose - yAirResistance);
+
+  return new Rotation2d(hubXCorrection, hubYCorrection);
+}
+*/
   public static Rotation2d angleTo(
       Drive drive,
       double targetX,
