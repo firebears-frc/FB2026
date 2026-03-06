@@ -7,13 +7,19 @@
         {
           "type": "named",
           "data": {
+            "name": "armDown"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "shoot"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 4.0
           }
         },
         {
@@ -25,25 +31,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RShootBumpReload"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RReloadBumpShoot"
+            "pathName": "ShootReloadL"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "startIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootReloadLFix"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootReloadLend"
           }
         },
         {
