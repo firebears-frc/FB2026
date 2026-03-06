@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
   private final double maxStaticSpeed = 5500;
-  private String mode = "";
+  private String mode = "off";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
   // Dashboard Input
@@ -130,6 +130,10 @@ public class Shooter extends SubsystemBase {
         () -> {
           mode = "static";
         });
+  }
+
+  public String getMode(){
+    return mode;
   }
 
   public Command decreaseStaticSpeed() {

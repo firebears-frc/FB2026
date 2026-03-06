@@ -299,7 +299,7 @@ public class RobotContainer {
     joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
-    xboxController.y().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+    xboxController.y().onTrue(hopper.altMode(shooter.getMode())).onFalse(hopper.regMode(shooter.getMode()));
     xboxController.povDown().onTrue(arm.armDown());
     xboxController.povUp().onTrue(arm.armUp());
   }
