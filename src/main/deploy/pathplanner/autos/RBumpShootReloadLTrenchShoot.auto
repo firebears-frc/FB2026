@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "StartRBump"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "shoot"

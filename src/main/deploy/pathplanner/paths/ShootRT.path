@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7026533523537797,
-        "y": 0.6515406562054205
+        "x": 6.477855421686746,
+        "y": 1.161012048192772
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6209014274001676,
-        "y": 0.889796954406058
+        "x": 5.876831325301204,
+        "y": 0.505349397590362
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ReloadRF"
     },
     {
       "anchor": {
-        "x": 1.839486447931526,
-        "y": 0.8844365192582018
+        "x": 2.0630602409638557,
+        "y": 0.8878192771084343
       },
       "prevControl": {
-        "x": 3.1614471151023666,
-        "y": 1.1048429764412049
+        "x": 2.8498554216867467,
+        "y": 0.3851445783132522
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootRTrench"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.46556016597510547,
+      "rotationDegrees": -176.9723639798262
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 143.97262661489614
+    "rotation": 129.80557109226535
   },
   "reversed": false,
-  "folder": "MoveShoot",
+  "folder": "Shoot Reloads",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 4.0,
+    "rotation": -115.20112364547512
   },
   "useDefaultConstraints": true
 }

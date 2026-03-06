@@ -3,39 +3,44 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.625265060240963,
-        "y": 5.706939759036145
+        "x": 1.839486447931526,
+        "y": 0.8844365192582018
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.866653012048193,
-        "y": 6.12547108433735
+        "x": 2.7077951807228917,
+        "y": 0.680192771084337
       },
       "isLocked": false,
-      "linkedName": "ShootReloadP1"
+      "linkedName": "ShootRTrench"
     },
     {
       "anchor": {
-        "x": 7.789180722891565,
-        "y": 4.581385542168674
+        "x": 7.188156626506023,
+        "y": 0.7239036144578312
       },
       "prevControl": {
-        "x": 8.062373493975903,
-        "y": 4.920144578313252
+        "x": 6.117240963855421,
+        "y": 0.5818433734939762
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "shootLfix"
+      "linkedName": "ReloadRT"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 179.29563938235614
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 1.0,
+      "maxWaypointRelativePos": 0,
       "constraints": {
-        "maxVelocity": 2.5,
+        "maxVelocity": 5.83,
         "maxAcceleration": 8.0,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 1440.0,
@@ -55,14 +60,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": -121.60750224624891
+    "velocity": 3.0,
+    "rotation": 53.7461622625552
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Shoot Reloads",
   "idealStartingState": {
-    "velocity": 2.0,
-    "rotation": -38.088772880975384
+    "velocity": 0.0,
+    "rotation": 143.97262661489614
   },
   "useDefaultConstraints": true
 }

@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "StartRBump"
+            "pathName": "StartLBump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "armDown"
           }
         },
         {
@@ -19,7 +25,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.5
+            "waitTime": 4.0
           }
         },
         {
@@ -31,25 +37,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HRShootBupReload"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RReloadBumpShoot"
+            "pathName": "ShootReloadL"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "startIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootReloadLFix"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootReloadLend"
           }
         },
         {

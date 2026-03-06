@@ -5,9 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "armDown"
+            "pathName": "MoveTrenchShootR"
           }
         },
         {
@@ -19,19 +19,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
+            "waitTime": 4.5
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopShoot"
+            "name": "armDown"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootReloadL"
+            "pathName": "ShootReloadRT"
           }
         },
         {
@@ -43,13 +43,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootReloadLFix"
+            "pathName": "ReloadR"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ShootReloadLend"
+            "pathName": "ShootRT"
           }
         },
         {
