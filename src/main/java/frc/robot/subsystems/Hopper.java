@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.SparkUtil;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import java.util.function.Supplier;
 
 public class Hopper extends SubsystemBase {
   private SparkMax hopperMotor = new SparkMax(13, MotorType.kBrushless); // change can id
@@ -78,10 +79,10 @@ public class Hopper extends SubsystemBase {
         });
   }
 
-  public Command altMode(String shooterMode){
+  public Command altMode(Supplier<String> shooterMode){
     return runOnce(
       () -> {
-        if(shooterMode == "off"){
+        if(shooterMode.get() == "off"){
           mode = "forward";
         }else{
           mode = "off";
@@ -90,10 +91,10 @@ public class Hopper extends SubsystemBase {
     );
   }
 
-  public Command regMode(String shooterMode){
+  public Command regMode(Supplier<String> shooterMode){
     return runOnce(
       () -> {
-        if(shooterMode == "off"){
+        if(shooterMode.get() == "off"){
           mode = "off";
         } else {
           mode = "forward";
