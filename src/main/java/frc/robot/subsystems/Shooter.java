@@ -31,7 +31,7 @@ public class Shooter extends SubsystemBase {
   private final double motorI = 0.0;
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
-  private final double maxStaticSpeed = 5500;
+  private final double maxSpeed = 5500;
   private String mode = "off";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
@@ -140,9 +140,6 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           staticShooterSpeed.set(staticShooterSpeed.get() - 50);
-          if (staticShooterSpeed.get() > maxStaticSpeed) {
-            staticShooterSpeed.set(maxStaticSpeed);
-          }
         });
   }
 
@@ -150,9 +147,6 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           staticShooterSpeed.set(staticShooterSpeed.get() + 50);
-          if (staticShooterSpeed.get() > maxStaticSpeed) {
-            staticShooterSpeed.set(maxStaticSpeed);
-          }
         });
   }
 
@@ -175,12 +169,17 @@ public class Shooter extends SubsystemBase {
     } else if (mode == "auto") {
       setPoint = speedCalculator.get(distanceToHubSupplier.getAsDouble());
     } else if (mode == "static") {
-      if (staticShooterSpeed.get() > maxStaticSpeed) {
-        staticShooterSpeed.set(maxStaticSpeed);
-      }
       setPoint = staticShooterSpeed.get();
     } else {
       setPoint = 0;
+    }
+
+    if (staticShooterSpeed.get() > maxSpeed) {
+      staticShooterSpeed.set(maxSpeed);
+    }
+
+    if (setPoint > maxSpeed) {
+      setPoint = maxSpeed;
     }
 
     ShooterController1.setReference(setPoint, ControlType.kVelocity);
