@@ -18,14 +18,19 @@ public class corrections {
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
   // in any other zone
   public static boolean aimedAtAutoTarget(Drive drive) {
+    boolean aimedAtTarget = false;
     if (currentZone(drive) <= 0) {
-      return Math.abs(angleToHub(drive).getDegrees() - drive.getPose().getRotation().getDegrees())
-          < 3;
+      aimedAtTarget =
+          Math.abs(angleToHub(drive).getDegrees() - drive.getPose().getRotation().getDegrees()) < 3;
     } else {
-      return Math.abs(
-              angleToNearestBump(drive).getDegrees() - drive.getPose().getRotation().getDegrees())
-          < 3;
+      aimedAtTarget =
+          Math.abs(
+                  angleToNearestBump(drive).getDegrees()
+                      - drive.getPose().getRotation().getDegrees())
+              < 3;
     }
+    Logger.recordOutput("corrections/aimed at target", aimedAtTarget);
+    return aimedAtTarget;
   }
   // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
   // angle from the shooter to the nearest bump otherwise

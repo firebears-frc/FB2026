@@ -132,7 +132,7 @@ public class Shooter extends SubsystemBase {
         });
   }
 
-  public String getMode(){
+  public String getMode() {
     return mode;
   }
 

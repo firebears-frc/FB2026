@@ -12,9 +12,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.SparkUtil;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import java.util.function.Supplier;
 
 public class Hopper extends SubsystemBase {
   private SparkMax hopperMotor = new SparkMax(13, MotorType.kBrushless); // change can id
@@ -79,36 +79,34 @@ public class Hopper extends SubsystemBase {
         });
   }
 
-  public Command altMode(Supplier<String> shooterMode){
+  public Command altMode(Supplier<String> shooterMode) {
     return runOnce(
-      () -> {
-        if(shooterMode.get() == "off"){
-          mode = "forward";
-        }else{
-          mode = "off";
-        }
-      }
-    );
+        () -> {
+          if (shooterMode.get() == "off") {
+            mode = "forward";
+          } else {
+            mode = "off";
+          }
+        });
   }
 
-  public Command regMode(Supplier<String> shooterMode){
+  public Command regMode(Supplier<String> shooterMode) {
     return runOnce(
-      () -> {
-        if(shooterMode.get() == "off"){
-          mode = "off";
-        } else {
-          mode = "forward";
-        }
-      }
-    );
+        () -> {
+          if (shooterMode.get() == "off") {
+            mode = "off";
+          } else {
+            mode = "forward";
+          }
+        });
   }
 
   @Override
   public void periodic() {
 
-    if(mode == "forward"){
-      setPoint = -2500;
-    } else if(mode == "reverse"){
+    if (mode == "forward") {
+      setPoint = -3000;
+    } else if (mode == "reverse") {
       setPoint = 1800;
     } else {
       setPoint = 0;
