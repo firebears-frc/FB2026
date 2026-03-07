@@ -7,18 +7,9 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
+import java.util.Map;
+
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -46,10 +37,20 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.vision.Vision;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import java.util.Map;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -69,10 +70,10 @@ public class RobotContainer {
   private final CommandJoystick joy1 = new CommandJoystick(0); // right
   private final CommandJoystick joy2 = new CommandJoystick(1); // left
   private final CommandXboxController xboxController = new CommandXboxController(2);
-  // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
 
   private final UsbCamera driveCamera;
+  // Dashboard inputs
+  private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -152,7 +153,6 @@ public class RobotContainer {
     }
     driveCamera = CameraServer.startAutomaticCapture();
     driveCamera.setResolution(320, 240);
-
     configureButtonBindings();
     configureAutoCommands();
     // Set up auto routines
