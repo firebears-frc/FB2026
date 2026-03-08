@@ -105,7 +105,7 @@ public class Hopper extends SubsystemBase {
   public void periodic() {
 
     if (mode == "forward") {
-      setPoint = -3000;
+      setPoint = -3250;
     } else if (mode == "reverse") {
       setPoint = 1800;
     } else {

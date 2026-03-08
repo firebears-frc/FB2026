@@ -63,6 +63,30 @@
           "data": {
             "waitTime": 5.0
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootReloadRT"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReloadR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootRT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
         }
       ]
     }
