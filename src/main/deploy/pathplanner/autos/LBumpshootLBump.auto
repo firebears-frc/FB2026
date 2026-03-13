@@ -13,7 +13,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootR"
+            "pathName": "LBumpReloadBumpStart"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LBumpReloadump P1"
           }
         },
         {
@@ -38,6 +62,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "MoveShoot",
+  "folder": null,
   "choreoAuto": false
 }

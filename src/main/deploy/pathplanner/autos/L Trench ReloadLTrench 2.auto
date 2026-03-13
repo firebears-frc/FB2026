@@ -7,6 +7,24 @@
         {
           "type": "named",
           "data": {
+            "name": "armDown"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "startIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Med. Trench P1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "shoot"
           }
         },
@@ -25,25 +43,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RShootBumpReload"
+            "pathName": "Med. Trench P2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "pauseIntake"
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RReloadBumpShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
+            "pathName": "Med. Trench P2"
           }
         },
         {
@@ -56,6 +80,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Shoot Reloads",
+  "folder": "Medium",
   "choreoAuto": false
 }

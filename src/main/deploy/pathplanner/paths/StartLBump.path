@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.54922891566265,
-        "y": 0.6255542168674697
+        "x": 3.6250213980028523,
+        "y": 5.684679029957205
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.821940893388102,
-        "y": 0.37694489799425934
+        "x": 3.897180136880084,
+        "y": 5.711903356782921
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.188156626508106,
-        "y": 1.117301204818134
+        "x": 2.913395149786019,
+        "y": 5.684679029957205
       },
       "prevControl": {
-        "x": 6.639728958630526,
-        "y": 0.858559201141228
+        "x": 2.6634545879808877,
+        "y": 5.679227831507756
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "START THAT FIGGIN INTAKE YO"
+      "linkedName": "ShootLBump"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.40746887966804685,
-      "rotationDegrees": 176.41965081817168
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -46,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 79.30082335354447
+    "velocity": 0,
+    "rotation": 40.46222749209347
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Shoot Reloads",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 152.85031830221675
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

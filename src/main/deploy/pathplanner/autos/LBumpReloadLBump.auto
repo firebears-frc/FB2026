@@ -7,18 +7,6 @@
         {
           "type": "named",
           "data": {
-            "name": "armDown"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Med. Trench P1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shoot"
           }
         },
@@ -35,27 +23,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "startIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Med. Trench P2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
+            "pathName": "LBumpReloadump P1"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Depots",
   "choreoAuto": false
 }

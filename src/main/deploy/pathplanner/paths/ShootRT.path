@@ -3,35 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.54922891566265,
-        "y": 0.6255542168674697
+        "x": 6.477855421686746,
+        "y": 1.161012048192772
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.821940893388102,
-        "y": 0.37694489799425934
+        "x": 5.876831325301204,
+        "y": 0.505349397590362
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ReloadRF"
     },
     {
       "anchor": {
-        "x": 7.188156626508106,
-        "y": 1.117301204818134
+        "x": 2.0630602409638557,
+        "y": 0.8878192771084343
       },
       "prevControl": {
-        "x": 6.639728958630526,
-        "y": 0.858559201141228
+        "x": 2.8498554216867467,
+        "y": 0.3851445783132522
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "START THAT FIGGIN INTAKE YO"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.40746887966804685,
-      "rotationDegrees": 176.41965081817168
+      "waypointRelativePos": 0.46556016597510547,
+      "rotationDegrees": -176.9723639798262
     }
   ],
   "constraintZones": [],
@@ -46,14 +46,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 79.30082335354447
+    "velocity": 0,
+    "rotation": 129.80557109226535
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Shoot Reloads",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 152.85031830221675
+    "velocity": 4.0,
+    "rotation": -115.20112364547512
   },
   "useDefaultConstraints": true
 }

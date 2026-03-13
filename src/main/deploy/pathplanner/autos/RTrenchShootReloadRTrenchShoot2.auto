@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "MoveTrenchShootR"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "shoot"
@@ -19,31 +25,61 @@
         {
           "type": "named",
           "data": {
-            "name": "stopShoot"
+            "name": "armDown"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RShootBumpReload"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "pauseIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RReloadBumpShoot"
+            "pathName": "ShootReloadRT"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "startIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReloadR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootRT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootReloadRT"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReloadR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootRT"
           }
         },
         {

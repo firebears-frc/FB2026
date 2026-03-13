@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.SparkUtil;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -20,6 +21,7 @@ public class Hopper extends SubsystemBase {
   private final SparkClosedLoopController hopperController;
   private double setPoint = 0;
   private static final int HopperCurrentLimit = 40; // safety limit
+  private String mode = "off";
 
   public Hopper() {
 
@@ -58,7 +60,7 @@ public class Hopper extends SubsystemBase {
   public Command startHopper() {
     return runOnce(
         () -> {
-          setPoint = -2500;
+          mode = "forward";
         });
   }
 
@@ -66,22 +68,52 @@ public class Hopper extends SubsystemBase {
   public Command pauseHopper() {
     return runOnce(
         () -> {
-          setPoint = 0;
+          mode = "off";
         });
   }
 
   public Command reverseHopper() {
     return runOnce(
         () -> {
-          setPoint = 1800;
+          mode = "reverse";
+        });
+  }
+
+  public Command altMode(Supplier<String> shooterMode) {
+    return runOnce(
+        () -> {
+          if (shooterMode.get() == "off") {
+            mode = "forward";
+          } else {
+            mode = "off";
+          }
+        });
+  }
+
+  public Command regMode(Supplier<String> shooterMode) {
+    return runOnce(
+        () -> {
+          if (shooterMode.get() == "off") {
+            mode = "off";
+          } else {
+            mode = "forward";
+          }
         });
   }
 
   @Override
   public void periodic() {
 
+    if (mode == "forward") {
+      setPoint = -3250;
+    } else if (mode == "reverse") {
+      setPoint = 1800;
+    } else {
+      setPoint = 0;
+    }
     hopperController.setSetpoint(setPoint, ControlType.kVelocity);
 
+    Logger.recordOutput("Hopper/mode", mode);
     Logger.recordOutput("Hopper/Output", hopperMotor.getAppliedOutput());
     Logger.recordOutput("Hopper/speed", hopperMotor.getEncoder().getVelocity());
     Logger.recordOutput("Hopper/setPoint", setPoint);

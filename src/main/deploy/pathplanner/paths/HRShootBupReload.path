@@ -32,26 +32,22 @@
     },
     {
       "anchor": {
-        "x": 7.625265060240963,
-        "y": 5.706939759036145
+        "x": 7.6580481927710835,
+        "y": 3.34655421686747
       },
       "prevControl": {
-        "x": 8.0913625734414,
-        "y": 5.3805747667524
+        "x": 8.12414570597152,
+        "y": 3.020189224583725
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ReloadRBLT"
+      "linkedName": "MidCenterR"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.8647302904564297,
       "rotationDegrees": -5.769791926937174
-    },
-    {
-      "waypointRelativePos": 1.5618257261410669,
-      "rotationDegrees": 103.76889847524838
     }
   ],
   "constraintZones": [
@@ -94,7 +90,7 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 120.46554491946004
+    "rotation": 120.78405643760298
   },
   "reversed": false,
   "folder": null,

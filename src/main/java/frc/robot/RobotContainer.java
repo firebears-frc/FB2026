@@ -22,6 +22,8 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -67,6 +69,8 @@ public class RobotContainer {
   private final CommandJoystick joy1 = new CommandJoystick(0); // right
   private final CommandJoystick joy2 = new CommandJoystick(1); // left
   private final CommandXboxController xboxController = new CommandXboxController(2);
+
+  private final UsbCamera driveCamera;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -146,6 +150,8 @@ public class RobotContainer {
 
         break;
     }
+    driveCamera = CameraServer.startAutomaticCapture();
+    driveCamera.setResolution(320, 240);
     configureButtonBindings();
     configureAutoCommands();
     // Set up auto routines
@@ -180,9 +186,8 @@ public class RobotContainer {
         Map.of(
             "shoot",
             Commands.sequence(
-                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
-                Commands.waitSeconds(.2),
                 shooter.autoShooter(),
+                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 hopper.startHopper()),
             "stopShoot",
@@ -299,7 +304,10 @@ public class RobotContainer {
     joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
-    xboxController.y().onTrue(hopper.startHopper()).onFalse(hopper.pauseHopper());
+    xboxController
+        .y()
+        .onTrue(hopper.altMode(() -> shooter.getMode()))
+        .onFalse(hopper.regMode(() -> shooter.getMode()));
     xboxController.povDown().onTrue(arm.armDown());
     xboxController.povUp().onTrue(arm.armUp());
   }
