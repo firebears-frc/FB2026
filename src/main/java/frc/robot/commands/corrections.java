@@ -40,8 +40,14 @@ public class corrections {
     robotVelocityY = yVelocity;
   }
 
-  public static void sotmVelocitiesForRotations(Drive drive, double rotationSpeed){
-    
+  public static void sotmVelocitiesForRotation(Drive drive, double rotationSpeed){
+    double totalShooterOffset = Math.sqrt((shooterXOffset * shooterXOffset) + (shooterYOffset * shooterYOffset));
+    double totalShooterOffsetAngle = makeAngleInBounds(Math.asin(Math.abs(shooterXOffset)/totalShooterOffset) + Math.PI / 2);
+    double currentShooterOffsetAngle = makeAngleInBounds(drive.getPose().getRotation().getRadians() + totalShooterOffsetAngle);
+    double xVelocityCorrection = -rotationSpeed * Math.sin(currentShooterOffsetAngle);
+    double yVelocityCorrection = rotationSpeed * Math.cos(currentShooterOffsetAngle);
+    robotVelocityX += xVelocityCorrection;
+    robotVelocityY += yVelocityCorrection;
   }
 
   // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
