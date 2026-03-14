@@ -130,6 +130,10 @@ public class DriveCommands {
                   angleController.calculate(
                       drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
 
+              // Updates robot velocity variables in corrections ~SOTM~
+              corrections.setRobotVelocityX(linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec());
+              corrections.setRobotVelocityY(linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec());
+
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
                   new ChassisSpeeds(

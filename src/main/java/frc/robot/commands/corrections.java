@@ -13,13 +13,105 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class corrections {
   // ~CONSTANTS~in meters / radians
-  static final double shooterXOffset = Units.inchesToMeters(-5);
-  static final double shooterYOffset = Units.inchesToMeters(6);
-  static final double shooterAngleOffset = Units.degreesToRadians(90);
+  private static final double shooterXOffset = Units.inchesToMeters(-5);
+  private static final double shooterYOffset = Units.inchesToMeters(6);
+  private static final double shooterAngleOffset = Units.degreesToRadians(90);
+  static double robotVelocityX = 0;
+  static double robotVelocityY = 0;
+  static double sotmDistance = 0;
 
   // creates a tree interpolator for time from distance
   static InterpolatingDoubleTreeMap timeCalculator = new InterpolatingDoubleTreeMap();
-  
+
+  // returns sotmDistance
+  public static double sotmGetDistance(){
+    return sotmDistance;
+  }
+
+  // logs and sets current robot x velocity variable
+  public static void setRobotVelocityX(double xVelocity){
+    Logger.recordOutput("corrections/robot x velocity", xVelocity);
+    robotVelocityX = xVelocity;
+  }
+
+  // logs and sets current robot y velocity variable
+  public static void setRobotVelocityY(double yVelocity){
+    Logger.recordOutput("corrections/robot y velocity", yVelocity);
+    robotVelocityY = yVelocity;
+  }
+
+  public static void sotmVelocitiesForRotations(Drive drive, double rotationSpeed){
+    
+  }
+
+  // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
+  // angle from the shooter to the nearest bump otherwise (sotm)
+  public static Rotation2d sotmAutoAimAngle(Drive drive) {
+    if (currentZone(drive) <= 0) {
+      return sotmAngleToHub(drive);
+    } else {
+      return sotmAngleToNearestBump(drive);
+    }
+  }
+
+  // returns the angle the bot needs to face to aim for the nearest bump (sotm)
+  public static Rotation2d sotmAngleToNearestBump(Drive drive){
+    double nearestBumpY = 0;
+    double nearestBumpX = correctXValue(LinesVertical.hubCenter);
+    if (drive.getPose().getY() > LinesHorizontal.center) {
+      nearestBumpY = (LinesHorizontal.leftBumpStart + LinesHorizontal.leftBumpEnd) / 2;
+    } else {
+      nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
+    }
+    Rotation2d angleToBump =
+        angleTo(
+            drive, nearestBumpX, nearestBumpY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+    Logger.recordOutput("corrections/angle to bump", angleToBump);
+    return angleToBump;
+  }
+
+  // returns the angle the bot needs to face to aim for the hub (sotm)
+  public static Rotation2d sotmAngleToHub(Drive drive){
+    Rotation2d sotmAngleToHub = sotmAngleTo(drive, correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
+    Logger.recordOutput("corrections/sotm angle to hub", sotmAngleToHub);
+    return sotmAngleToHub;
+  }
+
+  // returns the angle the bot needs to face to aim the shooter at a location (sotm), updates sotm time and distance
+  public static Rotation2d sotmAngleTo(Drive drive, double targetX, double targetY){
+    double sotmTime = itterateSOTM(drive, targetX, targetY);
+    return angleTo(drive, targetX - robotVelocityX * sotmTime, targetY - robotVelocityY * sotmTime, shooterXOffset, shooterYOffset, shooterAngleOffset);
+  }
+
+  // Iterate time and distance (sotm), returns time
+  public static double itterateSOTM(Drive drive, double targetX, double targetY){
+    // ~CONSTANTS~
+    int maxIterations = 20;
+    double timeTolerance = 0.05;
+
+    double distance = distanceTo(drive, targetX, targetY);
+    double prevTime = 0;
+    double time = timeCalculator.get(distance);
+    double change = Math.abs(time - prevTime);
+    int i = 0;
+
+    while(change > timeTolerance){
+      distance = distanceTo(drive, targetX - robotVelocityX * time, targetY - robotVelocityY * time);
+      prevTime = time;
+      time = timeCalculator.get(distance); 
+      change = Math.abs(time - prevTime);
+      i++;
+      if(i >= maxIterations){
+        change = 0;
+      }   
+    }
+
+    sotmDistance = distance;
+    Logger.recordOutput("corrections/sotm time", time);
+    Logger.recordOutput("corrections/sotm distance", distance);
+    return time;
+  }
+
   // Sets up the time calculating tree interpolator
   public static void createTimeCalculator(){
     // distance | time

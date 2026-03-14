@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.corrections;
 import frc.robot.util.SparkUtil;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -111,6 +112,13 @@ public class Shooter extends SubsystemBase {
         });
   }
 
+  public Command sotmAutoShooter() {
+    return runOnce(
+        () -> {
+          mode = "sotm";
+        });
+  }
+
   public Command fastShot() {
     return runOnce(
         () -> {
@@ -168,6 +176,8 @@ public class Shooter extends SubsystemBase {
       setPoint = -2600;
     } else if (mode == "auto") {
       setPoint = speedCalculator.get(distanceToHubSupplier.getAsDouble());
+    } else if(mode == "sotm") {
+      setPoint = speedCalculator.get(corrections.sotmGetDistance());
     } else if (mode == "static") {
       setPoint = staticShooterSpeed.get();
     } else {
