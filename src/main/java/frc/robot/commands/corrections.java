@@ -8,12 +8,27 @@ import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
 import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+
 
 public class corrections {
   // ~CONSTANTS~in meters / radians
   static final double shooterXOffset = Units.inchesToMeters(-5);
   static final double shooterYOffset = Units.inchesToMeters(6);
   static final double shooterAngleOffset = Units.degreesToRadians(90);
+
+  // creates a tree interpolator for time from distance
+  static InterpolatingDoubleTreeMap timeCalculator = new InterpolatingDoubleTreeMap();
+  
+  // Sets up the time calculating tree interpolator
+  public static void createTimeCalculator(){
+    // distance | time
+    // ~CHANGE~
+    timeCalculator.put(0.0,0.0);
+    timeCalculator.put(0.0,0.0);
+    timeCalculator.put(0.0,0.0);
+    timeCalculator.put(0.0,0.0);
+  }
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
   // in any other zone
