@@ -19,38 +19,32 @@ public class VisionConstants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  public static String camera1Name = "VisionCam1";
-  public static String camera2Name = "VisionCam2";
-  public static String camera4Name = "VisionCam4"; // Back Right
-  public static String camera6Name = "VisionCam6"; // Front Right
-  public static String camera7Name = "VisionCam7"; // Front Left
-  public static String camera8Name = "VisionCam8"; // Back Left
+  public static String Camera0 = "Camera0"; // Front Left
+  public static String Camera1 = "Camera1"; // Back Left
+  public static String Camera2 = "Camera2"; // Front Right
+  public static String Camera3 = "Camera3"; // Back Right
   // Robot to camera transforms
   // (Not used by Limelight, configure in web UI instead)
-  public static Transform3d robotToCamera1 =
-      new Transform3d(0, 0.3, 0.2, new Rotation3d(0.0, 0.4, Math.PI / 2));
-  public static Transform3d robotToCamera2 =
-      new Transform3d(0, 0.13, 0.2, new Rotation3d(0.0, 0.4, Math.PI / 2));
-  public static Transform3d robotToCamera4 =
+  public static Transform3d robotToCamera0 =
       new Transform3d(
           Units.inchesToMeters(10.75),
           Units.inchesToMeters(-12.625),
           Units.inchesToMeters(14.25),
           new Rotation3d(
               Units.degreesToRadians(12), Units.degreesToRadians(-4), Units.degreesToRadians(296)));
-  public static Transform3d robotToCamera6 =
+  public static Transform3d robotToCamera1 =
       new Transform3d(
           Units.inchesToMeters(-11.5),
           Units.inchesToMeters(-12.5625),
           Units.inchesToMeters(14),
           new Rotation3d(0, Units.degreesToRadians(-18), Units.degreesToRadians(225)));
-  public static Transform3d robotToCamera7 =
+  public static Transform3d robotToCamera2 =
       new Transform3d(
           Units.inchesToMeters(8.625),
           Units.inchesToMeters(13.875),
           Units.inchesToMeters(14.625),
           new Rotation3d(0, 0, Units.degreesToRadians(90)));
-  public static Transform3d robotToCamera8 =
+  public static Transform3d robotToCamera3 =
       new Transform3d(
           Units.inchesToMeters(-11.75),
           Units.inchesToMeters(12.875),

@@ -7,18 +7,14 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
+import static frc.robot.subsystems.vision.VisionConstants.Camera0;
+import static frc.robot.subsystems.vision.VisionConstants.Camera1;
+import static frc.robot.subsystems.vision.VisionConstants.Camera2;
+import static frc.robot.subsystems.vision.VisionConstants.Camera3;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera3;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -91,12 +87,10 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera1Name, robotToCamera1),
-                new VisionIOPhotonVision(camera2Name, robotToCamera2),
-                new VisionIOPhotonVision(camera4Name, robotToCamera4),
-                new VisionIOPhotonVision(camera6Name, robotToCamera6),
-                new VisionIOPhotonVision(camera7Name, robotToCamera7),
-                new VisionIOPhotonVision(camera8Name, robotToCamera8));
+                new VisionIOPhotonVision(Camera0, robotToCamera0),
+                new VisionIOPhotonVision(Camera1, robotToCamera1),
+                new VisionIOPhotonVision(Camera2, robotToCamera2),
+                new VisionIOPhotonVision(Camera3, robotToCamera3));
 
         shooter = new Shooter(() -> corrections.distanceToHub(drive));
         hopper = new Hopper();
@@ -118,12 +112,10 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera1Name, robotToCamera1),
-                new VisionIOPhotonVision(camera2Name, robotToCamera2),
-                new VisionIOPhotonVision(camera4Name, robotToCamera4),
-                new VisionIOPhotonVision(camera6Name, robotToCamera6),
-                new VisionIOPhotonVision(camera7Name, robotToCamera7),
-                new VisionIOPhotonVision(camera8Name, robotToCamera8));
+                new VisionIOPhotonVision(Camera0, robotToCamera0),
+                new VisionIOPhotonVision(Camera1, robotToCamera1),
+                new VisionIOPhotonVision(Camera2, robotToCamera2),
+                new VisionIOPhotonVision(Camera3, robotToCamera3));
 
         shooter = new Shooter(() -> corrections.distanceToHub(drive));
         hopper = new Hopper();
