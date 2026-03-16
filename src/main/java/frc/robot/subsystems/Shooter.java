@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.corrections;
 import frc.robot.util.SparkUtil;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -43,6 +44,7 @@ public class Shooter extends SubsystemBase {
 
   public Shooter(DoubleSupplier distanceToHubSupplier) {
     this.distanceToHubSupplier = distanceToHubSupplier;
+
     // Configure Motor 1
     ShooterController1 = ShooterMotor1.getClosedLoopController();
     var ShooterConfig1 = new SparkFlexConfig();
@@ -160,6 +162,13 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
 
+    // Are we shooting (we only update the shotline if we are shooting)
+    boolean shooting = mode.equals("fast") || mode.equals("slow") || mode.equals("auto");
+    corrections.setDrawShotLine(shooting);
+
+    // Get the distance from the
+    double distance = distanceToHubSupplier.getAsDouble();
+
     if (mode == "fast") {
       setPoint = 3500;
     } else if (mode == "slow") {
@@ -167,7 +176,7 @@ public class Shooter extends SubsystemBase {
     } else if (mode == "reverse") {
       setPoint = -2600;
     } else if (mode == "auto") {
-      setPoint = speedCalculator.get(distanceToHubSupplier.getAsDouble());
+      setPoint = speedCalculator.get(distance);
     } else if (mode == "static") {
       setPoint = staticShooterSpeed.get();
     } else {
@@ -188,7 +197,7 @@ public class Shooter extends SubsystemBase {
     Logger.recordOutput("Shooter2/Output", ShooterMotor2.getAppliedOutput());
     Logger.recordOutput("Shooter/mode", mode);
     Logger.recordOutput("Shooter/speed", ShooterMotor1.getEncoder().getVelocity());
-    Logger.recordOutput("Odometry/distance to hub", distanceToHubSupplier.getAsDouble());
+    Logger.recordOutput("Odometry/distance to hub", distance);
     Logger.recordOutput("Shooter/setPoint", setPoint);
   }
 }

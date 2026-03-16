@@ -93,6 +93,7 @@ public class RobotContainer {
                 new VisionIOPhotonVision(Camera3, robotToCamera3));
 
         shooter = new Shooter(() -> corrections.distanceToHub(drive));
+
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -118,6 +119,7 @@ public class RobotContainer {
                 new VisionIOPhotonVision(Camera3, robotToCamera3));
 
         shooter = new Shooter(() -> corrections.distanceToHub(drive));
+
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -280,6 +282,31 @@ public class RobotContainer {
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+
+    // joy1.button(1)
+    //     .onTrue(
+    //         Commands.sequence(
+    //             shooter.autoShooter(),
+    //             Commands.waitUntil(() -> shooter.atSpeed()),
+    //             Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
+    //             hopper.startHopper()))
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -joy1.getY(),
+    //             () -> -joy1.getX(),
+    //             () -> corrections.autoAimAngle(drive)))
+    //     .onFalse(
+    //         Commands.sequence(
+    //             hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+
+    // joy1.button(2)
+    //     .onTrue(
+    //         Commands.sequence(
+    //             shooter.autoShooter(),
+    //             Commands.waitUntil(() -> shooter.atSpeed()),
+    //             hopper.startHopper()))
+    //     .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
     xboxController
         .leftTrigger()
