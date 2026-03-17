@@ -176,7 +176,7 @@ public class Shooter extends SubsystemBase {
       setPoint = -2600;
     } else if (mode == "auto") {
       setPoint = speedCalculator.get(distanceToHubSupplier.getAsDouble());
-    } else if(mode == "sotm") {
+    } else if (mode == "sotm") {
       setPoint = speedCalculator.get(corrections.sotmGetDistance());
     } else if (mode == "static") {
       setPoint = staticShooterSpeed.get();

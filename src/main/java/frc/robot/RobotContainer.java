@@ -264,14 +264,13 @@ public class RobotContainer {
     joy1.button(3)
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive, 
-                () -> -joy1.getY(), 
-                () -> -joy1.getX(), 
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
                 () -> corrections.sotmAutoAimAngle(drive)));
 
     // sotm drive and shoot
-    xboxController
-        .rightTrigger()
+    joy1.button(4)
         .onTrue(
             Commands.sequence(
                 shooter.autoShooter(),
