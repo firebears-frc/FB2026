@@ -9,6 +9,7 @@ import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 
 public class corrections {
@@ -16,38 +17,38 @@ public class corrections {
   private static final double shooterXOffset = Units.inchesToMeters(-5);
   private static final double shooterYOffset = Units.inchesToMeters(6);
   private static final double shooterAngleOffset = Units.degreesToRadians(90);
-  static double robotVelocityX = 0;
-  static double robotVelocityY = 0;
-  static double sotmDistance = 0;
+
+  private static double robotVelocityX = 0;
+  private static double robotVelocityY = 0;
+  private static double sotmDistance = 0;
 
   // creates a tree interpolator for time from distance
   static InterpolatingDoubleTreeMap timeCalculator = new InterpolatingDoubleTreeMap();
+
+  // sets robotVelocityX, robotVelocityY
+  public static void setRobotVelocities(ChassisSpeeds currentSpeeds, double currentAngle){
+    robotVelocityX = currentSpeeds.vxMetersPerSecond * Math.cos(currentAngle);
+    robotVelocityX += currentSpeeds.vyMetersPerSecond * -Math.sin(currentAngle);
+    Logger.recordOutput("corrections/robot x velocity", robotVelocityX);
+    robotVelocityY = currentSpeeds.vyMetersPerSecond * Math.cos(currentAngle);
+    robotVelocityY += currentSpeeds.vxMetersPerSecond * Math.sin(currentAngle);
+    Logger.recordOutput("corrections/robot y velocity", robotVelocityY);
+    sotmVelocitiesForRotation(currentAngle, currentSpeeds.omegaRadiansPerSecond);
+    Logger.recordOutput("corrections/shooter x velocity", robotVelocityX);
+    Logger.recordOutput("corrections/shooter y velocity", robotVelocityY);
+  }
 
   // returns sotmDistance
   public static double sotmGetDistance(){
     return sotmDistance;
   }
 
-  // logs and sets current robot x velocity variable
-  public static void setRobotVelocityX(double xVelocity){
-    Logger.recordOutput("corrections/robot x velocity", xVelocity);
-    robotVelocityX = xVelocity;
-  }
-
-  // logs and sets current robot y velocity variable
-  public static void setRobotVelocityY(double yVelocity){
-    Logger.recordOutput("corrections/robot y velocity", yVelocity);
-    robotVelocityY = yVelocity;
-  }
-
-  public static void sotmVelocitiesForRotation(Drive drive, double rotationSpeed){
+  public static void sotmVelocitiesForRotation(double currentAngle, double rotationSpeed){
     double totalShooterOffset = Math.sqrt((shooterXOffset * shooterXOffset) + (shooterYOffset * shooterYOffset));
     double totalShooterOffsetAngle = makeAngleInBounds(Math.asin(Math.abs(shooterXOffset)/totalShooterOffset) + Math.PI / 2);
-    double currentShooterOffsetAngle = makeAngleInBounds(drive.getPose().getRotation().getRadians() + totalShooterOffsetAngle);
-    double xVelocityCorrection = -rotationSpeed * Math.sin(currentShooterOffsetAngle);
-    double yVelocityCorrection = rotationSpeed * Math.cos(currentShooterOffsetAngle);
-    robotVelocityX += xVelocityCorrection;
-    robotVelocityY += yVelocityCorrection;
+    double currentShooterOffsetAngle = makeAngleInBounds(currentAngle + totalShooterOffsetAngle);
+    robotVelocityX += -rotationSpeed * Math.sin(currentShooterOffsetAngle);
+    robotVelocityY += rotationSpeed * Math.cos(currentShooterOffsetAngle);
   }
 
   // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
@@ -58,6 +59,16 @@ public class corrections {
     } else {
       return sotmAngleToNearestBump(drive);
     }
+  }
+
+  // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
+  // in any other zone (sotm)
+  public static boolean sotmAimedAtAutoTarget(Drive drive) {
+    // ~CONSTANTS~
+    double tolerance = 6;
+    boolean aimedAtTarget = Math.abs(sotmAutoAimAngle(drive).getDegrees() - drive.getPose().getRotation().getDegrees()) < tolerance;
+    Logger.recordOutput("corrections/aimed at sotm target", aimedAtTarget);
+    return aimedAtTarget;
   }
 
   // returns the angle the bot needs to face to aim for the nearest bump (sotm)
@@ -121,30 +132,26 @@ public class corrections {
   // Sets up the time calculating tree interpolator
   public static void createTimeCalculator(){
     // distance | time
-    // ~CHANGE~
-    timeCalculator.put(0.0,0.0);
-    timeCalculator.put(0.0,0.0);
-    timeCalculator.put(0.0,0.0);
-    timeCalculator.put(0.0,0.0);
+    // ~Measured~
+    timeCalculator.put(2.5,.9);
+    timeCalculator.put(3.0,.91);
+    timeCalculator.put(3.5,1.07);
+    timeCalculator.put(4.0,1.11);
+    timeCalculator.put(4.5,1.12);
+    timeCalculator.put(5.09,1.29);
+    
   }
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
   // in any other zone
   public static boolean aimedAtAutoTarget(Drive drive) {
-    boolean aimedAtTarget = false;
-    if (currentZone(drive) <= 0) {
-      aimedAtTarget =
-          Math.abs(angleToHub(drive).getDegrees() - drive.getPose().getRotation().getDegrees()) < 3;
-    } else {
-      aimedAtTarget =
-          Math.abs(
-                  angleToNearestBump(drive).getDegrees()
-                      - drive.getPose().getRotation().getDegrees())
-              < 3;
-    }
+    // ~CONSTANTS~
+    double tolerance = 3;
+    boolean aimedAtTarget = Math.abs(autoAimAngle(drive).getDegrees() - drive.getPose().getRotation().getDegrees()) < tolerance;
     Logger.recordOutput("corrections/aimed at target", aimedAtTarget);
     return aimedAtTarget;
   }
+
   // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
   // angle from the shooter to the nearest bump otherwise
   public static Rotation2d autoAimAngle(Drive drive) {

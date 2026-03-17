@@ -152,6 +152,7 @@ public class RobotContainer {
     }
     driveCamera = CameraServer.startAutomaticCapture();
     driveCamera.setResolution(320, 240);
+    corrections.createTimeCalculator();
     configureButtonBindings();
     configureAutoCommands();
     // Set up auto routines
@@ -258,6 +259,34 @@ public class RobotContainer {
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
                 () -> corrections.nearestDiagonalAngle(drive)));
+
+    // sotm drive at angle
+    joy1.button(3)
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, 
+                () -> -joy1.getY(), 
+                () -> -joy1.getX(), 
+                () -> corrections.sotmAutoAimAngle(drive)));
+
+    // sotm drive and shoot
+    xboxController
+        .rightTrigger()
+        .onTrue(
+            Commands.sequence(
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
+                hopper.startHopper()))
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> corrections.sotmAutoAimAngle(drive)))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
 
     // Resets gyro to 0 degrees when b is pressed
     xboxController
