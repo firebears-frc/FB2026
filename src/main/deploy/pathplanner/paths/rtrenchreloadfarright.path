@@ -68,17 +68,17 @@
         "y": 0.6440568181818185
       },
       "prevControl": {
-        "x": 5.641761363636363,
-        "y": 0.2936250000000007
+        "x": 5.724215909090909,
+        "y": 0.6440568181818185
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "rtrenchend1"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.3820754716981133,
+      "waypointRelativePos": 0.5408805031446541,
       "rotationDegrees": 180.0
     },
     {
@@ -93,8 +93,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8940754039497306,
-      "maxWaypointRelativePos": 2.418312387791741,
+      "minWaypointRelativePos": 1.1202872531418309,
+      "maxWaypointRelativePos": 2.2405745062836635,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 8.0,
@@ -106,7 +106,7 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 3.2315978456014345,
+      "minWaypointRelativePos": 3.080789946140035,
       "maxWaypointRelativePos": 4.0,
       "constraints": {
         "maxVelocity": 2.0,
@@ -130,7 +130,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 174.92039213998547
+    "rotation": 174.9203921399855
   },
   "reversed": false,
   "folder": null,

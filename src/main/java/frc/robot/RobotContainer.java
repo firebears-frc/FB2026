@@ -32,9 +32,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.corrections;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ArmSim;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.HopperSim;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeSim;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOCanandgyro;
@@ -117,12 +121,15 @@ public class RobotContainer {
                 new VisionIOPhotonVision(Camera1, robotToCamera1),
                 new VisionIOPhotonVision(Camera2, robotToCamera2),
                 new VisionIOPhotonVision(Camera3, robotToCamera3));
+        // new VisionIOPhotonVisionSim(Camera0, robotToCamera0, drive::getPose),
+        // new VisionIOPhotonVisionSim(Camera1, robotToCamera1, drive::getPose),
+        // new VisionIOPhotonVisionSim(Camera2, robotToCamera2, drive::getPose),
+        // new VisionIOPhotonVisionSim(Camera3, robotToCamera3, drive::getPose));
 
-        shooter = new Shooter(() -> corrections.distanceToHub(drive));
-
-        hopper = new Hopper();
-        intake = new Intake();
-        arm = new Arm();
+        shooter = new ShooterSim(() -> corrections.distanceToHub(drive));
+        hopper = new HopperSim();
+        intake = new IntakeSim();
+        arm = new ArmSim();
 
         break;
 
