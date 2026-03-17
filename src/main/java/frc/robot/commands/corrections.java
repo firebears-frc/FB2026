@@ -1,6 +1,9 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -14,6 +17,7 @@ public class corrections {
   static final double shooterXOffset = Units.inchesToMeters(-5);
   static final double shooterYOffset = Units.inchesToMeters(6);
   static final double shooterAngleOffset = Units.degreesToRadians(90);
+  private static boolean doDrawShotLine = false; // Do we want to log the line from shooter to target?
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
   // in any other zone
@@ -116,11 +120,54 @@ public class corrections {
     return currentZone;
   }
 
+  // Decide whether or not we want to draw the shotline
+  public static void setDrawShotLine(boolean draw) {
+    doDrawShotLine = draw;
+  }
+
+  // Log a line segment from the shooter, in the shooter direction of length distance_to_hub
+  private static void logShotLine(Drive drive, double distanceToHub) {
+
+    // Get current robot pose
+    Pose2d robotPose = drive.getPose();
+
+    // Specify the offset from the shooter to the robot (so we can use it to find shooter pose)
+    Transform2d shooterOffset =
+        new Transform2d(
+            new Translation2d(shooterXOffset, shooterYOffset),
+            new Rotation2d(-1 * shooterAngleOffset));
+
+    // Find pose of the shooter
+    Pose2d shooterPose = robotPose.transformBy(shooterOffset);
+
+    // Using current position shooter, and the distance to the hub, find the end point
+    Translation2d lineEndTranslation =
+        shooterPose
+            .getTranslation()
+            .plus(new Translation2d(distanceToHub, 0).rotateBy(shooterPose.getRotation()));
+
+    // Get full pose of our target destination for the shooter
+    Pose2d endPose = new Pose2d(lineEndTranslation, shooterPose.getRotation());
+
+    // Log the shotline as well as the shooter location on the bot
+    Logger.recordOutput("Shooter/ShotLine", new Pose2d[] {shooterPose, endPose});
+    Logger.recordOutput("Shooter/Marker", new Pose2d[] {shooterPose});
+  }
+
   // Gets the distance from the robots current location to the hub
   public static double distanceToHub(Drive drive) {
     double distance =
         distanceTo(drive, correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
+
     Logger.recordOutput("Odometry/distance to hub", distance);
+
+    // optionally log the shotline and the shooter position on the bot
+    if (doDrawShotLine) {
+      logShotLine(drive, distance);
+    } else {
+      Logger.recordOutput("Shooter/ShotLine", new Pose2d[] {});
+      Logger.recordOutput("Shooter/Marker", new Pose2d[] {});
+    }
     return distance;
   }
 
