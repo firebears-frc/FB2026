@@ -3,62 +3,66 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5321824686940966,
-        "y": 0.5708765652951695
+        "x": 2.808838028169015,
+        "y": 5.376338028169013
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.047119856887299,
-        "y": 0.05166368515205699
+        "x": 1.6815108349190857,
+        "y": 5.378650266258285
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shoot3p1"
     },
     {
       "anchor": {
-        "x": 8.383577817531306,
-        "y": 4.07556350626118
+        "x": 0.6531161971879351,
+        "y": 6.909295774655143
       },
       "prevControl": {
-        "x": 8.222694691858305,
-        "y": 0.19828017754187233
+        "x": -0.010447475189759747,
+        "y": 4.808061608674275
       },
       "nextControl": {
-        "x": 8.54583184257603,
-        "y": 7.985885509838998
+        "x": 1.3683452976688415,
+        "y": 9.174133174582646
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.110322003577817,
-        "y": 5.519624329159212
+        "x": 2.808838028169015,
+        "y": 5.376338028169013
       },
       "prevControl": {
-        "x": 3.4347330453686373,
-        "y": 4.0111129848319
+        "x": 2.6114354892119365,
+        "y": 5.5994167381098725
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shoot3p1"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6363636363636364,
-      "rotationDegrees": 135.0
+      "waypointRelativePos": 0.4420289855072457,
+      "rotationDegrees": 89.65211894777889
     },
     {
-      "waypointRelativePos": 1.1871657754010707,
-      "rotationDegrees": 135.0
+      "waypointRelativePos": 0.8864734299516909,
+      "rotationDegrees": 88.72341612151844
+    },
+    {
+      "waypointRelativePos": 1.2512077294685984,
+      "rotationDegrees": -0.10524240034867541
     }
   ],
   "constraintZones": [
     {
-      "name": "intake zone",
-      "minWaypointRelativePos": 0.7322033898305085,
-      "maxWaypointRelativePos": 1.2881355932203387,
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.5164179104477608,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 8.0,
@@ -80,14 +84,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 41.009086901570285
   },
   "reversed": false,
-  "folder": null,
+  "folder": "shoot 3 balls",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 41.009086901570285
   },
   "useDefaultConstraints": true
 }

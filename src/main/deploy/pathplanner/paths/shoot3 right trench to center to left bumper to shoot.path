@@ -1,0 +1,106 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5321824686940966,
+        "y": 0.5708765652951695
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.471584507042255,
+        "y": 0.521971830985916
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.727077464788733,
+        "y": 4.13080985915493
+      },
+      "prevControl": {
+        "x": 9.291969649816448,
+        "y": 0.57970836236127
+      },
+      "nextControl": {
+        "x": 6.896725352112677,
+        "y": 6.015070422535212
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.808838028169015,
+        "y": 5.376338028169013
+      },
+      "prevControl": {
+        "x": 3.2080457746466178,
+        "y": 5.807482394373921
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "shoot3p1"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6363636363636364,
+      "rotationDegrees": 135.0
+    },
+    {
+      "waypointRelativePos": 1.1871657754010707,
+      "rotationDegrees": 135.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "intake zone",
+      "minWaypointRelativePos": 0.7322033898305085,
+      "maxWaypointRelativePos": 1.0576271186440676,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 8.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 1440.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "startIntake",
+      "waypointRelativePos": 0.31641791044776113,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "pauseIntake",
+      "waypointRelativePos": 1.1820895522388055,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.83,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1440.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 41.009086901570285
+  },
+  "reversed": false,
+  "folder": "shoot 3 balls",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
