@@ -67,7 +67,7 @@
     },
     {
       "waypointRelativePos": 1.3020746887966756,
-      "rotationDegrees": -133.5217663315776
+      "rotationDegrees": -133.52176633157762
     },
     {
       "waypointRelativePos": 1.9394190871369306,
@@ -108,7 +108,7 @@
     "rotation": 12.535549543689404
   },
   "reversed": false,
-  "folder": null,
+  "folder": "WIP",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 18.853158764419156

@@ -12,7 +12,7 @@
         "y": 7.892481927710843
       },
       "isLocked": false,
-      "linkedName": "END INTAKE YO CHUD"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -50,7 +50,7 @@
     "rotation": 49.46715906138926
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 2.5,
     "rotation": 147.83294741422415

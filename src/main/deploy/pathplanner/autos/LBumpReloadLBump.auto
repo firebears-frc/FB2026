@@ -32,6 +32,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Depots",
+  "folder": "Pre-Duluth",
   "choreoAuto": false
 }
