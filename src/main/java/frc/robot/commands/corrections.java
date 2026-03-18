@@ -17,7 +17,8 @@ public class corrections {
   static final double shooterXOffset = Units.inchesToMeters(-5);
   static final double shooterYOffset = Units.inchesToMeters(6);
   static final double shooterAngleOffset = Units.degreesToRadians(90);
-  private static boolean doDrawShotLine = false; // Do we want to log the line from shooter to target?
+  private static boolean doDrawShotLine =
+      false; // Do we want to log the line from shooter to target?
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
   // in any other zone
