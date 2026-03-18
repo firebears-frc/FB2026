@@ -113,6 +113,13 @@ public class Shooter extends SubsystemBase {
         });
   }
 
+  public Command sotmAutoShooter() {
+    return runOnce(
+        () -> {
+          mode = "sotm";
+        });
+  }
+
   public Command fastShot() {
     return runOnce(
         () -> {
@@ -163,7 +170,8 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
 
     // Are we shooting (we only update the shotline if we are shooting)
-    boolean shooting = mode.equals("fast") || mode.equals("slow") || mode.equals("auto");
+    boolean shooting =
+        mode.equals("fast") || mode.equals("slow") || mode.equals("auto") || mode.equals("sotm");
     corrections.setDrawShotLine(shooting);
 
     // Get the distance from the
@@ -177,6 +185,8 @@ public class Shooter extends SubsystemBase {
       setPoint = -2600;
     } else if (mode == "auto") {
       setPoint = speedCalculator.get(distance);
+    } else if (mode == "sotm") {
+      setPoint = speedCalculator.get(corrections.sotmGetDistance());
     } else if (mode == "static") {
       setPoint = staticShooterSpeed.get();
     } else {
