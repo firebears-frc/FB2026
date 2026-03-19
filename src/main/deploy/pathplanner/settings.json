@@ -3,16 +3,14 @@
   "robotLength": 0.851,
   "holonomicMode": true,
   "pathFolders": [
-    "Depot Paths",
-    "MoveShoot",
-    "Shoot Reloads",
-    "shoot 3 balls"
+    "Duluth",
+    "WIP",
+    "Pre-Duluth"
   ],
   "autoFolders": [
-    "Depots",
-    "MoveShoot",
-    "Medium",
-    "Shoot Reloads"
+    "Pre-Duluth",
+    "Duluth",
+    "WIP"
   ],
   "defaultMaxVel": 5.83,
   "defaultMaxAccel": 8.0,

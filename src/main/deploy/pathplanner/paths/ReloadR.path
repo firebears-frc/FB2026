@@ -12,7 +12,7 @@
         "y": 0.4867052739508313
       },
       "isLocked": false,
-      "linkedName": "ReloadRT"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -41,13 +41,13 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ReloadRF"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5,
-      "rotationDegrees": 96.14257216519427
+      "rotationDegrees": 96.14257216519428
     },
     {
       "waypointRelativePos": 1.2564315352697017,
@@ -70,7 +70,7 @@
     "rotation": -115.20112364547512
   },
   "reversed": false,
-  "folder": "Shoot Reloads",
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 53.7461622625552

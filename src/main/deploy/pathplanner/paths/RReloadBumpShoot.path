@@ -12,7 +12,7 @@
         "y": 2.373987951807229
       },
       "isLocked": false,
-      "linkedName": "MidCenterR"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -61,7 +61,7 @@
     "rotation": 121.18497465873838
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 2.5,
     "rotation": 120.78405643760298

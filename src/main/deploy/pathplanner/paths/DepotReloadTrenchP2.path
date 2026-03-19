@@ -12,7 +12,7 @@
         "y": 7.043238231098432
       },
       "isLocked": false,
-      "linkedName": "Depot End"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -57,7 +57,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "CenterReload"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -103,7 +103,7 @@
     "rotation": -123.21446565742558
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 53.53076560994813

@@ -11,7 +11,7 @@
         "x": 3.3541751342732504,
         "y": 7.44722293707536
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -24,8 +24,8 @@
         "y": 7.355185011605024
       },
       "nextControl": null,
-      "isLocked": false,
-      "linkedName": "Med. Trench L"
+      "isLocked": true,
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 26.565051177078058
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Duluth",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

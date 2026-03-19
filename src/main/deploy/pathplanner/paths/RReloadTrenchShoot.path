@@ -12,7 +12,7 @@
         "y": 7.2368192771084345
       },
       "isLocked": false,
-      "linkedName": "ReloadRBLT"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -66,7 +66,7 @@
     "rotation": 48.680622173030464
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 2.0,
     "rotation": 120.46554491946004

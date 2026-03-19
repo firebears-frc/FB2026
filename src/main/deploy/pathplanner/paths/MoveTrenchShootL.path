@@ -11,7 +11,7 @@
         "x": 4.144955610180898,
         "y": 7.5451838688731545
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -24,7 +24,7 @@
         "y": 6.9748792954508225
       },
       "nextControl": null,
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     }
   ],
@@ -45,7 +45,7 @@
     "rotation": 34.01934998982652
   },
   "reversed": false,
-  "folder": "MoveShoot",
+  "folder": "Duluth",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.79572355273933

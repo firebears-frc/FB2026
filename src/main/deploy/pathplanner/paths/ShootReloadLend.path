@@ -12,7 +12,7 @@
         "y": 3.947578313253013
       },
       "isLocked": false,
-      "linkedName": "shootLfix"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -28,7 +28,7 @@
         "y": 2.472337349397591
       },
       "isLocked": false,
-      "linkedName": "ShootReloadP2"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -75,7 +75,7 @@
     "rotation": 135.0000000000001
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 2.0,
     "rotation": -121.60750224624891

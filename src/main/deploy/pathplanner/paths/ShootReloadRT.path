@@ -12,7 +12,7 @@
         "y": 0.680192771084337
       },
       "isLocked": false,
-      "linkedName": "ShootRTrench"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ReloadRT"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -68,7 +68,7 @@
     "rotation": 53.7461622625552
   },
   "reversed": false,
-  "folder": "Shoot Reloads",
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": 143.97262661489614
