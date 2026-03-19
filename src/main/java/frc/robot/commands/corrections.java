@@ -37,9 +37,9 @@ public class corrections {
     robotVelocityY = currentSpeeds.vyMetersPerSecond * Math.cos(currentAngle);
     robotVelocityY += currentSpeeds.vxMetersPerSecond * Math.sin(currentAngle);
     Logger.recordOutput("corrections/robot y velocity", robotVelocityY);
-    // sotmVelocitiesForRotation(currentAngle, currentSpeeds.omegaRadiansPerSecond);
-    // Logger.recordOutput("corrections/shooter x velocity", robotVelocityX);
-    // Logger.recordOutput("corrections/shooter y velocity", robotVelocityY);
+    sotmVelocitiesForRotation(currentAngle, currentSpeeds.omegaRadiansPerSecond);
+    Logger.recordOutput("corrections/shooter x velocity", robotVelocityX);
+    Logger.recordOutput("corrections/shooter y velocity", robotVelocityY);
   }
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
@@ -70,8 +70,9 @@ public class corrections {
     double totalShooterOffsetAngle =
         makeAngleInBounds(Math.asin(Math.abs(shooterXOffset) / totalShooterOffset) + Math.PI / 2);
     double currentShooterOffsetAngle = makeAngleInBounds(currentAngle + totalShooterOffsetAngle);
-    robotVelocityX += -rotationSpeed * Math.sin(currentShooterOffsetAngle);
-    robotVelocityY += rotationSpeed * Math.cos(currentShooterOffsetAngle);
+    double linearVelocity = rotationSpeed * totalShooterOffset;
+    robotVelocityX += -linearVelocity * Math.sin(currentShooterOffsetAngle);
+    robotVelocityY += linearVelocity * Math.cos(currentShooterOffsetAngle);
   }
 
   // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
