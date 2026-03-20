@@ -33,6 +33,11 @@ public class Shooter extends SubsystemBase {
   private final double motorFF = 0.0018;
   private final double maxSpeed = 5500;
   private String mode = "off";
+  private boolean ball = false;
+  private boolean shooterReachedSpeed = false;
+  private int ballsShot = 0;
+  private double countingCutOff = 0;
+
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
   // Dashboard Input
@@ -108,6 +113,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "auto";
+          shooterReachedSpeed = false;
         });
   }
 
@@ -115,6 +121,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "fast";
+          shooterReachedSpeed = false;
         });
   }
   // subject to change based on design of the motor and mechanism
@@ -122,6 +129,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "slow";
+          shooterReachedSpeed = false;
         });
   }
 
@@ -129,6 +137,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "static";
+          shooterReachedSpeed = false;
         });
   }
 
@@ -154,6 +163,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "off";
+          shooterReachedSpeed = false;
         });
   }
 
@@ -181,6 +191,23 @@ public class Shooter extends SubsystemBase {
     if (setPoint > maxSpeed) {
       setPoint = maxSpeed;
     }
+
+    if(atSpeed()){
+      shooterReachedSpeed = true;
+    }
+
+    if(mode != "reverse" && mode != "off"){
+      if(shooterReachedSpeed){
+        if(getError() > countingCutOff){
+          if(!ball){
+            ball = true;
+            shooterReachedSpeed = false;
+            ballsShot++;
+            Logger.recordOutput("Shooter/ balls shot", ballsShot);
+          }
+        }
+      }
+  }
 
     ShooterController1.setReference(setPoint, ControlType.kVelocity);
 
