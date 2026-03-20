@@ -97,7 +97,6 @@ public class RobotContainer {
                 new VisionIOPhotonVision(Camera3, robotToCamera3));
 
         shooter = new Shooter(() -> corrections.distanceToHub(drive));
-
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -271,7 +270,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // Aimed Shoot please fix
+    // Right trigger: Auto-Aim shooter when standing still (using distance to hub)
     xboxController
         .rightTrigger()
         .onTrue(
@@ -315,6 +314,7 @@ public class RobotContainer {
     //             hopper.startHopper()))
     //     .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
+    //Left trigger: Shoot without auto aim (but using auto-distance to hub)
     xboxController
         .leftTrigger()
         .onTrue(
