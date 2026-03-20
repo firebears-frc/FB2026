@@ -273,7 +273,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // Aimed Shoot please fix
+    // Auto aim shoot 
     xboxController
         .rightTrigger()
         .onTrue(
@@ -292,6 +292,37 @@ public class RobotContainer {
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
 
+    //Auto shoot without aim
+    xboxController
+        .leftTrigger()
+        .onTrue(
+            Commands.sequence(
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                hopper.startHopper()))
+        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
+
+    //Auto shoot on the move (with auto aim) - not yet including speed limiter
+    xboxController
+        .rightBumper()
+        .onTrue(
+            Commands.sequence(
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
+                hopper.startHopper()))
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> corrections.sotmAutoAimAngle(drive)))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+
+
+    //Button Mappings for simulation with keyboard (Drag keyboard into joy in glass)
     joy1.button(1)
         .onTrue(
             Commands.sequence(
@@ -344,16 +375,9 @@ public class RobotContainer {
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
 
-    xboxController
-        .leftTrigger()
-        .onTrue(
-            Commands.sequence(
-                shooter.autoShooter(),
-                Commands.waitUntil(() -> shooter.atSpeed()),
-                hopper.startHopper()))
-        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
+    
 
-    xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
+    //xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter()); 
     xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
     joy1.button(5).onTrue(shooter.increaseStaticSpeed());
     joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
