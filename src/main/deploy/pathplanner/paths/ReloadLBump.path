@@ -1,0 +1,75 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.337085714285715,
+        "y": 4.786514285714286
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.7243534278740595,
+        "y": 4.613955291713198
+      },
+      "isLocked": false,
+      "linkedName": "ReloadedLtrench"
+    },
+    {
+      "anchor": {
+        "x": 5.315771428571429,
+        "y": 5.343671428571429
+      },
+      "prevControl": {
+        "x": 6.532379661781251,
+        "y": 5.1398247168565785
+      },
+      "nextControl": {
+        "x": 4.680808927228122,
+        "y": 5.450061484489082
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.0505714285714287,
+        "y": 5.343671428571429
+      },
+      "prevControl": {
+        "x": 3.1706495388883233,
+        "y": 5.283608654132845
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RBumpReloaded"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.3385826771653542,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.83,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1440.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 4.0,
+    "rotation": 56.3099324740202
+  },
+  "reversed": false,
+  "folder": "WIP",
+  "idealStartingState": {
+    "velocity": 3.0,
+    "rotation": 139.96974072811037
+  },
+  "useDefaultConstraints": true
+}

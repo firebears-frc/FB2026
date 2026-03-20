@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.0505714285714287,
+        "y": 5.343671428571429
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.3897571428571427,
+        "y": 5.136357142857142
+      },
+      "isLocked": false,
+      "linkedName": "RBumpReloaded"
+    },
+    {
+      "anchor": {
+        "x": 0.8585142857142856,
+        "y": 5.0327
+      },
+      "prevControl": {
+        "x": 1.4027142857142858,
+        "y": 5.0586142857142855
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "DepoStart"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.83,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 1440.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 3.0,
+    "rotation": 125.94211187138237
+  },
+  "reversed": false,
+  "folder": "WIP",
+  "idealStartingState": {
+    "velocity": 4.0,
+    "rotation": 56.3099324740202
+  },
+  "useDefaultConstraints": true
+}

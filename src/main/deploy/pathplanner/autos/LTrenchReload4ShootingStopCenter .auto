@@ -1,0 +1,164 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "armDown"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "startIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LTrench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LReload"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReloadLBump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AdjustingDepo"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depo"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepoLTrench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LTrenchLateReload"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LateReloadLBump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LTrenchCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LTrench"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "WIP",
+  "choreoAuto": false
+}
