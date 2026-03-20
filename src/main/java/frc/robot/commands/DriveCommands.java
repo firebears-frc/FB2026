@@ -66,7 +66,8 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
+      DoubleSupplier omegaSupplier,
+      DoubleSupplier maxLinearSpeed) {
     return Commands.run(
         () -> {
           // Get linear velocity
@@ -79,11 +80,26 @@ public class DriveCommands {
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);
 
+          // Sets maxLinearSpeed to default if a negative value is entered
+          double maxLinearSpeedMPS = maxLinearSpeed.getAsDouble();
+          if(maxLinearSpeedMPS < 0){
+            maxLinearSpeedMPS = drive.getMaxLinearSpeedMetersPerSec();
+          }
+
+          // makes sure that if the total velocity would exceed the set max, it doesn't instead, limiting each wheel speed by the corresponding amount
+          double xVelocity = linearVelocity.getX() * maxLinearSpeedMPS;
+          double yVelocity = linearVelocity.getY() * maxLinearSpeedMPS;
+          if((xVelocity * xVelocity) + (yVelocity * yVelocity) > maxLinearSpeedMPS){
+            double ratio = xVelocity / yVelocity;
+            xVelocity = Math.sqrt(maxLinearSpeedMPS / (1 + (ratio * ratio)));
+            yVelocity = xVelocity / ratio;
+          }
+
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
               new ChassisSpeeds(
-                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                  xVelocity,
+                  yVelocity,
                   omega * drive.getMaxAngularSpeedRadPerSec());
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
@@ -107,7 +123,8 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      Supplier<Rotation2d> rotationSupplier) {
+      Supplier<Rotation2d> rotationSupplier,
+      DoubleSupplier maxLinearSpeed) {
 
     // Create PID controller
     ProfiledPIDController angleController =
@@ -129,12 +146,28 @@ public class DriveCommands {
               double omega =
                   angleController.calculate(
                       drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
+              
+              // sets maxLinearSpeed to the default if a negative value is submitted
+              double maxLinearSpeedMPS = maxLinearSpeed.getAsDouble();
+              if(maxLinearSpeedMPS < 0){
+                maxLinearSpeedMPS = drive.getMaxLinearSpeedMetersPerSec();
+              }
 
+              // makes sure that if the total velocity would exceed the set max, it doesn't instead, limiting each wheel speed by the corresponding amount
+              double xVelocity = linearVelocity.getX() * maxLinearSpeedMPS;
+              double yVelocity = linearVelocity.getY() * maxLinearSpeedMPS;
+              if((xVelocity * xVelocity) + (yVelocity * yVelocity) > maxLinearSpeedMPS){
+                double ratio = xVelocity / yVelocity;
+                xVelocity = Math.sqrt(maxLinearSpeedMPS / (1 + (ratio * ratio)));
+                yVelocity = xVelocity / ratio;
+              }
+
+              
               // Convert to field relative speeds & send command
               ChassisSpeeds speeds =
                   new ChassisSpeeds(
-                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                      xVelocity,
+                      yVelocity,
                       omega);
               boolean isFlipped =
                   DriverStation.getAlliance().isPresent()
@@ -155,7 +188,7 @@ public class DriveCommands {
   // Calls drive at angle with no speed until bot is facing within an acceptable error range of
   // given angle
   public static Command turnToAngle(Drive drive, Supplier<Rotation2d> angle) {
-    return joystickDriveAtAngle(drive, () -> 0.0, () -> 0.0, angle)
+    return joystickDriveAtAngle(drive, () -> 0.0, () -> 0.0, angle, () -> -1)
         .until(
             () -> {
               Rotation2d angleToHub = angle.get();
