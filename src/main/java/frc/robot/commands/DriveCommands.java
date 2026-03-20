@@ -82,14 +82,15 @@ public class DriveCommands {
 
           // Sets maxLinearSpeed to default if a negative value is entered
           double maxLinearSpeedMPS = maxLinearSpeed.getAsDouble();
-          if(maxLinearSpeedMPS < 0){
+          if (maxLinearSpeedMPS < 0) {
             maxLinearSpeedMPS = drive.getMaxLinearSpeedMetersPerSec();
           }
 
-          // makes sure that if the total velocity would exceed the set max, it doesn't instead, limiting each wheel speed by the corresponding amount
+          // makes sure that if the total velocity would exceed the set max, it doesn't instead,
+          // limiting each wheel speed by the corresponding amount
           double xVelocity = linearVelocity.getX() * maxLinearSpeedMPS;
           double yVelocity = linearVelocity.getY() * maxLinearSpeedMPS;
-          if((xVelocity * xVelocity) + (yVelocity * yVelocity) > maxLinearSpeedMPS){
+          if ((xVelocity * xVelocity) + (yVelocity * yVelocity) > maxLinearSpeedMPS) {
             double ratio = xVelocity / yVelocity;
             xVelocity = Math.sqrt(maxLinearSpeedMPS / (1 + (ratio * ratio)));
             yVelocity = xVelocity / ratio;
@@ -97,10 +98,7 @@ public class DriveCommands {
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  xVelocity,
-                  yVelocity,
-                  omega * drive.getMaxAngularSpeedRadPerSec());
+              new ChassisSpeeds(xVelocity, yVelocity, omega * drive.getMaxAngularSpeedRadPerSec());
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;
@@ -146,29 +144,25 @@ public class DriveCommands {
               double omega =
                   angleController.calculate(
                       drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
-              
+
               // sets maxLinearSpeed to the default if a negative value is submitted
               double maxLinearSpeedMPS = maxLinearSpeed.getAsDouble();
-              if(maxLinearSpeedMPS < 0){
+              if (maxLinearSpeedMPS < 0) {
                 maxLinearSpeedMPS = drive.getMaxLinearSpeedMetersPerSec();
               }
 
-              // makes sure that if the total velocity would exceed the set max, it doesn't instead, limiting each wheel speed by the corresponding amount
+              // makes sure that if the total velocity would exceed the set max, it doesn't instead,
+              // limiting each wheel speed by the corresponding amount
               double xVelocity = linearVelocity.getX() * maxLinearSpeedMPS;
               double yVelocity = linearVelocity.getY() * maxLinearSpeedMPS;
-              if((xVelocity * xVelocity) + (yVelocity * yVelocity) > maxLinearSpeedMPS){
+              if ((xVelocity * xVelocity) + (yVelocity * yVelocity) > maxLinearSpeedMPS) {
                 double ratio = xVelocity / yVelocity;
                 xVelocity = Math.sqrt(maxLinearSpeedMPS / (1 + (ratio * ratio)));
                 yVelocity = xVelocity / ratio;
               }
 
-              
               // Convert to field relative speeds & send command
-              ChassisSpeeds speeds =
-                  new ChassisSpeeds(
-                      xVelocity,
-                      yVelocity,
-                      omega);
+              ChassisSpeeds speeds = new ChassisSpeeds(xVelocity, yVelocity, omega);
               boolean isFlipped =
                   DriverStation.getAlliance().isPresent()
                       && DriverStation.getAlliance().get() == Alliance.Red;
