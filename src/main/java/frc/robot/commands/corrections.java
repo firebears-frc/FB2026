@@ -17,6 +17,7 @@ public class corrections {
   private static final double shooterYOffset = Units.inchesToMeters(6);
   private static final double shooterAngleOffset = Units.degreesToRadians(90);
 
+  // sotm stuff
   private static double robotVelocityX = 0;
   private static double robotVelocityY = 0;
   private static double sotmDistance = 0;
@@ -42,14 +43,16 @@ public class corrections {
     return sotmDistance;
   }
 
+  // corrects the current robot velocities to instead be the current shooter velocities
   public static void sotmVelocitiesForRotation(double currentAngle, double rotationSpeed) {
     double totalShooterOffset =
         Math.sqrt((shooterXOffset * shooterXOffset) + (shooterYOffset * shooterYOffset));
     double totalShooterOffsetAngle =
         makeAngleInBounds(Math.asin(Math.abs(shooterXOffset) / totalShooterOffset) + Math.PI / 2);
     double currentShooterOffsetAngle = makeAngleInBounds(currentAngle + totalShooterOffsetAngle);
-    robotVelocityX += -rotationSpeed * Math.sin(currentShooterOffsetAngle);
-    robotVelocityY += rotationSpeed * Math.cos(currentShooterOffsetAngle);
+    double linearVelocity = rotationSpeed * totalShooterOffset;
+    robotVelocityX += -linearVelocity * Math.sin(currentShooterOffsetAngle);
+    robotVelocityY += linearVelocity * Math.cos(currentShooterOffsetAngle);
   }
 
   // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the

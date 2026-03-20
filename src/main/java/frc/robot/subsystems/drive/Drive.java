@@ -170,10 +170,10 @@ public class Drive extends SubsystemBase {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
-    }
 
-    // ~SOTM~ sets the robot velocities in corrections used for sotm
-    corrections.setRobotVelocities(getChassisSpeeds(), getPose().getRotation().getRadians());
+      // ~SOTM~ sets the robot velocities in corrections used for sotm
+      corrections.setRobotVelocities(getChassisSpeeds(), getPose().getRotation().getRadians());
+    }
 
     // Update gyro alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
