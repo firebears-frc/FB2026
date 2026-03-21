@@ -61,7 +61,7 @@
   "reversed": false,
   "folder": "WIP",
   "idealStartingState": {
-    "velocity": 3.0,
+    "velocity": 0.0,
     "rotation": 125.94211187138237
   },
   "useDefaultConstraints": true
