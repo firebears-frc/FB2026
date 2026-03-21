@@ -273,7 +273,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // Auto aim shoot 
+    // Auto aim shoot
     xboxController
         .rightTrigger()
         .onTrue(
@@ -292,7 +292,7 @@ public class RobotContainer {
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
 
-    //Auto shoot without aim
+    // Auto shoot without aim
     xboxController
         .leftTrigger()
         .onTrue(
@@ -302,7 +302,7 @@ public class RobotContainer {
                 hopper.startHopper()))
         .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
-    //Auto shoot on the move (with auto aim) - not yet including speed limiter
+    // Auto shoot on the move (with auto aim) - not yet including speed limiter
     xboxController
         .rightBumper()
         .onTrue(
@@ -321,8 +321,7 @@ public class RobotContainer {
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
 
-
-    //Button Mappings for simulation with keyboard (Drag keyboard into joy in glass)
+    // Button Mappings for simulation with keyboard (Drag keyboard into joy in glass)
     joy1.button(1)
         .onTrue(
             Commands.sequence(
@@ -375,9 +374,7 @@ public class RobotContainer {
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
 
-    
-
-    //xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter()); 
+    // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
     xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
     joy1.button(5).onTrue(shooter.increaseStaticSpeed());
     joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
@@ -389,6 +386,7 @@ public class RobotContainer {
         .onFalse(hopper.regMode(() -> shooter.getMode()));
     xboxController.povDown().onTrue(arm.armDown());
     xboxController.povUp().onTrue(arm.armUp());
+    joy1.button(7).onTrue(intake.reverseIntake()).onFalse(intake.pauseintake());
   }
 
   /**

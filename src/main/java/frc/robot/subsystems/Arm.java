@@ -83,7 +83,7 @@ public class Arm extends SubsystemBase {
   }
 
   private static final class Constants {
-    private static final Rotation2d armDown = Rotation2d.fromDegrees(-8);
+    private static final Rotation2d armDown = Rotation2d.fromDegrees(-11);
     private static final Rotation2d armUp = Rotation2d.fromDegrees(125);
   }
 
@@ -97,10 +97,10 @@ public class Arm extends SubsystemBase {
   }
 
   public void setShoulderSetpoint(Rotation2d setpoint) {
-    if (setpoint.getDegrees() < -10) {
-      setpoint = Rotation2d.fromDegrees(-10);
-    } else if (setpoint.getDegrees() > 120) {
-      setpoint = Rotation2d.fromDegrees(120);
+    if (setpoint.getDegrees() < -11) {
+      setpoint = Rotation2d.fromDegrees(-11);
+    } else if (setpoint.getDegrees() > 125) {
+      setpoint = Rotation2d.fromDegrees(125);
     }
     shoulderSetpoint = setpoint;
   }

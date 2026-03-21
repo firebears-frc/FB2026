@@ -18,7 +18,7 @@ public class corrections {
   // ~CONSTANTS~in meters / radians
   private static final double shooterXOffset = Units.inchesToMeters(-5);
   private static final double shooterYOffset = Units.inchesToMeters(6);
-  private static final double shooterAngleOffset = Units.degreesToRadians(90);
+  private static final double shooterAngleOffset = Units.degreesToRadians(93);
   private static boolean doDrawShotLine =
       false; // Do we want to log the line from shooter to target?
 
@@ -45,16 +45,19 @@ public class corrections {
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
   // in any other zone
   public static boolean aimedAtAutoTarget(Drive drive) {
+    // ~CONSTANTS~
+    double tolerance = 1;
     boolean aimedAtTarget = false;
     if (currentZone(drive) <= 0) {
       aimedAtTarget =
-          Math.abs(angleToHub(drive).getDegrees() - drive.getPose().getRotation().getDegrees()) < 3;
+          Math.abs(angleToHub(drive).getDegrees() - drive.getPose().getRotation().getDegrees())
+              < tolerance;
     } else {
       aimedAtTarget =
           Math.abs(
                   angleToNearestBump(drive).getDegrees()
                       - drive.getPose().getRotation().getDegrees())
-              < 3;
+              < tolerance;
     }
     Logger.recordOutput("corrections/aimed at target", aimedAtTarget);
     return aimedAtTarget;
