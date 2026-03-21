@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
   private final double motorI = 0.0;
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
-  private final double maxSpeed = 5500;
+  private final double maxSpeed = 6500;
   private String mode = "off";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
@@ -83,13 +83,23 @@ public class Shooter extends SubsystemBase {
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Populate speed calculator with values (subject to change based on testing) (Meters,RPM)
-    //speedCalculator.put(4.572, 3650.0);
-    //speedCalculator.put(3.657, 3150.0);
-    //speedCalculator.put(2.438, 2850.0);
-    //speedCalculator.put(2.032, 2750.0);
+    // speedCalculator.put(4.572, 3650.0);
+    // speedCalculator.put(3.657, 3150.0);
+    // speedCalculator.put(2.438, 2850.0);
+    // speedCalculator.put(2.032, 2750.0);
     speedCalculator.put(3.8, 3400.0);
     speedCalculator.put(3.1, 3250.0);
     speedCalculator.put(2.9, 3100.0);
+    speedCalculator.put(5.25, 3950.0);
+    speedCalculator.put(3.8, 3400.0);
+    speedCalculator.put(3.4, 3350.0);
+    speedCalculator.put(3.1, 3250.0);
+    speedCalculator.put(2.9, 3100.0);
+    speedCalculator.put(2.0, 2900.0);
+    speedCalculator.put(2.5, 2900.0);
+    speedCalculator.put(4.5, 3800.0);
+    speedCalculator.put(5.0, 5200.0);
+    speedCalculator.put(6.6, 6500.0);
   }
 
   @AutoLogOutput(key = "Shooter/error")
