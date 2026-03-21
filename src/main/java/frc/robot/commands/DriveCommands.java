@@ -90,9 +90,13 @@ public class DriveCommands {
           // limiting each wheel speed by the corresponding amount
           double xVelocity = linearVelocity.getX() * maxLinearSpeedMPS;
           double yVelocity = linearVelocity.getY() * maxLinearSpeedMPS;
-          if ((xVelocity * xVelocity) + (yVelocity * yVelocity) > maxLinearSpeedMPS) {
+          double signX = xVelocity / Math.abs(xVelocity);
+          if (Math.sqrt((xVelocity * xVelocity) + (yVelocity * yVelocity)) > maxLinearSpeedMPS) {
             double ratio = xVelocity / yVelocity;
-            xVelocity = Math.sqrt(maxLinearSpeedMPS / (1 + (ratio * ratio)));
+            xVelocity =
+                signX
+                    * Math.sqrt(
+                        (maxLinearSpeedMPS * maxLinearSpeedMPS) / (1 + (1 / (ratio * ratio))));
             yVelocity = xVelocity / ratio;
           }
 
@@ -155,9 +159,14 @@ public class DriveCommands {
               // limiting each wheel speed by the corresponding amount
               double xVelocity = linearVelocity.getX() * maxLinearSpeedMPS;
               double yVelocity = linearVelocity.getY() * maxLinearSpeedMPS;
-              if ((xVelocity * xVelocity) + (yVelocity * yVelocity) > maxLinearSpeedMPS) {
+              double signX = xVelocity / Math.abs(xVelocity);
+              if (Math.sqrt((xVelocity * xVelocity) + (yVelocity * yVelocity))
+                  > maxLinearSpeedMPS) {
                 double ratio = xVelocity / yVelocity;
-                xVelocity = Math.sqrt(maxLinearSpeedMPS / (1 + (ratio * ratio)));
+                xVelocity =
+                    signX
+                        * Math.sqrt(
+                            (maxLinearSpeedMPS * maxLinearSpeedMPS) / (1 + (1 / (ratio * ratio))));
                 yVelocity = xVelocity / ratio;
               }
 
