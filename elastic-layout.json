@@ -10,7 +10,7 @@
           {
             "title": "Auto Choices",
             "x": 0.0,
-            "y": 0.0,
+            "y": 128.0,
             "width": 384.0,
             "height": 256.0,
             "type": "ComboBox Chooser",
@@ -144,7 +144,7 @@
           {
             "title": "GitBranch",
             "x": 0.0,
-            "y": 512.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
@@ -158,7 +158,7 @@
           {
             "title": "GitSHA",
             "x": 256.0,
-            "y": 512.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
@@ -172,7 +172,7 @@
           {
             "title": "GitDirty",
             "x": 512.0,
-            "y": 512.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Text Display",

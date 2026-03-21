@@ -18,8 +18,6 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToCamera3;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -71,7 +69,6 @@ public class RobotContainer {
   private final CommandJoystick joy2 = new CommandJoystick(1); // left
   private final CommandXboxController xboxController = new CommandXboxController(2);
 
-  private final UsbCamera driveCamera;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -151,8 +148,6 @@ public class RobotContainer {
 
         break;
     }
-    driveCamera = CameraServer.startAutomaticCapture();
-    driveCamera.setResolution(320, 240);
     corrections.createTimeCalculator();
     configureButtonBindings();
     configureAutoCommands();
