@@ -187,6 +187,8 @@ public class RobotContainer {
                 DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 hopper.startHopper()),
+            "spinUpShooter",
+            shooter.autoShooter(),
             "stopShoot",
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()),

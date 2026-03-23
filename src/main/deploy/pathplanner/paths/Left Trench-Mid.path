@@ -1,0 +1,140 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.3,
+        "y": 7.4
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.55,
+        "y": 7.4
+      },
+      "isLocked": true,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.5,
+        "y": 7.4
+      },
+      "prevControl": {
+        "x": 4.500000000000009,
+        "y": 7.4
+      },
+      "nextControl": {
+        "x": 9.0,
+        "y": 7.4
+      },
+      "isLocked": true,
+      "linkedName": "Left Trench Exit"
+    },
+    {
+      "anchor": {
+        "x": 7.9,
+        "y": 4.6
+      },
+      "prevControl": {
+        "x": 8.4,
+        "y": 4.6
+      },
+      "nextControl": {
+        "x": 7.4,
+        "y": 4.6
+      },
+      "isLocked": true,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.5,
+        "y": 7.4
+      },
+      "prevControl": {
+        "x": 6.5,
+        "y": 7.4
+      },
+      "nextControl": {
+        "x": 4.5,
+        "y": 7.4
+      },
+      "isLocked": true,
+      "linkedName": "Left Trench Exit"
+    },
+    {
+      "anchor": {
+        "x": 3.8,
+        "y": 7.4
+      },
+      "prevControl": {
+        "x": 4.05,
+        "y": 7.4
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": "Left Trench Entrance"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9982964224872233,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.2974186307519648,
+      "rotationDegrees": -75.0
+    },
+    {
+      "waypointRelativePos": 2.5005611672278327,
+      "rotationDegrees": 135.0
+    },
+    {
+      "waypointRelativePos": 3.0976430976430978,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.3990147783251234,
+      "maxWaypointRelativePos": 2.300492610837437,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 8.0,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 1440.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "spinUpShooter",
+      "waypointRelativePos": 2.7047244094488168,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 270.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 14.999999999999998
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0.0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

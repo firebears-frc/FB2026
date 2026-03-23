@@ -118,7 +118,7 @@ public class Arm extends SubsystemBase {
   }
 
   public Command armDown() {
-    return positionCommand(() -> Constants.armDown, () -> 3.0);
+    return positionCommand(() -> Constants.armDown, () -> 10.0);
   }
 
   public Command armUp() {
