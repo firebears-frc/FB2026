@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.corrections;
 import frc.robot.util.SparkUtil;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -23,7 +24,10 @@ public class Shooter extends SubsystemBase {
   private SparkFlex ShooterMotor2 = new SparkFlex(15, MotorType.kBrushless);
   private final SparkClosedLoopController ShooterController1;
   private final SparkClosedLoopController ShooterController2;
+
+  // private final LaserCan lc;//It is laser coming through the shooter
   private double setPoint = 0;
+
   // Variables that can be updated
   private static final int smartShooterCurrentLimit = 75;
   private static final int secondaryShooterCurrentLimit = 85;
@@ -31,7 +35,7 @@ public class Shooter extends SubsystemBase {
   private final double motorI = 0.0;
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
-  private final double maxSpeed = 5500;
+  private final double maxSpeed = 6500;
   private String mode = "off";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
 
@@ -43,6 +47,18 @@ public class Shooter extends SubsystemBase {
 
   public Shooter(DoubleSupplier distanceToHubSupplier) {
     this.distanceToHubSupplier = distanceToHubSupplier;
+
+    // //laser
+    //  lc = new LaserCan(16);
+
+    // try {
+    // lc.setRangingMode(LaserCan.RangingMode.SHORT);
+    //  lc.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
+    //  lc.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+    // } catch (ConfigurationFailedException e) {
+    // System.out.println("Configuration failed! " + e);
+    // }
+
     // Configure Motor 1
     ShooterController1 = ShooterMotor1.getClosedLoopController();
     var ShooterConfig1 = new SparkFlexConfig();
@@ -81,10 +97,15 @@ public class Shooter extends SubsystemBase {
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Populate speed calculator with values (subject to change based on testing) (Meters,RPM)
-    speedCalculator.put(4.572, 3650.0);
-    speedCalculator.put(3.657, 3150.0);
-    speedCalculator.put(2.438, 2850.0);
-    speedCalculator.put(2.032, 2750.0);
+    speedCalculator.put(2.0, 2900.0);
+    speedCalculator.put(2.5, 2900.0);
+    speedCalculator.put(2.9, 3100.0);
+    speedCalculator.put(3.1, 3250.0);
+    speedCalculator.put(3.4, 3350.0);
+    speedCalculator.put(3.8, 3400.0);
+    speedCalculator.put(4.5, 3800.0);
+    speedCalculator.put(5.25, 3950.0);
+    speedCalculator.put(6.6, 6500.0);
   }
 
   @AutoLogOutput(key = "Shooter/error")
@@ -108,6 +129,13 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "auto";
+        });
+  }
+
+  public Command sotmAutoShooter() {
+    return runOnce(
+        () -> {
+          mode = "sotm";
         });
   }
 
@@ -160,6 +188,14 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
 
+    // Are we shooting (we only update the shotline if we are shooting)
+    boolean shooting =
+        mode.equals("fast") || mode.equals("slow") || mode.equals("auto") || mode.equals("sotm");
+    corrections.setDrawShotLine(shooting);
+
+    // Get the distance from the
+    double distance = distanceToHubSupplier.getAsDouble();
+
     if (mode == "fast") {
       setPoint = 3500;
     } else if (mode == "slow") {
@@ -167,7 +203,9 @@ public class Shooter extends SubsystemBase {
     } else if (mode == "reverse") {
       setPoint = -2600;
     } else if (mode == "auto") {
-      setPoint = speedCalculator.get(distanceToHubSupplier.getAsDouble());
+      setPoint = speedCalculator.get(distance);
+    } else if (mode == "sotm") {
+      setPoint = speedCalculator.get(corrections.sotmGetDistance());
     } else if (mode == "static") {
       setPoint = staticShooterSpeed.get();
     } else {
@@ -184,11 +222,23 @@ public class Shooter extends SubsystemBase {
 
     ShooterController1.setReference(setPoint, ControlType.kVelocity);
 
+    // LaserCan.Measurement measurement = lc.getMeasurement();
+    // if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT)
+    // {
+    //   Logger.recordOutput("Shooter/laser", measurement.distance_mm);
+    //    Logger.recordOutput("Shooter/status", "reliable");
+    // } else {
+    //   Logger.recordOutput("Shooter/laser", measurement.distance_mm);
+    //    Logger.recordOutput("Shooter/status","unreliable");
+    //   // You can still use distance_mm in here, if you're ok tolerating a clamped value or an
+    // unreliable measurement.
+    // }
+
     Logger.recordOutput("Shooter1/Output", ShooterMotor1.getAppliedOutput());
     Logger.recordOutput("Shooter2/Output", ShooterMotor2.getAppliedOutput());
     Logger.recordOutput("Shooter/mode", mode);
     Logger.recordOutput("Shooter/speed", ShooterMotor1.getEncoder().getVelocity());
-    Logger.recordOutput("Odometry/distance to hub", distanceToHubSupplier.getAsDouble());
+    Logger.recordOutput("Odometry/distance to hub", distance);
     Logger.recordOutput("Shooter/setPoint", setPoint);
   }
 }

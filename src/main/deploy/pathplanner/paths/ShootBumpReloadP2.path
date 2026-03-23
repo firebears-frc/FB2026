@@ -12,7 +12,7 @@
         "y": 2.887590361445783
       },
       "isLocked": false,
-      "linkedName": "TrenchReloadFix"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -63,10 +63,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.83,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1440.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 270.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -75,7 +75,7 @@
     "rotation": 121.18497465873838
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 2.0,
     "rotation": -109.61787940811823

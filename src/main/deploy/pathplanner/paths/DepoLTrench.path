@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.8585142857142856,
+        "y": 6.807828571428571
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8623222462942624,
+        "y": 7.221844590591994
+      },
+      "isLocked": false,
+      "linkedName": "DepoEnd"
+    },
+    {
+      "anchor": {
+        "x": 3.9423142857142857,
+        "y": 7.3909
+      },
+      "prevControl": {
+        "x": 2.2179248658318427,
+        "y": 7.174615384615384
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "LTrenchStart"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 270.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 1.5074357587749951
+  },
+  "reversed": false,
+  "folder": "WIP",
+  "idealStartingState": {
+    "velocity": 4.0,
+    "rotation": 113.19859051364818
+  },
+  "useDefaultConstraints": true
+}

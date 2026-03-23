@@ -1,24 +1,24 @@
 {
-  "fileName": "StudicaLib.json",
-  "name": "StudicaLib",
+  "fileName": "libgrapplefrc2026.json",
+  "name": "libgrapplefrc",
   "version": "2026.0.0",
   "frcYear": "2026",
-  "uuid": "963ef341-8abd-4981-a969-c8ae3f592e82",
+  "uuid": "8ef3423d-9532-4665-8339-206dae1d7168",
   "mavenUrls": [
-    "https://dev.studica.com/maven/release/2026/"
+    "https://storage.googleapis.com/grapple-frc-maven"
   ],
-  "jsonUrl": "https://dev.studica.com/maven/release/2026/json/StudicaLib-2026.0.0.json",
+  "jsonUrl": "https://storage.googleapis.com/grapple-frc-maven/libgrapplefrc2026.json",
   "javaDependencies": [
     {
-      "groupId": "com.studica.frc",
-      "artifactId": "StudicaLib-java",
+      "groupId": "au.grapplerobotics",
+      "artifactId": "libgrapplefrcjava",
       "version": "2026.0.0"
     }
   ],
   "jniDependencies": [
     {
-      "groupId": "com.studica.frc",
-      "artifactId": "StudicaLib-driver",
+      "groupId": "au.grapplerobotics",
+      "artifactId": "libgrapplefrcdriver",
       "version": "2026.0.0",
       "skipInvalidPlatforms": true,
       "isJar": false,
@@ -34,12 +34,12 @@
   ],
   "cppDependencies": [
     {
-      "groupId": "com.studica.frc",
-      "artifactId": "StudicaLib-cpp",
+      "groupId": "au.grapplerobotics",
+      "artifactId": "libgrapplefrccpp",
       "version": "2026.0.0",
-      "libName": "StudicaLib",
+      "libName": "grapplefrc",
       "headerClassifier": "headers",
-      "sharedLibrary": false,
+      "sharedLibrary": true,
       "skipInvalidPlatforms": true,
       "binaryPlatforms": [
         "windowsx86-64",
@@ -51,12 +51,12 @@
       ]
     },
     {
-      "groupId": "com.studica.frc",
-      "artifactId": "StudicaLib-driver",
+      "groupId": "au.grapplerobotics",
+      "artifactId": "libgrapplefrcdriver",
       "version": "2026.0.0",
-      "libName": "StudicaLibDriver",
+      "libName": "grapplefrcdriver",
       "headerClassifier": "headers",
-      "sharedLibrary": false,
+      "sharedLibrary": true,
       "skipInvalidPlatforms": true,
       "binaryPlatforms": [
         "windowsx86-64",

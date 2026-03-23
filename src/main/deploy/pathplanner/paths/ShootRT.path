@@ -12,7 +12,7 @@
         "y": 0.505349397590362
       },
       "isLocked": false,
-      "linkedName": "ReloadRF"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -38,10 +38,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.83,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1440.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 270.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -50,7 +50,7 @@
     "rotation": 129.80557109226535
   },
   "reversed": false,
-  "folder": "Shoot Reloads",
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 4.0,
     "rotation": -115.20112364547512

@@ -12,7 +12,7 @@
         "y": 5.040349397590362
       },
       "isLocked": false,
-      "linkedName": "LBumpReloadBumpStart"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -52,7 +52,7 @@
         "y": 5.641373493975904
       },
       "prevControl": {
-        "x": 3.844277108433731,
+        "x": 3.8442771084337313,
         "y": 5.160554216867471
       },
       "nextControl": null,
@@ -67,7 +67,7 @@
     },
     {
       "waypointRelativePos": 1.7999999999999883,
-      "rotationDegrees": 166.75512992094113
+      "rotationDegrees": 166.75512992094116
     }
   ],
   "constraintZones": [
@@ -101,10 +101,10 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.83,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1440.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 270.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -113,7 +113,7 @@
     "rotation": 38.92754359279216
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 46.84761026599443

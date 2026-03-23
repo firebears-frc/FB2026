@@ -12,7 +12,7 @@
         "y": 7.2368192771084345
       },
       "isLocked": false,
-      "linkedName": "ReloadRBLT"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -54,10 +54,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.83,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1440.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 270.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -66,7 +66,7 @@
     "rotation": 48.680622173030464
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 2.0,
     "rotation": 120.46554491946004

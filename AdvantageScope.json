@@ -7,7 +7,7 @@
       "height": 926,
       "state": {
         "sidebar": {
-          "width": 340,
+          "width": 280,
           "expanded": [
             "/AdvantageKit/RealOutputs/SwerveStates/Measured/0",
             "/AdvantageKit/RealOutputs/SwerveStates/Measured/1",
@@ -24,16 +24,14 @@
             "/AdvantageKit/RadioStatus/Status",
             "/AdvantageKit/RadioStatus/Status/networkStatus6",
             "/AdvantageKit/Vision/Camera3/PoseObservations/0",
-            "/AdvantageKit/RealOutputs/Vision/Camera0/TagPoses",
-            "/AdvantageKit/RealOutputs/Vision/Camera1/TagPoses",
-            "/AdvantageKit/RealOutputs/Vision/Camera2/TagPoses",
             "/AdvantageKit/RealOutputs/SwerveChassisSpeeds/Setpoints",
             "/AdvantageKit/RealOutputs/SwerveChassisSpeeds/Measured",
-            "/AdvantageKit/RealOutputs"
+            "/AdvantageKit/RealOutputs",
+            "/AdvantageKit/RealOutputs/Odometry"
           ]
         },
         "tabs": {
-          "selected": 2,
+          "selected": 1,
           "tabs": [
             {
               "type": 0,
@@ -58,21 +56,43 @@
                     }
                   },
                   {
-                    "type": "ghost",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/RobotPosesAccepted",
+                    "type": "vision",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Camera0/TagPoses",
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
-                      "color": "#00ff00"
+                      "color": "#00ff00",
+                      "size": "normal"
                     }
                   },
                   {
-                    "type": "ghost",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/RobotPosesRejected",
+                    "type": "vision",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Camera1/TagPoses",
                     "logType": "Pose3d[]",
                     "visible": true,
                     "options": {
-                      "color": "#ff0000"
+                      "color": "#ff0000",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Camera2/TagPoses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#0000ff",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "vision",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Camera3/TagPoses",
+                    "logType": "Pose3d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#ff8c00",
+                      "size": "normal"
                     }
                   },
                   {
@@ -83,6 +103,25 @@
                     "options": {
                       "position": "back"
                     }
+                  },
+                  {
+                    "type": "ghost",
+                    "logKey": "NT:/PathPlanner/targetPose",
+                    "logType": "Pose2d",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00"
+                    }
+                  },
+                  {
+                    "type": "trajectory",
+                    "logKey": "NT:/AdvantageKit/RealOutputs/Odometry/Trajectory",
+                    "logType": "Pose2d[]",
+                    "visible": true,
+                    "options": {
+                      "color": "#00ff00",
+                      "size": "normal"
+                    }
                   }
                 ],
                 "field": "FRC:2026 Field",
@@ -91,67 +130,6 @@
               },
               "controllerUUID": "79ogcexritzc14wr0ms81dekej6qfjtv",
               "renderer": null,
-              "controlsHeight": 200
-            },
-            {
-              "type": 3,
-              "title": "3D Field",
-              "controller": {
-                "sources": [
-                  {
-                    "type": "robot",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Odometry/Robot",
-                    "logType": "Pose2d",
-                    "visible": true,
-                    "options": {
-                      "model": "2026 KitBot"
-                    }
-                  },
-                  {
-                    "type": "ghost",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/RobotPosesAccepted",
-                    "logType": "Pose3d[]",
-                    "visible": true,
-                    "options": {
-                      "model": "2026 KitBot",
-                      "color": "#00ff00"
-                    }
-                  },
-                  {
-                    "type": "ghost",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/RobotPosesRejected",
-                    "logType": "Pose3d[]",
-                    "visible": true,
-                    "options": {
-                      "model": "2026 KitBot",
-                      "color": "#ff0000"
-                    }
-                  },
-                  {
-                    "type": "axes",
-                    "logKey": "NT:/AdvantageKit/RealOutputs/Vision/Summary/TagPoses",
-                    "logType": "Pose3d[]",
-                    "visible": true,
-                    "options": {}
-                  }
-                ],
-                "game": "FRC:2026 Field"
-              },
-              "controllerUUID": "vve9fywuz9dknbk7pn33abaiiph14eqb",
-              "renderer": {
-                "cameraIndex": -1,
-                "orbitFov": 50,
-                "cameraPosition": [
-                  7.861058602745796,
-                  2.915943594225639,
-                  -5.797380073804594
-                ],
-                "cameraTarget": [
-                  4.167408170967929,
-                  -1.4111862837913896,
-                  0.05223555565048319
-                ]
-              },
               "controlsHeight": 200
             },
             {

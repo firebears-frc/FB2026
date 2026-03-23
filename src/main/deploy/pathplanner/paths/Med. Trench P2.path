@@ -8,11 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.266462196861626,
+        "x": 3.2664621968616245,
         "y": 7.392582025677603
       },
       "isLocked": false,
-      "linkedName": "Med. Trench L"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -27,7 +27,7 @@
         "x": 8.360570613409415,
         "y": 7.314950071326677
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -43,7 +43,7 @@
         "x": 7.459472182596292,
         "y": 4.67546362339515
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -59,7 +59,7 @@
         "x": 6.328274880023771,
         "y": 7.5103865404495185
       },
-      "isLocked": false,
+      "isLocked": true,
       "linkedName": null
     },
     {
@@ -72,8 +72,8 @@
         "y": 7.352185434889893
       },
       "nextControl": null,
-      "isLocked": false,
-      "linkedName": "Med. Trench L"
+      "isLocked": true,
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -116,10 +116,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.83,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1440.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 270.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -128,7 +128,7 @@
     "rotation": 26.565051177078058
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Duluth",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 26.565051177078058

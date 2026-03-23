@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.2239229671897287,
-        "y": 2.8122967189728967
+        "x": 2.257885714285714,
+        "y": 5.654642857142857
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5991440798858774,
-        "y": 2.566462196861627
+        "x": 2.6725142857142856,
+        "y": 6.743042857142857
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Shooting3"
     },
     {
       "anchor": {
-        "x": 7.791269614835947,
-        "y": 2.4111982881597713
+        "x": 3.9423142857142857,
+        "y": 7.3909
       },
       "prevControl": {
-        "x": 7.4548644793152645,
-        "y": 2.1136091298145514
+        "x": 2.8798285714285714,
+        "y": 7.170628571428572
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootReloadRP1"
+      "linkedName": "LTrenchStart"
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.83,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1440.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 270.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 3.0,
+    "rotation": 1.5074357587749951
   },
   "reversed": false,
-  "folder": "Shoot Reloads",
+  "folder": "WIP",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -49.53777250790663
+    "velocity": 3.0,
+    "rotation": 50.57219780396383
   },
   "useDefaultConstraints": true
 }

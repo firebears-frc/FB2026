@@ -12,7 +12,7 @@
         "y": 3.947578313253013
       },
       "isLocked": false,
-      "linkedName": "shootLfix"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -28,7 +28,7 @@
         "y": 2.472337349397591
       },
       "isLocked": false,
-      "linkedName": "ShootReloadP2"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -63,10 +63,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.83,
-    "maxAcceleration": 8.0,
-    "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1440.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 270.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -75,7 +75,7 @@
     "rotation": 135.0000000000001
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pre-Duluth",
   "idealStartingState": {
     "velocity": 2.0,
     "rotation": -121.60750224624891

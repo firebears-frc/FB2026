@@ -7,23 +7,18 @@
 
 package frc.robot;
 
-import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera4Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera6Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera7Name;
-import static frc.robot.subsystems.vision.VisionConstants.camera8Name;
+import static frc.robot.subsystems.vision.VisionConstants.Camera0;
+import static frc.robot.subsystems.vision.VisionConstants.Camera1;
+import static frc.robot.subsystems.vision.VisionConstants.Camera2;
+import static frc.robot.subsystems.vision.VisionConstants.Camera3;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera2;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera4;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera6;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera7;
-import static frc.robot.subsystems.vision.VisionConstants.robotToCamera8;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera3;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -36,9 +31,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.corrections;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ArmSim;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.HopperSim;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeSim;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOCanandgyro;
@@ -70,7 +69,6 @@ public class RobotContainer {
   private final CommandJoystick joy2 = new CommandJoystick(1); // left
   private final CommandXboxController xboxController = new CommandXboxController(2);
 
-  private final UsbCamera driveCamera;
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -91,12 +89,10 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera1Name, robotToCamera1),
-                new VisionIOPhotonVision(camera2Name, robotToCamera2),
-                new VisionIOPhotonVision(camera4Name, robotToCamera4),
-                new VisionIOPhotonVision(camera6Name, robotToCamera6),
-                new VisionIOPhotonVision(camera7Name, robotToCamera7),
-                new VisionIOPhotonVision(camera8Name, robotToCamera8));
+                new VisionIOPhotonVision(Camera0, robotToCamera0),
+                new VisionIOPhotonVision(Camera1, robotToCamera1),
+                new VisionIOPhotonVision(Camera2, robotToCamera2),
+                new VisionIOPhotonVision(Camera3, robotToCamera3));
 
         shooter = new Shooter(() -> corrections.distanceToHub(drive));
         hopper = new Hopper();
@@ -118,17 +114,19 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera1Name, robotToCamera1),
-                new VisionIOPhotonVision(camera2Name, robotToCamera2),
-                new VisionIOPhotonVision(camera4Name, robotToCamera4),
-                new VisionIOPhotonVision(camera6Name, robotToCamera6),
-                new VisionIOPhotonVision(camera7Name, robotToCamera7),
-                new VisionIOPhotonVision(camera8Name, robotToCamera8));
+                new VisionIOPhotonVision(Camera0, robotToCamera0),
+                new VisionIOPhotonVision(Camera1, robotToCamera1),
+                new VisionIOPhotonVision(Camera2, robotToCamera2),
+                new VisionIOPhotonVision(Camera3, robotToCamera3));
+        // new VisionIOPhotonVisionSim(Camera0, robotToCamera0, drive::getPose),
+        // new VisionIOPhotonVisionSim(Camera1, robotToCamera1, drive::getPose),
+        // new VisionIOPhotonVisionSim(Camera2, robotToCamera2, drive::getPose),
+        // new VisionIOPhotonVisionSim(Camera3, robotToCamera3, drive::getPose));
 
-        shooter = new Shooter(() -> corrections.distanceToHub(drive));
-        hopper = new Hopper();
-        intake = new Intake();
-        arm = new Arm();
+        shooter = new ShooterSim(() -> corrections.distanceToHub(drive));
+        hopper = new HopperSim();
+        intake = new IntakeSim();
+        arm = new ArmSim();
 
         break;
 
@@ -150,8 +148,7 @@ public class RobotContainer {
 
         break;
     }
-    driveCamera = CameraServer.startAutomaticCapture();
-    driveCamera.setResolution(320, 240);
+    corrections.createTimeCalculator();
     configureButtonBindings();
     configureAutoCommands();
     // Set up auto routines
@@ -190,6 +187,8 @@ public class RobotContainer {
                 DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 hopper.startHopper()),
+            "spinUpShooter",
+            shooter.autoShooter(),
             "stopShoot",
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()),
@@ -270,7 +269,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // Aimed Shoot please fix
+    // Right trigger: Auto-Aim shooter when standing still (using distance to hub)
     xboxController
         .rightTrigger()
         .onTrue(
@@ -289,6 +288,32 @@ public class RobotContainer {
             Commands.sequence(
                 hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
 
+    // joy1.button(1)
+    //     .onTrue(
+    //         Commands.sequence(
+    //             shooter.autoShooter(),
+    //             Commands.waitUntil(() -> shooter.atSpeed()),
+    //             Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
+    //             hopper.startHopper()))
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -joy1.getY(),
+    //             () -> -joy1.getX(),
+    //             () -> corrections.autoAimAngle(drive)))
+    //     .onFalse(
+    //         Commands.sequence(
+    //             hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+
+    // joy1.button(2)
+    //     .onTrue(
+    //         Commands.sequence(
+    //             shooter.autoShooter(),
+    //             Commands.waitUntil(() -> shooter.atSpeed()),
+    //             hopper.startHopper()))
+    //     .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
+
+    // Left trigger: Shoot without auto aim (but using auto-distance to hub)
     xboxController
         .leftTrigger()
         .onTrue(
@@ -298,7 +323,79 @@ public class RobotContainer {
                 hopper.startHopper()))
         .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
-    xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
+    // Auto shoot on the move (with auto aim) - not yet including speed limiter
+    xboxController
+        .rightBumper()
+        .onTrue(
+            Commands.sequence(
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
+                hopper.startHopper()))
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> corrections.sotmAutoAimAngle(drive)))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+
+    // Button Mappings for simulation with keyboard (Drag keyboard into joy in glass)
+    joy1.button(1)
+        .onTrue(
+            Commands.sequence(
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
+                hopper.startHopper()))
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> corrections.autoAimAngle(drive)))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+
+    joy1.button(2)
+        .onTrue(
+            Commands.sequence(
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                hopper.startHopper()))
+        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
+
+    // sotm drive at angle
+    joy1.button(3)
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> MathUtil.clamp(-joy1.getY(), -0.5, 0.5),
+                () -> MathUtil.clamp(-joy1.getX(), -0.5, 0.5),
+                () -> corrections.sotmAutoAimAngle(drive)));
+
+    // sotm drive and shoot
+    joy1.button(4)
+        .onTrue(
+            Commands.sequence(
+                shooter.autoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
+                hopper.startHopper()))
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> corrections.sotmAutoAimAngle(drive)))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+
+    // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
     xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
     joy1.button(5).onTrue(shooter.increaseStaticSpeed());
     joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
@@ -310,6 +407,7 @@ public class RobotContainer {
         .onFalse(hopper.regMode(() -> shooter.getMode()));
     xboxController.povDown().onTrue(arm.armDown());
     xboxController.povUp().onTrue(arm.armUp());
+    joy1.button(7).onTrue(intake.reverseIntake()).onFalse(intake.pauseintake());
   }
 
   /**
