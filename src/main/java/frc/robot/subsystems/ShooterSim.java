@@ -41,10 +41,15 @@ public class ShooterSim extends Shooter {
     this.distanceToHubSupplier = distanceToHubSupplier;
 
     // Populate interpolation table (same as real shooter)
-    speedCalculator.put(4.572, 3650.0);
-    speedCalculator.put(3.657, 3150.0);
-    speedCalculator.put(2.438, 2850.0);
-    speedCalculator.put(2.032, 2750.0);
+    speedCalculator.put(2.0, 2900.0);
+    speedCalculator.put(2.5, 2900.0);
+    speedCalculator.put(2.9, 3100.0);
+    speedCalculator.put(3.1, 3250.0);
+    speedCalculator.put(3.4, 3350.0);
+    speedCalculator.put(3.8, 3400.0);
+    speedCalculator.put(4.5, 3800.0);
+    speedCalculator.put(5.25, 3950.0);
+    speedCalculator.put(6.6, 6500.0);
   }
 
   // --- Override commands so they update simMode instead of real mode ---
