@@ -103,6 +103,132 @@ public class DriveCommands {
    * Possible use cases include snapping to an angle, aiming at a vision target, or controlling
    * absolute rotation with a joystick.
    */
+  public static Command joystickDrive(
+      Drive drive,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier,
+      DoubleSupplier omegaSupplier,
+      DoubleSupplier maxLinearSpeed) {
+    return Commands.run(
+        () -> {
+          // Get linear velocity
+          Translation2d linearVelocity =
+              getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+          // Apply rotation deadband
+          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+
+          // Square rotation value for more precise control
+          omega = Math.copySign(omega * omega, omega);
+
+          // Sets maxLinearSpeed to default if a negative value is entered
+          double maxLinearSpeedMPS = maxLinearSpeed.getAsDouble();
+          if (maxLinearSpeedMPS < 0) {
+            maxLinearSpeedMPS = drive.getMaxLinearSpeedMetersPerSec();
+          }
+
+          // makes sure that if the total velocity would exceed the set max, it doesn't instead,
+          // limiting each wheel speed by the corresponding amount
+          double xVelocity = linearVelocity.getX() * maxLinearSpeedMPS;
+          double yVelocity = linearVelocity.getY() * maxLinearSpeedMPS;
+          double signX = xVelocity / Math.abs(xVelocity);
+          if (Math.sqrt((xVelocity * xVelocity) + (yVelocity * yVelocity)) > maxLinearSpeedMPS) {
+            double ratio = xVelocity / yVelocity;
+            xVelocity =
+                signX
+                    * Math.sqrt(
+                        (maxLinearSpeedMPS * maxLinearSpeedMPS) / (1 + (1 / (ratio * ratio))));
+            yVelocity = xVelocity / ratio;
+          }
+
+          // Convert to field relative speeds & send command
+          ChassisSpeeds speeds =
+              new ChassisSpeeds(xVelocity, yVelocity, omega * drive.getMaxAngularSpeedRadPerSec());
+          boolean isFlipped =
+              DriverStation.getAlliance().isPresent()
+                  && DriverStation.getAlliance().get() == Alliance.Red;
+          drive.runVelocity(
+              ChassisSpeeds.fromFieldRelativeSpeeds(
+                  speeds,
+                  isFlipped
+                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                      : drive.getRotation()));
+        },
+        drive);
+  }
+
+  /**
+   * Field relative drive command using joystick for linear control and PID for angular control.
+   * Possible use cases include snapping to an angle, aiming at a vision target, or controlling
+   * absolute rotation with a joystick. Edited to take maximum speed value
+   */
+  public static Command joystickDriveAtAngle(
+      Drive drive,
+      DoubleSupplier xSupplier,
+      DoubleSupplier ySupplier,
+      Supplier<Rotation2d> rotationSupplier,
+      DoubleSupplier maxLinearSpeed) {
+
+    // Create PID controller
+    ProfiledPIDController angleController =
+        new ProfiledPIDController(
+            ANGLE_KP,
+            0.0,
+            ANGLE_KD,
+            new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // Construct command
+    return Commands.run(
+            () -> {
+              // Get linear velocity
+              Translation2d linearVelocity =
+                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+
+              // Calculate angular speed
+              double omega =
+                  angleController.calculate(
+                      drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
+
+              // sets maxLinearSpeed to the default if a negative value is submitted
+              double maxLinearSpeedMPS = maxLinearSpeed.getAsDouble();
+              if (maxLinearSpeedMPS < 0) {
+                maxLinearSpeedMPS = drive.getMaxLinearSpeedMetersPerSec();
+              }
+
+              // makes sure that if the total velocity would exceed the set max, it doesn't instead,
+              // limiting each wheel speed by the corresponding amount
+              double xVelocity = linearVelocity.getX() * maxLinearSpeedMPS;
+              double yVelocity = linearVelocity.getY() * maxLinearSpeedMPS;
+              double signX = xVelocity / Math.abs(xVelocity);
+              if (Math.sqrt((xVelocity * xVelocity) + (yVelocity * yVelocity))
+                  > maxLinearSpeedMPS) {
+                double ratio = xVelocity / yVelocity;
+                xVelocity =
+                    signX
+                        * Math.sqrt(
+                            (maxLinearSpeedMPS * maxLinearSpeedMPS) / (1 + (1 / (ratio * ratio))));
+                yVelocity = xVelocity / ratio;
+              }
+
+              // Convert to field relative speeds & send command
+              ChassisSpeeds speeds = new ChassisSpeeds(xVelocity, yVelocity, omega);
+              boolean isFlipped =
+                  DriverStation.getAlliance().isPresent()
+                      && DriverStation.getAlliance().get() == Alliance.Red;
+              drive.runVelocity(
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
+            },
+            drive)
+
+        // Reset PID controller when command starts
+        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+  }
+
   public static Command joystickDriveAtAngle(
       Drive drive,
       DoubleSupplier xSupplier,

@@ -180,6 +180,12 @@ public class corrections {
     timeCalculator.put(4.0, 1.11);
     timeCalculator.put(4.5, 1.12);
     timeCalculator.put(5.09, 1.29);
+    timeCalculator.put(5.5, 1.32); // Values from here down are extrapolated, not measurements
+    timeCalculator.put(6.0, 1.39);
+    timeCalculator.put(6.5, 1.47);
+    timeCalculator.put(7.0, 1.54);
+    timeCalculator.put(7.5, 1.61);
+    timeCalculator.put(8.0, 1.69);
   }
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
