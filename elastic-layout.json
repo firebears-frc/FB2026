@@ -22,8 +22,8 @@
           },
           {
             "title": "distance to hub",
-            "x": 768.0,
-            "y": 0.0,
+            "x": 128.0,
+            "y": 256.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -36,8 +36,8 @@
           },
           {
             "title": "Static Shooter Speed",
-            "x": 768.0,
-            "y": 128.0,
+            "x": 0.0,
+            "y": 256.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -50,7 +50,7 @@
           },
           {
             "title": "Hopper::atSpeed",
-            "x": 1024.0,
+            "x": 1152.0,
             "y": 256.0,
             "width": 128.0,
             "height": 128.0,
@@ -67,7 +67,7 @@
           },
           {
             "title": "Shooter::atSpeed",
-            "x": 1024.0,
+            "x": 1152.0,
             "y": 128.0,
             "width": 128.0,
             "height": 128.0,
@@ -84,7 +84,7 @@
           },
           {
             "title": "Intake::atSpeed",
-            "x": 1024.0,
+            "x": 1152.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
@@ -101,7 +101,7 @@
           },
           {
             "title": "Shooter::setPoint",
-            "x": 896.0,
+            "x": 1024.0,
             "y": 128.0,
             "width": 128.0,
             "height": 128.0,
@@ -115,7 +115,7 @@
           },
           {
             "title": "Intake::setPoint",
-            "x": 896.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
@@ -171,7 +171,7 @@
           },
           {
             "title": "Alerts",
-            "x": 1152.0,
+            "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
             "height": 384.0,
@@ -183,7 +183,7 @@
           },
           {
             "title": "Hopper::setPoint",
-            "x": 896.0,
+            "x": 1024.0,
             "y": 256.0,
             "width": 128.0,
             "height": 128.0,
@@ -191,6 +191,33 @@
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/Hopper/setPoint",
               "period": 0.05,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "orangepiright_Port_1183_Input_MJPEG_Server",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 640.0,
+            "height": 512.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/orangepiright_Port_1183_Input_MJPEG_Server",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "TagCount",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Vision/Summary/TagCount",
+              "period": 0.1,
               "data_type": "double",
               "show_submit_button": false
             }
