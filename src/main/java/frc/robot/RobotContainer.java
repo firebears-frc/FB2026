@@ -283,7 +283,8 @@ public class RobotContainer {
                 shooter.autoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
-                hopper.startHopper()))
+                hopper.startHopper(),
+                arm.startjostle()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -292,7 +293,11 @@ public class RobotContainer {
                 () -> corrections.autoAimAngle(drive)))
         .onFalse(
             Commands.sequence(
-                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+                hopper.pauseHopper(),
+                arm.armDown(),
+                Commands.waitSeconds(.1),
+                shooter.pauseShooter(),
+                arm.stopjostle()));
 
     // Left trigger: Shoot without auto aim (but using auto-distance to hub)
     xboxController
@@ -301,8 +306,9 @@ public class RobotContainer {
             Commands.sequence(
                 shooter.autoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
-                hopper.startHopper()))
-        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
+                hopper.startHopper(),
+                arm.startjostle()))
+        .onFalse(Commands.sequence(hopper.pauseHopper(), arm.stopjostle(), shooter.pauseShooter()));
 
     // Auto shoot on the move (with auto aim) - not yet including speed limiter
     xboxController
@@ -312,7 +318,8 @@ public class RobotContainer {
                 shooter.autoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
-                hopper.startHopper()))
+                hopper.startHopper(),
+                arm.startjostle()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -322,7 +329,10 @@ public class RobotContainer {
                 () -> 2.81))
         .onFalse(
             Commands.sequence(
-                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+                hopper.pauseHopper(),
+                arm.stopjostle(),
+                Commands.waitSeconds(.1),
+                shooter.pauseShooter()));
 
     // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
     xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
