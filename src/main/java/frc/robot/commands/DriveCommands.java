@@ -297,6 +297,15 @@ public class DriveCommands {
         .finallyDo(() -> drive.stop());
   }
 
+  // Stops the movement of the bot and makes the wheels an x
+  public static Command stopWithX(Drive drive) {
+    return Commands.runOnce(
+        () -> {
+          drive.stopWithX();
+        },
+        drive);
+  }
+
   /**
    * Measures the velocity feedforward constants for the drive motors.
    *

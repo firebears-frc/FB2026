@@ -294,7 +294,6 @@ public class RobotContainer {
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
-                arm.armDown(),
                 Commands.waitSeconds(.1),
                 shooter.pauseShooter(),
                 arm.stopjostle()));
@@ -315,7 +314,7 @@ public class RobotContainer {
         .rightBumper()
         .onTrue(
             Commands.sequence(
-                shooter.autoShooter(),
+                shooter.sotmAutoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
                 hopper.startHopper(),
@@ -325,8 +324,7 @@ public class RobotContainer {
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () -> corrections.sotmAutoAimAngle(drive),
-                () -> 2.81))
+                () -> corrections.sotmAutoAimAngle(drive)))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
@@ -335,9 +333,27 @@ public class RobotContainer {
                 shooter.pauseShooter()));
 
     // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
-    joy1.button(5).onTrue(shooter.increaseStaticSpeed());
-    joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
+    // xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
+    xboxController
+        .leftBumper()
+        .onTrue(
+            Commands.sequence(
+                shooter.autoShooter(),
+                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+                DriveCommands.stopWithX(drive),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                hopper.startHopper(),
+                arm.startjostle()))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(),
+                arm.stopjostle(),
+                Commands.waitSeconds(0.1),
+                shooter.pauseShooter()));
+    // joy1.button(5).onTrue(shooter.increaseStaticSpeed());
+    // joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
+    joy1.button(5).onTrue(shooter.increaseShootAdjustment());
+    joy1.button(10).onTrue(shooter.decreaseShootAdjustment());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
     xboxController

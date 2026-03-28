@@ -43,6 +43,8 @@ public class Shooter extends SubsystemBase {
   private LoggedNetworkNumber staticShooterSpeed =
       new LoggedNetworkNumber("Static Shooter Speed", 3000);
 
+  private LoggedNetworkNumber ShootAdjustment = new LoggedNetworkNumber("Shoot Adjustment", 1.02);
+
   private final DoubleSupplier distanceToHubSupplier;
 
   public Shooter(DoubleSupplier distanceToHubSupplier) {
@@ -178,6 +180,20 @@ public class Shooter extends SubsystemBase {
         });
   }
 
+  public Command decreaseShootAdjustment() {
+    return runOnce(
+        () -> {
+          ShootAdjustment.set(ShootAdjustment.get() - 0.005);
+        });
+  }
+
+  public Command increaseShootAdjustment() {
+    return runOnce(
+        () -> {
+          ShootAdjustment.set(ShootAdjustment.get() + 0.005);
+        });
+  }
+
   public Command pauseShooter() {
     return runOnce(
         () -> {
@@ -195,6 +211,13 @@ public class Shooter extends SubsystemBase {
 
     // Get the distance from the
     double distance = distanceToHubSupplier.getAsDouble();
+    if (ShootAdjustment.get() > 1.05) {
+      ShootAdjustment.set(1.05);
+    }
+
+    if (ShootAdjustment.get() < 1.00) {
+      ShootAdjustment.set(1.00);
+    }
 
     if (mode == "fast") {
       setPoint = 3500;
@@ -203,9 +226,9 @@ public class Shooter extends SubsystemBase {
     } else if (mode == "reverse") {
       setPoint = -2600;
     } else if (mode == "auto") {
-      setPoint = speedCalculator.get(distance);
+      setPoint = speedCalculator.get(distance) * ShootAdjustment.get();
     } else if (mode == "sotm") {
-      setPoint = speedCalculator.get(corrections.sotmGetDistance());
+      setPoint = speedCalculator.get(corrections.sotmGetDistance()) * ShootAdjustment.get();
     } else if (mode == "static") {
       setPoint = staticShooterSpeed.get();
     } else {

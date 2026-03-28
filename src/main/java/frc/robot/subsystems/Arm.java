@@ -41,6 +41,8 @@ public class Arm extends SubsystemBase {
   private final SparkClosedLoopController shoulderPID;
   private ArmState mode = ArmState.Default;
   private double jostlechange = 0.5;
+  private final double maxJostleAngle = 0;
+  private final double minJostleAngle = -10;
 
   @AutoLogOutput(key = "arm/setPoint")
   private Rotation2d shoulderSetpoint = new Rotation2d();
@@ -92,7 +94,6 @@ public class Arm extends SubsystemBase {
   private static final class Constants {
     private static final Rotation2d armDown = Rotation2d.fromDegrees(-11);
     private static final Rotation2d armUp = Rotation2d.fromDegrees(125);
-    private static final Rotation2d armJostle = Rotation2d.fromDegrees(5);
   }
 
   @AutoLogOutput(key = "arm/Angle")
@@ -141,10 +142,12 @@ public class Arm extends SubsystemBase {
   }
 
   public Command stopjostle() {
-    return runOnce(
-        () -> {
-          mode = ArmState.Default;
-        });
+    return Commands.sequence(
+        runOnce(
+            () -> {
+              mode = ArmState.Default;
+            }),
+        positionCommand(() -> Constants.armDown, () -> 10.0));
   }
 
   private boolean onTarget(double tolerance) {
@@ -165,9 +168,9 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     if (mode == ArmState.Jostle) {
-      if (getShoulderAngle().getDegrees() < -10) {
+      if (getShoulderAngle().getDegrees() < minJostleAngle) {
         jostlechange = 4;
-      } else if (getShoulderAngle().getDegrees() > 5) {
+      } else if (getShoulderAngle().getDegrees() > maxJostleAngle) {
         jostlechange = -4;
       }
       setShoulderSetpoint(Rotation2d.fromDegrees(shoulderSetpoint.getDegrees() + jostlechange));
