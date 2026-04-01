@@ -283,7 +283,8 @@ public class RobotContainer {
                 shooter.autoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
-                hopper.startHopper()))
+                hopper.startHopper(),
+                arm.startjostle()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -292,7 +293,10 @@ public class RobotContainer {
                 () -> corrections.autoAimAngle(drive)))
         .onFalse(
             Commands.sequence(
-                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+                hopper.pauseHopper(),
+                Commands.waitSeconds(.1),
+                shooter.pauseShooter(),
+                arm.stopjostle()));
 
     // Left trigger: Shoot without auto aim (but using auto-distance to hub)
     xboxController
@@ -301,33 +305,55 @@ public class RobotContainer {
             Commands.sequence(
                 shooter.autoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
-                hopper.startHopper()))
-        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
+                hopper.startHopper(),
+                arm.startjostle()))
+        .onFalse(Commands.sequence(hopper.pauseHopper(), arm.stopjostle(), shooter.pauseShooter()));
 
     // Auto shoot on the move (with auto aim) - not yet including speed limiter
     xboxController
         .rightBumper()
         .onTrue(
             Commands.sequence(
-                shooter.autoShooter(),
+                shooter.sotmAutoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
-                hopper.startHopper()))
+                hopper.startHopper(),
+                arm.startjostle()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () -> corrections.sotmAutoAimAngle(drive),
-                () -> 2.81))
+                () -> corrections.sotmAutoAimAngle(drive)))
         .onFalse(
             Commands.sequence(
-                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+                hopper.pauseHopper(),
+                arm.stopjostle(),
+                Commands.waitSeconds(.1),
+                shooter.pauseShooter()));
 
     // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
-    joy1.button(5).onTrue(shooter.increaseStaticSpeed());
-    joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
+    // xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
+    xboxController
+        .leftBumper()
+        .onTrue(
+            Commands.sequence(
+                shooter.autoShooter(),
+                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+                DriveCommands.stopWithX(drive),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                hopper.startHopper(),
+                arm.startjostle()))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(),
+                arm.stopjostle(),
+                Commands.waitSeconds(0.1),
+                shooter.pauseShooter()));
+    // joy1.button(5).onTrue(shooter.increaseStaticSpeed());
+    // joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
+    joy1.button(5).onTrue(shooter.increaseShootAdjustment());
+    joy1.button(10).onTrue(shooter.decreaseShootAdjustment());
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
     xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
     xboxController

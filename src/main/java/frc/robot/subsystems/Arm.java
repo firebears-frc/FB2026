@@ -23,6 +23,11 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Arm extends SubsystemBase {
+  private static enum ArmState {
+    Default,
+    Jostle
+  }
+
   private static int STALL_CURRENT_LIMIT_SHOULDER = 5;
   private static int FREE_CURRENT_LIMIT_SHOULDER = 5;
   private static double shoulderP = 0.02;
@@ -34,6 +39,10 @@ public class Arm extends SubsystemBase {
   private final SparkMax shoulderMotorRight;
   private final SparkAbsoluteEncoder shoulderEncoder;
   private final SparkClosedLoopController shoulderPID;
+  private ArmState mode = ArmState.Default;
+  private double jostlechange = 0.5;
+  private final double maxJostleAngle = 0;
+  private final double minJostleAngle = -10;
 
   @AutoLogOutput(key = "arm/setPoint")
   private Rotation2d shoulderSetpoint = new Rotation2d();
@@ -125,6 +134,22 @@ public class Arm extends SubsystemBase {
     return positionCommand(() -> Constants.armUp, () -> 1.0);
   }
 
+  public Command startjostle() {
+    return runOnce(
+        () -> {
+          mode = ArmState.Jostle;
+        });
+  }
+
+  public Command stopjostle() {
+    return Commands.sequence(
+        runOnce(
+            () -> {
+              mode = ArmState.Default;
+            }),
+        positionCommand(() -> Constants.armDown, () -> 10.0));
+  }
+
   private boolean onTarget(double tolerance) {
     boolean onTarget = Math.abs(getError().getDegrees()) < tolerance;
     Logger.recordOutput("arm/onTargt", onTarget);
@@ -142,6 +167,15 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (mode == ArmState.Jostle) {
+      if (getShoulderAngle().getDegrees() < minJostleAngle) {
+        jostlechange = 4;
+      } else if (getShoulderAngle().getDegrees() > maxJostleAngle) {
+        jostlechange = -4;
+      }
+      setShoulderSetpoint(Rotation2d.fromDegrees(shoulderSetpoint.getDegrees() + jostlechange));
+    }
+
     double feedForward = Math.cos(getShoulderAngle().getRadians()) * shoulderG;
     shoulderPID.setSetpoint(
         shoulderSetpoint.getDegrees(),
@@ -154,5 +188,6 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("arm/setPointDegrees", shoulderSetpoint.getDegrees());
     Logger.recordOutput("arm/angleDegrees", getShoulderAngle().getDegrees());
     Logger.recordOutput("arm/FeedForward", feedForward);
+    Logger.recordOutput("arm/mode", mode);
   }
 }
