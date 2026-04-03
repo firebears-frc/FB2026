@@ -124,6 +124,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "reverse";
+          corrections.setDrawShotLine(false);
         });
   }
 
@@ -131,6 +132,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "auto";
+          corrections.setDrawShotLine(true);
         });
   }
 
@@ -138,6 +140,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "sotm";
+          corrections.setDrawShotLine(true);
         });
   }
 
@@ -145,6 +148,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "fast";
+          corrections.setDrawShotLine(true);
         });
   }
   // subject to change based on design of the motor and mechanism
@@ -152,6 +156,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "slow";
+          corrections.setDrawShotLine(true);
         });
   }
 
@@ -159,6 +164,7 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "static";
+          corrections.setDrawShotLine(true);
         });
   }
 
@@ -198,18 +204,14 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = "off";
+          corrections.setDrawShotLine(false);
         });
   }
 
   @Override
   public void periodic() {
 
-    // Are we shooting (we only update the shotline if we are shooting)
-    boolean shooting =
-        mode.equals("fast") || mode.equals("slow") || mode.equals("auto") || mode.equals("sotm");
-    corrections.setDrawShotLine(shooting);
-
-    // Get the distance from the
+    // Get the distance from the hub
     double distance = distanceToHubSupplier.getAsDouble();
     if (ShootAdjustment.get() > 1.05) {
       ShootAdjustment.set(1.05);

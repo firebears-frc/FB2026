@@ -36,7 +36,7 @@ public class Arm extends SubsystemBase {
   private static double shoulderD = 0.0;
   private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 15;
   // private static boolean up = true;
-  private final SparkMax shoulderMotorRight;
+  private final SparkMax shoulderMotor;
   private final SparkAbsoluteEncoder shoulderEncoder;
   private final SparkClosedLoopController shoulderPID;
   private ArmState mode = ArmState.Default;
@@ -50,32 +50,32 @@ public class Arm extends SubsystemBase {
   private Debouncer debounce = new Debouncer(0.2);
 
   public Arm() {
-    shoulderMotorRight = new SparkMax(10, MotorType.kBrushless);
-    shoulderEncoder = shoulderMotorRight.getAbsoluteEncoder();
-    shoulderPID = shoulderMotorRight.getClosedLoopController();
+    shoulderMotor = new SparkMax(10, MotorType.kBrushless);
+    shoulderEncoder = shoulderMotor.getAbsoluteEncoder();
+    shoulderPID = shoulderMotor.getClosedLoopController();
 
-    var shoulderMotorRightConfig = new SparkMaxConfig();
-    shoulderMotorRightConfig
+    var shoulderMotorConfig = new SparkMaxConfig();
+    shoulderMotorConfig
         .idleMode(IdleMode.kBrake)
         .inverted(true)
         .smartCurrentLimit(STALL_CURRENT_LIMIT_SHOULDER, FREE_CURRENT_LIMIT_SHOULDER)
         .secondaryCurrentLimit(SECONDARY_CURRENT_LIMIT_SHOULDER);
-    shoulderMotorRightConfig
+    shoulderMotorConfig
         .absoluteEncoder
         .inverted(false)
         .positionConversionFactor(360); // check if this needed to be inverted
-    shoulderMotorRightConfig
+    shoulderMotorConfig
         .closedLoop
         .pid(shoulderP, shoulderI, shoulderD)
         .positionWrappingEnabled(true)
         .positionWrappingInputRange(0, 360)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     SparkUtil.tryUntilOk(
-        shoulderMotorRight,
+        shoulderMotor,
         5,
         () ->
-            shoulderMotorRight.configure(
-                shoulderMotorRightConfig,
+            shoulderMotor.configure(
+                shoulderMotorConfig,
                 ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters));
 
@@ -167,26 +167,28 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    double currentShoulderAngle = getShoulderAngle().getDegrees();
+
     if (mode == ArmState.Jostle) {
-      if (getShoulderAngle().getDegrees() < minJostleAngle) {
+      if (currentShoulderAngle < minJostleAngle) {
         jostlechange = 4;
-      } else if (getShoulderAngle().getDegrees() > maxJostleAngle) {
+      } else if (currentShoulderAngle > maxJostleAngle) {
         jostlechange = -4;
       }
       setShoulderSetpoint(Rotation2d.fromDegrees(shoulderSetpoint.getDegrees() + jostlechange));
     }
 
-    double feedForward = Math.cos(getShoulderAngle().getRadians()) * shoulderG;
+    double feedForward = Math.cos(Math.toRadians(currentShoulderAngle)) * shoulderG;
     shoulderPID.setSetpoint(
         shoulderSetpoint.getDegrees(),
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         feedForward,
         ArbFFUnits.kVoltage);
-    Logger.recordOutput("arm/MotorRight", shoulderMotorRight.getAppliedOutput());
-    Logger.recordOutput("arm/MotorRightCurrent", shoulderMotorRight.getOutputCurrent());
+    Logger.recordOutput("arm/Output", shoulderMotor.getAppliedOutput());
+    Logger.recordOutput("arm/Amps", shoulderMotor.getOutputCurrent());
     Logger.recordOutput("arm/setPointDegrees", shoulderSetpoint.getDegrees());
-    Logger.recordOutput("arm/angleDegrees", getShoulderAngle().getDegrees());
+    Logger.recordOutput("arm/angleDegrees", currentShoulderAngle);
     Logger.recordOutput("arm/FeedForward", feedForward);
     Logger.recordOutput("arm/mode", mode);
   }
