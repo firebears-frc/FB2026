@@ -59,6 +59,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   // Subsystems
   private final Drive drive;
   private final Vision vision;
@@ -66,9 +67,10 @@ public class RobotContainer {
   private final Hopper hopper;
   private final Intake intake;
   private final Arm arm;
+
   // Controller
-  private final CommandJoystick joy1 = new CommandJoystick(0); // right
-  private final CommandJoystick joy2 = new CommandJoystick(1); // left
+  private final CommandJoystick joy1 = new CommandJoystick(0); // joystick for moving
+  private final CommandJoystick joy2 = new CommandJoystick(1); // joystick for rotating
   private final CommandXboxController xboxController = new CommandXboxController(2);
 
   private final Field2d field = new Field2d();
@@ -131,7 +133,6 @@ public class RobotContainer {
         hopper = new HopperSim();
         intake = new IntakeSim();
         arm = new ArmSim();
-
         break;
 
       default:
@@ -157,9 +158,9 @@ public class RobotContainer {
     configureAutoCommands();
 
     SmartDashboard.putData("field", field);
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
     autoChooser.addOption(
         "turn n shoot!",
         Commands.sequence(
@@ -184,6 +185,7 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
+  // Commands to be used in pathplanner or choreo
   private void configureAutoCommands() {
     NamedCommands.registerCommands(
         Map.of(
@@ -218,29 +220,28 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> -joy2.getX()));
-
-    joy2.povUp()
+    joy2.povUp() // drive while facing up
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(0))));
-    joy2.povRight()
+    joy2.povRight() // drive while facing right
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue((3 * Math.PI) / 2))));
-    joy2.povDown()
+    joy2.povDown() // drive while facing down
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI))));
-    joy2.povLeft()
+    joy2.povLeft() // drive while facing left
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -248,7 +249,7 @@ public class RobotContainer {
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
 
-    joy2.trigger()
+    joy2.trigger() // drive while aiming at the hub
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -256,7 +257,7 @@ public class RobotContainer {
                 () -> -joy1.getX(),
                 () -> corrections.autoAimAngle(drive)));
 
-    joy2.button(2)
+    joy2.button(2) // drive while snapping to nearesgt diagonal (diamond) position
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -332,8 +333,6 @@ public class RobotContainer {
                 Commands.waitSeconds(.1),
                 shooter.pauseShooter()));
 
-    // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    // xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
     xboxController
         .leftBumper()
         .onTrue(
@@ -363,6 +362,10 @@ public class RobotContainer {
     xboxController.povDown().onTrue(arm.armDown());
     xboxController.povUp().onTrue(arm.armUp());
     joy1.button(7).onTrue(intake.reverseIntake()).onFalse(intake.pauseintake());
+
+    // Previously used mappings we replaced:
+    // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
+    // xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
 
     // Button Mappings for simulation with keyboard (Drag keyboard into joy in glass)
     if (RobotBase.isSimulation()) {
