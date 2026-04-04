@@ -98,7 +98,7 @@ public class RobotContainer {
                 new VisionIOPhotonVision(Camera2, robotToCamera2),
                 new VisionIOPhotonVision(Camera3, robotToCamera3));
 
-        shooter = new Shooter(() -> corrections.distanceToHub(drive));
+        shooter = new Shooter(() -> corrections.distanceToHub());
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -127,7 +127,7 @@ public class RobotContainer {
         // new VisionIOPhotonVisionSim(Camera2, robotToCamera2, drive::getPose),
         // new VisionIOPhotonVisionSim(Camera3, robotToCamera3, drive::getPose));
 
-        shooter = new ShooterSim(() -> corrections.distanceToHub(drive));
+        shooter = new ShooterSim(() -> corrections.distanceToHub());
         hopper = new HopperSim();
         intake = new IntakeSim();
         arm = new ArmSim();
@@ -145,7 +145,7 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        shooter = new Shooter(() -> corrections.distanceToHub(drive));
+        shooter = new Shooter(() -> corrections.distanceToHub());
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -163,7 +163,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "turn n shoot!",
         Commands.sequence(
-            DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+            DriveCommands.turnToAngle(drive, () -> corrections.angleToHub()),
             Commands.waitSeconds(.2),
             shooter.autoShooter()));
 
@@ -190,7 +190,7 @@ public class RobotContainer {
             "shoot",
             Commands.sequence(
                 shooter.autoShooter(),
-                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub()),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 hopper.startHopper()),
             "spinUpShooter",
@@ -251,10 +251,7 @@ public class RobotContainer {
     joy2.trigger()
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
-                () -> corrections.autoAimAngle(drive)));
+                drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.autoAimAngle()));
 
     joy2.button(2)
         .whileTrue(
@@ -262,7 +259,7 @@ public class RobotContainer {
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () -> corrections.nearestDiagonalAngle(drive)));
+                () -> corrections.nearestDiagonalAngle()));
 
     // Resets gyro to 0 degrees when b is pressed
     xboxController
@@ -282,15 +279,12 @@ public class RobotContainer {
             Commands.sequence(
                 shooter.autoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
-                Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
+                Commands.waitUntil(() -> corrections.aimedAtAutoTarget()),
                 hopper.startHopper(),
                 arm.startjostle()))
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
-                () -> corrections.autoAimAngle(drive)))
+                drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.autoAimAngle()))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
@@ -316,7 +310,7 @@ public class RobotContainer {
             Commands.sequence(
                 shooter.sotmAutoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
-                Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
+                Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget()),
                 hopper.startHopper(),
                 arm.startjostle()))
         .whileTrue(
@@ -324,7 +318,7 @@ public class RobotContainer {
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () -> corrections.sotmAutoAimAngle(drive)))
+                () -> corrections.sotmAutoAimAngle()))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
@@ -339,7 +333,7 @@ public class RobotContainer {
         .onTrue(
             Commands.sequence(
                 shooter.autoShooter(),
-                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub()),
                 DriveCommands.stopWithX(drive),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 hopper.startHopper(),
@@ -371,14 +365,11 @@ public class RobotContainer {
               Commands.sequence(
                   shooter.autoShooter(),
                   Commands.waitUntil(() -> shooter.atSpeed()),
-                  Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
+                  Commands.waitUntil(() -> corrections.aimedAtAutoTarget()),
                   hopper.startHopper()))
           .whileTrue(
               DriveCommands.joystickDriveAtAngle(
-                  drive,
-                  () -> -joy1.getY(),
-                  () -> -joy1.getX(),
-                  () -> corrections.autoAimAngle(drive)))
+                  drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.autoAimAngle()))
           .onFalse(
               Commands.sequence(
                   hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
@@ -398,7 +389,7 @@ public class RobotContainer {
                   drive,
                   () -> -joy1.getY(),
                   () -> -joy1.getX(),
-                  () -> corrections.sotmAutoAimAngle(drive),
+                  () -> corrections.sotmAutoAimAngle(),
                   () -> 2.81));
 
       // sotm drive and shoot
@@ -407,14 +398,14 @@ public class RobotContainer {
               Commands.sequence(
                   shooter.autoShooter(),
                   Commands.waitUntil(() -> shooter.atSpeed()),
-                  Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
+                  Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget()),
                   hopper.startHopper()))
           .whileTrue(
               DriveCommands.joystickDriveAtAngle(
                   drive,
                   () -> -joy1.getY(),
                   () -> -joy1.getX(),
-                  () -> corrections.sotmAutoAimAngle(drive),
+                  () -> corrections.sotmAutoAimAngle(),
                   () -> 2.81))
           .onFalse(
               Commands.sequence(

@@ -170,7 +170,7 @@ public class Drive extends SubsystemBase {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
-      corrections.setRobotVelocities(getChassisSpeeds(), getPose().getRotation().getRadians());
+      corrections.setRobotVelocities(this);
     }
 
     // Update gyro alert
