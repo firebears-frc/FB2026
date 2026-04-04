@@ -267,7 +267,7 @@ public class RobotContainer {
     // Right trigger:  Auto shoot on the move (with auto aim) - (is the same as auto-aim when
     // standing still)
     xboxController
-        .rightBumper()
+        .rightTrigger()
         .onTrue(
             Commands.sequence(
                 shooter.sotmAutoShooter(),
@@ -301,7 +301,7 @@ public class RobotContainer {
 
     // Right Bumper: Shoot with x-lock
     xboxController
-        .leftBumper()
+        .rightBumper()
         .onTrue(
             Commands.sequence(
                 shooter.autoShooter(),
