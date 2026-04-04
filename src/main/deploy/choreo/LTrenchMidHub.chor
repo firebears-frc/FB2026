@@ -1,0 +1,84 @@
+{
+ "name":"LTrenchMidHub",
+ "version":2,
+ "type":"Swerve",
+ "variables":{
+  "expressions":{},
+  "poses":{}
+ },
+ "config":{
+  "frontLeft":{
+   "x":{
+    "exp":"0.286 m",
+    "val":0.286
+   },
+   "y":{
+    "exp":"0.311 m",
+    "val":0.311
+   }
+  },
+  "backLeft":{
+   "x":{
+    "exp":"-0.286 m",
+    "val":-0.286
+   },
+   "y":{
+    "exp":"0.311 m",
+    "val":0.311
+   }
+  },
+  "mass":{
+   "exp":"123 lbs",
+   "val":55.79186151
+  },
+  "inertia":{
+   "exp":"6 kg m ^ 2",
+   "val":6.0
+  },
+  "gearing":{
+   "exp":"6.5",
+   "val":6.5
+  },
+  "radius":{
+   "exp":"0.0381 m",
+   "val":0.0381
+  },
+  "vmax":{
+   "exp":"6000 RPM",
+   "val":628.3185307179587
+  },
+  "tmax":{
+   "exp":"3.65 N * m",
+   "val":3.65
+  },
+  "cof":{
+   "exp":"1.2",
+   "val":1.2
+  },
+  "bumper":{
+   "front":{
+    "exp":"13 in",
+    "val":0.3302
+   },
+   "side":{
+    "exp":"14 in",
+    "val":0.35559999999999997
+   },
+   "back":{
+    "exp":"13 in",
+    "val":0.3302
+   }
+  },
+  "differentialTrackWidth":{
+   "exp":"22 in",
+   "val":0.5588
+  }
+ },
+ "generationFeatures":[],
+ "codegen":{
+  "root":"../C:/FIRST/FB2026/src/main/deploy/pathplanner/choreo",
+  "genVars":true,
+  "genTrajData":true,
+  "useChoreoLib":true
+ }
+}

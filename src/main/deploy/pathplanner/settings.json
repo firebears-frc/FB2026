@@ -8,8 +8,9 @@
     "Pre-Duluth"
   ],
   "autoFolders": [
-    "Pre-Duluth",
     "Duluth",
+    "New Folder",
+    "Pre-Duluth",
     "WIP"
   ],
   "defaultMaxVel": 5.0,
