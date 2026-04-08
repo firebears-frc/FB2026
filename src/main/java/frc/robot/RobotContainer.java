@@ -371,8 +371,9 @@ public class RobotContainer {
     joy1.button(10).onTrue(shooter.decreaseShootAdjustment());
 
     // Button 6 will be for adjusting shooter angle  by +1
+    joy1.button(6).onTrue(shooter.increaseAngleAdjustment());
     // Button 9 will be for adjusting shooter angle by -1
-
+    joy1.button(9).onTrue(shooter.decreaseAngleAdjustment());
     // Resets gyro to 0 degrees when b is pressed
     joy1.button(16)
         .onTrue(
@@ -424,23 +425,23 @@ public class RobotContainer {
               Commands.sequence(
                   hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
 
-      joy1.button(2)
-          .onTrue(
-              Commands.sequence(
-                  shooter.autoShooter(),
-                  Commands.waitUntil(() -> shooter.atSpeed()),
-                  hopper.startHopper()))
-          .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
+      //   joy1.button(2)
+      //       .onTrue(
+      //           Commands.sequence(
+      //               shooter.autoShooter(),
+      //               Commands.waitUntil(() -> shooter.atSpeed()),
+      //               hopper.startHopper()))
+      //       .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
-      // sotm drive at angle
-      joy1.button(3)
-          .whileTrue(
-              DriveCommands.joystickDriveAtAngle(
-                  drive,
-                  () -> -joy1.getY(),
-                  () -> -joy1.getX(),
-                  () -> corrections.sotmAutoAimAngle(),
-                  () -> 2.81));
+      //   // sotm drive at angle
+      //   joy1.button(3)
+      //       .whileTrue(
+      //           DriveCommands.joystickDriveAtAngle(
+      //               drive,
+      //               () -> -joy1.getY(),
+      //               () -> -joy1.getX(),
+      //               () -> corrections.sotmAutoAimAngle(),
+      //               () -> 2.81));
 
       // sotm drive and shoot
       joy1.button(4)
@@ -460,6 +461,10 @@ public class RobotContainer {
           .onFalse(
               Commands.sequence(
                   hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+      // Button 6 will be for adjusting shooter angle  by +1
+      joy1.button(2).onTrue(shooter.increaseAngleAdjustment());
+      // Button 9 will be for adjusting shooter angle by -1
+      joy1.button(3).onTrue(shooter.decreaseAngleAdjustment());
     }
   }
 

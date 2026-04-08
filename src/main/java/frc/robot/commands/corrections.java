@@ -19,7 +19,15 @@ public class corrections {
   // ~CONSTANTS~in meters / radians
   private static final double shooterXOffset = Units.inchesToMeters(-5);
   private static final double shooterYOffset = Units.inchesToMeters(6);
-  private static final double shooterAngleOffset = Units.degreesToRadians(93);
+  private static double shooterAngleOffset =
+      Units.degreesToRadians(
+          90); // DONT CHANGE IT HERE CHANGE IT IN THE DASHBOARD NUMBER CALLED "angleOffset" IN THE
+  // SHOOTER SUBSYSTEM, THIS IS JUST A DEFAULT VALUE
+
+  public static void setShooterAngleOffset(double newAngle) {
+    shooterAngleOffset = newAngle;
+  }
+
   // ~CHANGE~
   private static double delay = 0;
 
@@ -43,6 +51,7 @@ public class corrections {
   // sets robotVelocityX, robotVelocityY, currentSpeed (robot relative) | called in drive periodic
   public static void setRobotVelocities(Drive drive) {
     // makes a corrected robot pose for the delay;
+    currentSpeed = drive.getChassisSpeeds();
     robotPose = drive.getPose();
     robotPoseWithDelay =
         robotPose.exp(
@@ -50,7 +59,6 @@ public class corrections {
                 currentSpeed.vxMetersPerSecond * delay,
                 currentSpeed.vyMetersPerSecond * delay,
                 currentSpeed.omegaRadiansPerSecond * delay));
-    currentSpeed = drive.getChassisSpeeds();
     double currentAngle = robotPoseWithDelay.getRotation().getRadians();
     robotVelocityX = currentSpeed.vxMetersPerSecond * Math.cos(currentAngle);
     robotVelocityX += currentSpeed.vyMetersPerSecond * -Math.sin(currentAngle);
@@ -99,8 +107,7 @@ public class corrections {
     } else {
       nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
     }
-    Rotation2d angleToBump =
-        sotmAngleTo(nearestBumpX, nearestBumpY);
+    Rotation2d angleToBump = sotmAngleTo(nearestBumpX, nearestBumpY);
     Logger.recordOutput("corrections/angle to bump", angleToBump);
     return angleToBump;
   }
@@ -381,8 +388,7 @@ public class corrections {
     double newAngle = 0;
     if (Math.abs(robotPose.getRotation().getRadians() - (Math.PI / 4)) <= (Math.PI / 4)) {
       newAngle = Math.PI / 4;
-    } else if (Math.abs(robotPose.getRotation().getRadians() - (-Math.PI / 4))
-        <= (Math.PI / 4)) {
+    } else if (Math.abs(robotPose.getRotation().getRadians() - (-Math.PI / 4)) <= (Math.PI / 4)) {
       newAngle = -Math.PI / 4;
     } else if (Math.abs(robotPose.getRotation().getRadians() - (3 * Math.PI / 4))
         <= (Math.PI / 4)) {
