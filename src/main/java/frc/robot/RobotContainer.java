@@ -284,9 +284,9 @@ public class RobotContainer {
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
-                arm.stopjostle(),
                 Commands.waitSeconds(.1),
-                shooter.pauseShooter()));
+                shooter.pauseShooter(),
+                arm.stopjostle()));
 
     // Left trigger: Shoot without auto aim (but using auto-distance to hub)
     xboxController
@@ -297,7 +297,7 @@ public class RobotContainer {
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 hopper.startHopper(),
                 arm.startjostle()))
-        .onFalse(Commands.sequence(hopper.pauseHopper(), arm.stopjostle(), shooter.pauseShooter()));
+        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter(),arm.stopjostle()));
 
     // Right Bumper: Shoot with x-lock
     xboxController
@@ -313,9 +313,9 @@ public class RobotContainer {
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
-                arm.stopjostle(),
                 Commands.waitSeconds(0.1),
-                shooter.pauseShooter()));
+                shooter.pauseShooter(),
+                arm.stopjostle()));
 
     // Left Bumper: Static shot
     xboxController
@@ -329,9 +329,9 @@ public class RobotContainer {
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
-                arm.stopjostle(),
                 Commands.waitSeconds(0.1),
-                shooter.pauseShooter()));
+                shooter.pauseShooter(),
+                arm.stopjostle()));
 
     // Arm Down
     xboxController.povDown().onTrue(arm.armDown());
@@ -372,8 +372,10 @@ public class RobotContainer {
 
     // Button 6 will be for adjusting shooter angle  by +1
     joy1.button(6).onTrue(shooter.increaseAngleAdjustment());
+    
     // Button 9 will be for adjusting shooter angle by -1
     joy1.button(9).onTrue(shooter.decreaseAngleAdjustment());
+
     // Resets gyro to 0 degrees when b is pressed
     joy1.button(16)
         .onTrue(
