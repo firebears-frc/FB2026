@@ -349,13 +349,13 @@ public class RobotContainer {
     xboxController
         .x()
         .onTrue(hopper.reverseHopper())
-        .onFalse(hopper.regMode(() -> shooter.getMode()));
+        .onFalse(hopper.regMode(() -> shooter.isRunning()));
 
     // Temporarily change hopper state
     xboxController
         .y()
-        .onTrue(hopper.altMode(() -> shooter.getMode()))
-        .onFalse(hopper.regMode(() -> shooter.getMode()));
+        .onTrue(hopper.altMode(() -> shooter.isRunning()))
+        .onFalse(hopper.regMode(() -> shooter.isRunning()));
 
     // FINE CONTROL OVER SHOOT PARAMETERS
     // Adjust static speed by +50 in range 0-6500

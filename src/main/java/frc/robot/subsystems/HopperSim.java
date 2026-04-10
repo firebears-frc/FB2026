@@ -5,12 +5,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import org.littletonrobotics.junction.Logger;
 
 public class HopperSim extends Hopper {
+  private static enum HopperState {
+    Off,
+    Forward,
+    Reverse
+  }
 
   // Simulated hopper velocity (RPM)
   private double simVelocity = 0.0;
 
   // Simulated mode ("forward", "reverse", "off")
-  private String simMode = "off";
+  private HopperState simMode = HopperState.Off;
 
   // Simulated setpoint (RPM)
   private double simSetPoint = 0.0;
@@ -27,39 +32,39 @@ public class HopperSim extends Hopper {
 
   @Override
   public Command startHopper() {
-    return runOnce(() -> simMode = "forward");
+    return runOnce(() -> simMode = HopperState.Forward);
   }
 
   @Override
   public Command pauseHopper() {
-    return runOnce(() -> simMode = "off");
+    return runOnce(() -> simMode = HopperState.Off);
   }
 
   @Override
   public Command reverseHopper() {
-    return runOnce(() -> simMode = "reverse");
+    return runOnce(() -> simMode = HopperState.Reverse);
   }
 
   @Override
-  public Command altMode(java.util.function.Supplier<String> shooterMode) {
+  public Command altMode(java.util.function.Supplier<Boolean> shooterIsOn) {
     return runOnce(
         () -> {
-          if (shooterMode.get().equals("off")) {
-            simMode = "forward";
+          if (shooterIsOn.get()) {
+            simMode = HopperState.Off;
           } else {
-            simMode = "off";
+            simMode = HopperState.Forward;
           }
         });
   }
 
   @Override
-  public Command regMode(java.util.function.Supplier<String> shooterMode) {
+  public Command regMode(java.util.function.Supplier<Boolean> shooterIsOn) {
     return runOnce(
         () -> {
-          if (shooterMode.get().equals("off")) {
-            simMode = "off";
+          if (shooterIsOn.get()) {
+            simMode = HopperState.Forward;
           } else {
-            simMode = "forward";
+            simMode = HopperState.Off;
           }
         });
   }
@@ -76,10 +81,10 @@ public class HopperSim extends Hopper {
 
     // Determine simulated setpoint based on mode
     switch (simMode) {
-      case "forward":
+      case Forward:
         simSetPoint = -5250;
         break;
-      case "reverse":
+      case Reverse:
         simSetPoint = 1800;
         break;
       default:

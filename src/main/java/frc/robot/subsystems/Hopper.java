@@ -17,11 +17,17 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class Hopper extends SubsystemBase {
+  private static enum HopperState {
+    Off,
+    Forward,
+    Reverse
+  }
+
   private SparkMax hopperMotor = new SparkMax(13, MotorType.kBrushless); // change can id
   private final SparkClosedLoopController hopperController;
   private double setPoint = 0;
   private static final int HopperCurrentLimit = 40; // safety limit
-  private String mode = "off";
+  private HopperState mode = HopperState.Off;
 
   public Hopper() {
 
@@ -60,7 +66,7 @@ public class Hopper extends SubsystemBase {
   public Command startHopper() {
     return runOnce(
         () -> {
-          mode = "forward";
+          mode = HopperState.Forward;
         });
   }
 
@@ -68,35 +74,35 @@ public class Hopper extends SubsystemBase {
   public Command pauseHopper() {
     return runOnce(
         () -> {
-          mode = "off";
+          mode = HopperState.Off;
         });
   }
 
   public Command reverseHopper() {
     return runOnce(
         () -> {
-          mode = "reverse";
+          mode = HopperState.Reverse;
         });
   }
 
-  public Command altMode(Supplier<String> shooterMode) {
+  public Command altMode(Supplier<Boolean> shooterIsOn) {
     return runOnce(
         () -> {
-          if (shooterMode.get() == "off") {
-            mode = "forward";
+          if (shooterIsOn.get()) {
+            mode = HopperState.Off;
           } else {
-            mode = "off";
+            mode = HopperState.Forward;
           }
         });
   }
 
-  public Command regMode(Supplier<String> shooterMode) {
+  public Command regMode(Supplier<Boolean> shooterIsOn) {
     return runOnce(
         () -> {
-          if (shooterMode.get() == "off") {
-            mode = "off";
+          if (shooterIsOn.get()) {
+            mode = HopperState.Forward;
           } else {
-            mode = "forward";
+            mode = HopperState.Off;
           }
         });
   }
@@ -104,9 +110,9 @@ public class Hopper extends SubsystemBase {
   @Override
   public void periodic() {
 
-    if (mode == "forward") {
+    if (mode == HopperState.Forward) {
       setPoint = -5300;
-    } else if (mode == "reverse") {
+    } else if (mode == HopperState.Reverse) {
       setPoint = 1800;
     } else {
       setPoint = 0;

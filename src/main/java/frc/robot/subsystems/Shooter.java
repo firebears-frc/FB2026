@@ -20,6 +20,16 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Shooter extends SubsystemBase {
+  private static enum ShooterState {
+    Off,
+    Static,
+    Auto,
+    Sotm,
+    Reverse,
+    Fast,
+    Slow
+  }
+
   private SparkFlex ShooterMotor1 = new SparkFlex(14, MotorType.kBrushless);
   private SparkFlex ShooterMotor2 = new SparkFlex(15, MotorType.kBrushless);
   private final SparkClosedLoopController ShooterController1;
@@ -36,8 +46,8 @@ public class Shooter extends SubsystemBase {
   private final double motorD = 0.0;
   private final double motorFF = 0.0018;
   private final double maxSpeed = 6500;
-  private String mode = "off";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
+  private ShooterState mode = ShooterState.Off;
 
   // Dashboard Input
   private LoggedNetworkNumber staticShooterSpeed =
@@ -125,7 +135,7 @@ public class Shooter extends SubsystemBase {
   public Command reverseShooter() {
     return runOnce(
         () -> {
-          mode = "reverse";
+          mode = ShooterState.Reverse;
           corrections.setDrawShotLine(false);
         });
   }
@@ -133,7 +143,7 @@ public class Shooter extends SubsystemBase {
   public Command autoShooter() {
     return runOnce(
         () -> {
-          mode = "auto";
+          mode = ShooterState.Auto;
           corrections.setDrawShotLine(true);
         });
   }
@@ -141,7 +151,7 @@ public class Shooter extends SubsystemBase {
   public Command sotmAutoShooter() {
     return runOnce(
         () -> {
-          mode = "sotm";
+          mode = ShooterState.Sotm;
           corrections.setDrawShotLine(true);
         });
   }
@@ -149,7 +159,7 @@ public class Shooter extends SubsystemBase {
   public Command fastShot() {
     return runOnce(
         () -> {
-          mode = "fast";
+          mode = ShooterState.Fast;
           corrections.setDrawShotLine(true);
         });
   }
@@ -157,7 +167,7 @@ public class Shooter extends SubsystemBase {
   public Command slowShot() {
     return runOnce(
         () -> {
-          mode = "slow";
+          mode = ShooterState.Slow;
           corrections.setDrawShotLine(true);
         });
   }
@@ -165,13 +175,13 @@ public class Shooter extends SubsystemBase {
   public Command staticShot() {
     return runOnce(
         () -> {
-          mode = "static";
+          mode = ShooterState.Static;
           corrections.setDrawShotLine(true);
         });
   }
 
-  public String getMode() {
-    return mode;
+  public Boolean isRunning() {
+    return mode != ShooterState.Off;
   }
 
   public Command decreaseStaticSpeed() {
@@ -221,7 +231,7 @@ public class Shooter extends SubsystemBase {
   public Command pauseShooter() {
     return runOnce(
         () -> {
-          mode = "off";
+          mode = ShooterState.Off;
           corrections.setDrawShotLine(false);
         });
   }
@@ -239,17 +249,17 @@ public class Shooter extends SubsystemBase {
       ShootAdjustment.set(1.00);
     }
 
-    if (mode == "fast") {
+    if (mode == ShooterState.Fast) {
       setPoint = 3500;
-    } else if (mode == "slow") {
+    } else if (mode == ShooterState.Slow) {
       setPoint = 2600;
-    } else if (mode == "reverse") {
+    } else if (mode == ShooterState.Reverse) {
       setPoint = -2600;
-    } else if (mode == "auto") {
+    } else if (mode == ShooterState.Auto) {
       setPoint = speedCalculator.get(distance) * ShootAdjustment.get();
-    } else if (mode == "sotm") {
+    } else if (mode == ShooterState.Sotm) {
       setPoint = speedCalculator.get(corrections.sotmGetDistance()) * ShootAdjustment.get();
-    } else if (mode == "static") {
+    } else if (mode == ShooterState.Static) {
       setPoint = staticShooterSpeed.get();
     } else {
       setPoint = 0;
