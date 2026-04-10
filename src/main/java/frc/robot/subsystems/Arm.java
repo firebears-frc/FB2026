@@ -127,18 +127,26 @@ public class Arm extends SubsystemBase {
   }
 
   public Command armDown() {
-    return positionCommand(() -> Constants.armDown, () -> 10.0);
+    return positionCommand(() -> Constants.armDown, () -> 5.0);
   }
 
   public Command armUp() {
-    return positionCommand(() -> Constants.armUp, () -> 1.0);
+    return positionCommand(() -> Constants.armUp, () -> 5.0);
   }
 
+  // public Command startjostle() {
+  //   return runOnce(
+  //       () -> {
+  //         mode = ArmState.Jostle;
+  //       });
+  // }
   public Command startjostle() {
-    return runOnce(
-        () -> {
-          mode = ArmState.Jostle;
-        });
+    return Commands.sequence(
+        runOnce(
+            () -> {
+              mode = ArmState.Default;
+            }),
+        positionCommand(() -> Constants.armDown, () -> 5.0));
   }
 
   public Command stopjostle() {
@@ -147,7 +155,7 @@ public class Arm extends SubsystemBase {
             () -> {
               mode = ArmState.Default;
             }),
-        positionCommand(() -> Constants.armDown, () -> 10.0));
+        positionCommand(() -> Constants.armDown, () -> 5.0));
   }
 
   private boolean onTarget(double tolerance) {

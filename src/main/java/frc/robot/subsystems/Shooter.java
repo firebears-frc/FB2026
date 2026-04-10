@@ -46,6 +46,7 @@ public class Shooter extends SubsystemBase {
   private LoggedNetworkNumber ShootAdjustment = new LoggedNetworkNumber("Shoot Adjustment", 1.02);
 
   private LoggedNetworkNumber shooterAngleOffset = new LoggedNetworkNumber("angleOffset", 90);
+
   private final DoubleSupplier distanceToHubSupplier;
 
   public Shooter(DoubleSupplier distanceToHubSupplier) {

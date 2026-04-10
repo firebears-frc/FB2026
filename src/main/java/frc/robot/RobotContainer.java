@@ -297,7 +297,7 @@ public class RobotContainer {
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 hopper.startHopper(),
                 arm.startjostle()))
-        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter(),arm.stopjostle()));
+        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter(), arm.stopjostle()));
 
     // Right Bumper: Shoot with x-lock
     xboxController
@@ -372,7 +372,7 @@ public class RobotContainer {
 
     // Button 6 will be for adjusting shooter angle  by +1
     joy1.button(6).onTrue(shooter.increaseAngleAdjustment());
-    
+
     // Button 9 will be for adjusting shooter angle by -1
     joy1.button(9).onTrue(shooter.decreaseAngleAdjustment());
 
