@@ -54,9 +54,7 @@ public class Shooter extends SubsystemBase {
   // Dashboard Input
   private LoggedNetworkNumber staticShooterSpeed =
       new LoggedNetworkNumber("Static Shooter Speed", 3000);
-
-  private LoggedNetworkNumber ShootAdjustment = new LoggedNetworkNumber("Shoot Adjustment", 1.02);
-
+  private LoggedNetworkNumber ShootAdjustment = new LoggedNetworkNumber("Shoot Adjustment", 1.00);
   private LoggedNetworkNumber shooterAngleOffset = new LoggedNetworkNumber("angleOffset", 90);
 
   private final DoubleSupplier distanceToHubSupplier;
