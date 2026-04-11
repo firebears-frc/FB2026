@@ -114,15 +114,13 @@ public class Shooter extends SubsystemBase {
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Populate speed calculator with values (subject to change based on testing) (Meters,RPM)
-    speedCalculator.put(2.0, 2900.0);
+    speedCalculator.put(2.2, 2850.0);
     speedCalculator.put(2.5, 2900.0);
-    speedCalculator.put(2.9, 3100.0);
-    speedCalculator.put(3.1, 3250.0);
-    speedCalculator.put(3.4, 3350.0);
-    speedCalculator.put(3.8, 3400.0);
-    speedCalculator.put(4.5, 3800.0);
-    speedCalculator.put(5.25, 3950.0);
-    speedCalculator.put(6.6, 6500.0);
+    speedCalculator.put(3.0, 3050.0);
+    speedCalculator.put(3.5, 3250.0);
+    speedCalculator.put(4.0, 3450.0);
+    speedCalculator.put(5.0, 3850.0);
+    speedCalculator.put(6.0, 4400.0);
   }
 
   @AutoLogOutput(key = "Shooter/error")
