@@ -30,6 +30,7 @@ public class Hopper extends SubsystemBase {
   private double setPoint = 0;
   private static final int HopperCurrentLimit = 40; // safety limit
   private HopperState mode = HopperState.Off;
+  private double gearRatio = 3;
 
   public Hopper() {
 
@@ -116,9 +117,9 @@ public class Hopper extends SubsystemBase {
   public void periodic() {
 
     if (mode == HopperState.Forward) {
-      setPoint = -5300;
+      setPoint = -1400 * gearRatio;
     } else if (mode == HopperState.Reverse) {
-      setPoint = 1800;
+      setPoint = 700 * gearRatio;
     } else {
       setPoint = 0;
     }

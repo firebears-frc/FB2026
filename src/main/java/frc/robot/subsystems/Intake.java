@@ -22,6 +22,7 @@ public class Intake extends SubsystemBase {
   private final SparkClosedLoopController intakeController;
   private double setPoint = 0;
   private static final int intakeCurrentLimit = 60;
+  private double gearRatio = 2.8;
 
   public Intake() {
 
@@ -63,14 +64,14 @@ public class Intake extends SubsystemBase {
   public Command reverseIntake() {
     return runOnce(
         () -> {
-          setPoint = 1000;
+          setPoint = 1000 * gearRatio;
         });
   }
 
   public Command startIntake() {
     return runOnce(
         () -> {
-          setPoint = -3000;
+          setPoint = -3000 * gearRatio;
         });
   }
 
