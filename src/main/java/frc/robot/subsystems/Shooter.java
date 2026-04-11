@@ -219,19 +219,21 @@ public class Shooter extends SubsystemBase {
         .ignoringDisable(true);
   }
 
+  //decreases the angle where the rbot shoots the ball untill 85
   public Command decreaseAngleAdjustment() {
     return runOnce(
             () -> {
-              shooterAngleOffset.set(shooterAngleOffset.get() - 1);
+              shooterAngleOffset.set(Math.max(shooterAngleOffset.get() - 1, 85));
               corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
             })
         .ignoringDisable(true);
   }
 
+//increases the angle where the rbot shoots the ball untill 95
   public Command increaseAngleAdjustment() {
     return runOnce(
             () -> {
-              shooterAngleOffset.set(shooterAngleOffset.get() + 1);
+              shooterAngleOffset.set(Math.min(shooterAngleOffset.get() + 1,95));
               corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
             })
         .ignoringDisable(true);
