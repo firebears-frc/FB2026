@@ -117,7 +117,10 @@ public class ShooterSim extends Shooter {
       super.periodic();
       return;
     }
-    boolean shooting = simMode.equals(ShooterState.Fast) || simMode.equals(ShooterState.Slow) || simMode.equals(ShooterState.Auto);
+    boolean shooting =
+        simMode.equals(ShooterState.Fast)
+            || simMode.equals(ShooterState.Slow)
+            || simMode.equals(ShooterState.Auto);
 
     corrections.setDrawShotLine(shooting);
 

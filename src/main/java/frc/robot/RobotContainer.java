@@ -66,6 +66,7 @@ public class RobotContainer {
   private final Hopper hopper;
   private final Intake intake;
   private final Arm arm;
+
   @SuppressWarnings("unused")
   private final Vision vision;
 
