@@ -62,11 +62,12 @@ public class RobotContainer {
 
   // Subsystems
   private final Drive drive;
-  private final Vision vision;
   private final Shooter shooter;
   private final Hopper hopper;
   private final Intake intake;
   private final Arm arm;
+  @SuppressWarnings("unused")
+  private final Vision vision;
 
   // Controller
   private final CommandJoystick joy1 = new CommandJoystick(0); // joystick for moving
