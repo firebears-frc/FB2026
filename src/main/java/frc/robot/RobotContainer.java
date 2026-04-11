@@ -360,22 +360,22 @@ public class RobotContainer {
 
     // FINE CONTROL OVER SHOOT PARAMETERS
     // Adjust static speed by +50 in range 0-6500
-    joy1.button(7).onTrue(shooter.increaseStaticSpeed());
+    joy1.button(7).onTrue(shooter.increaseStaticSpeed().ignoringDisable(true));
 
     // Adjust static speed by -50 in range 0-6500
-    joy1.button(8).onTrue(shooter.decreaseStaticSpeed());
+    joy1.button(8).onTrue(shooter.decreaseStaticSpeed().ignoringDisable(true));
 
     // Adjust shoot factor by +0.05 in range 0.95 -1.05
-    joy1.button(5).onTrue(shooter.increaseShootAdjustment());
+    joy1.button(5).onTrue(shooter.increaseShootAdjustment().ignoringDisable(true));
 
     // Adjust shoot factor by -0.05 in range 0.95 -1.05
-    joy1.button(10).onTrue(shooter.decreaseShootAdjustment());
+    joy1.button(10).onTrue(shooter.decreaseShootAdjustment().ignoringDisable(true));
 
     // Button 6 will be for adjusting shooter angle  by +1
-    joy1.button(6).onTrue(shooter.increaseAngleAdjustment());
+    joy1.button(6).onTrue(shooter.increaseAngleAdjustment().ignoringDisable(true));
 
     // Button 9 will be for adjusting shooter angle by -1
-    joy1.button(9).onTrue(shooter.decreaseAngleAdjustment());
+    joy1.button(9).onTrue(shooter.decreaseAngleAdjustment().ignoringDisable(true));
 
     // Resets gyro to 0 degrees when b is pressed
     joy1.button(16)

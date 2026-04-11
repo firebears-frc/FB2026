@@ -193,28 +193,28 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           staticShooterSpeed.set(staticShooterSpeed.get() - 50);
-        });
+        }).ignoringDisable(true);
   }
 
   public Command increaseStaticSpeed() {
     return runOnce(
         () -> {
           staticShooterSpeed.set(staticShooterSpeed.get() + 50);
-        });
+        }).ignoringDisable(true);
   }
 
   public Command decreaseShootAdjustment() {
     return runOnce(
         () -> {
           ShootAdjustment.set(ShootAdjustment.get() - 0.005);
-        });
+        }).ignoringDisable(true);
   }
 
   public Command increaseShootAdjustment() {
     return runOnce(
         () -> {
           ShootAdjustment.set(ShootAdjustment.get() + 0.005);
-        });
+        }).ignoringDisable(true);
   }
 
   public Command decreaseAngleAdjustment() {
@@ -222,7 +222,7 @@ public class Shooter extends SubsystemBase {
         () -> {
           shooterAngleOffset.set(shooterAngleOffset.get() - 1);
           corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
-        });
+        }).ignoringDisable(true);
   }
 
   public Command increaseAngleAdjustment() {
@@ -230,7 +230,7 @@ public class Shooter extends SubsystemBase {
         () -> {
           shooterAngleOffset.set(shooterAngleOffset.get() + 1);
           corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
-        });
+        }).ignoringDisable(true);
   }
 
   public Command pauseShooter() {
