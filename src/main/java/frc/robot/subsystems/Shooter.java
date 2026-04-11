@@ -2,12 +2,14 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.LimitSwitchConfig.Behavior;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -83,7 +85,7 @@ public class Shooter extends SubsystemBase {
     ShooterConfig1.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pidf(motorP, motorI, motorD, motorFF);
-    ShooterConfig1.limitSwitch.forwardLimitSwitchEnabled(false);
+    ShooterConfig1.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
 
     SparkUtil.tryUntilOk(
         ShooterMotor1,
@@ -101,7 +103,7 @@ public class Shooter extends SubsystemBase {
         .secondaryCurrentLimit(secondaryShooterCurrentLimit)
         .voltageCompensation(12.0);
     ShooterConfig2.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-    ShooterConfig2.limitSwitch.forwardLimitSwitchEnabled(false);
+    ShooterConfig2.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
 
     SparkUtil.tryUntilOk(
         ShooterMotor2,
@@ -273,7 +275,7 @@ public class Shooter extends SubsystemBase {
       setPoint = maxSpeed;
     }
 
-    ShooterController1.setReference(setPoint, ControlType.kVelocity);
+    ShooterController1.setSetpoint(setPoint, ControlType.kVelocity);
 
     // LaserCan.Measurement measurement = lc.getMeasurement();
     // if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT)

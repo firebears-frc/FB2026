@@ -2,11 +2,12 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.spark.config.LimitSwitchConfig.Behavior;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,7 +36,7 @@ public class Intake extends SubsystemBase {
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pidf(0.0003, 0.0, 0.0, 0.001875);
-    intakeConfig.limitSwitch.forwardLimitSwitchEnabled(false);
+    intakeConfig.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
 
     SparkUtil.tryUntilOk(
         intakeMotor,
@@ -79,7 +80,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
 
-    intakeController.setReference(setPoint, ControlType.kVelocity);
+    intakeController.setSetpoint(setPoint, ControlType.kVelocity);
 
     Logger.recordOutput("intake/Output", intakeMotor.getAppliedOutput());
     Logger.recordOutput("intake/speed", intakeMotor.getEncoder().getVelocity());
