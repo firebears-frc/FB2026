@@ -7,6 +7,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Behavior;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -34,6 +35,8 @@ public class Hopper extends SubsystemBase {
 
     // Configure turn motor
     hopperController = hopperMotor.getClosedLoopController();
+    var HopperFFConfig = new FeedForwardConfig();
+    HopperFFConfig.kV(0.0022);
     var HopperConfig = new SparkMaxConfig();
     HopperConfig.idleMode(IdleMode.kCoast)
         .smartCurrentLimit(HopperCurrentLimit)
@@ -41,7 +44,8 @@ public class Hopper extends SubsystemBase {
         .voltageCompensation(12.0);
     HopperConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(0.000175, 0.0, 0.0, 0.0022);
+        .pid(0.000175, 0.0, 0.0)
+        .apply(HopperFFConfig);
     HopperConfig.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
 
     SparkUtil.tryUntilOk(

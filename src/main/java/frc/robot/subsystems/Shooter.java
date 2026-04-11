@@ -77,6 +77,8 @@ public class Shooter extends SubsystemBase {
 
     // Configure Motor 1
     ShooterController1 = ShooterMotor1.getClosedLoopController();
+    var ShooterFFConfig1 = new FeedForwardConfig();
+    ShooterFFConfig1.kV(motorFF);
     var ShooterConfig1 = new SparkFlexConfig();
     ShooterConfig1.idleMode(IdleMode.kCoast)
         .smartCurrentLimit(smartShooterCurrentLimit)
@@ -84,7 +86,8 @@ public class Shooter extends SubsystemBase {
         .voltageCompensation(12.0);
     ShooterConfig1.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(motorP, motorI, motorD, motorFF);
+        .pid(motorP, motorI, motorD)
+        .apply(ShooterFFConfig1);
     ShooterConfig1.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
 
     SparkUtil.tryUntilOk(

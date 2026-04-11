@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.ResetMode;
 import com.revrobotics.PersistMode;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Behavior;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -26,6 +27,8 @@ public class Intake extends SubsystemBase {
 
     // Configure turn motor
     intakeController = intakeMotor.getClosedLoopController();
+    var intakeFFConfig = new FeedForwardConfig();
+    intakeFFConfig.kV(0.001875);
     var intakeConfig = new SparkFlexConfig();
     intakeConfig
         .idleMode(IdleMode.kCoast)
@@ -35,7 +38,8 @@ public class Intake extends SubsystemBase {
     intakeConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(0.0003, 0.0, 0.0, 0.001875);
+        .pid(0.0003, 0.0, 0.0)
+        .apply(intakeFFConfig);
     intakeConfig.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
 
     SparkUtil.tryUntilOk(
