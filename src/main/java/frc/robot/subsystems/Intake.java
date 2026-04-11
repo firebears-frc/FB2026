@@ -96,7 +96,7 @@ public class Intake extends SubsystemBase {
   public Command startIntake() {
     return runOnce(
         () -> {
-          setPoint = -2000 * gearRatio;
+          setPoint = -1500 * gearRatio;
         });
   }
 
