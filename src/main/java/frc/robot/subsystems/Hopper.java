@@ -1,12 +1,13 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Behavior;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -29,11 +30,14 @@ public class Hopper extends SubsystemBase {
   private double setPoint = 0;
   private static final int HopperCurrentLimit = 40; // safety limit
   private HopperState mode = HopperState.Off;
+  private double gearRatio = 3;
 
   public Hopper() {
 
     // Configure turn motor
     hopperController = hopperMotor.getClosedLoopController();
+    var HopperFFConfig = new FeedForwardConfig();
+    HopperFFConfig.kV(0.0022);
     var HopperConfig = new SparkMaxConfig();
     HopperConfig.idleMode(IdleMode.kCoast)
         .smartCurrentLimit(HopperCurrentLimit)
@@ -41,7 +45,8 @@ public class Hopper extends SubsystemBase {
         .voltageCompensation(12.0);
     HopperConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(0.000175, 0.0, 0.0, 0.0022);
+        .pid(0.000175, 0.0, 0.0)
+        .apply(HopperFFConfig);
     HopperConfig.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
 
     SparkUtil.tryUntilOk(
@@ -112,9 +117,9 @@ public class Hopper extends SubsystemBase {
   public void periodic() {
 
     if (mode == HopperState.Forward) {
-      setPoint = -5300;
+      setPoint = -1400 * gearRatio;
     } else if (mode == HopperState.Reverse) {
-      setPoint = 1800;
+      setPoint = 700 * gearRatio;
     } else {
       setPoint = 0;
     }

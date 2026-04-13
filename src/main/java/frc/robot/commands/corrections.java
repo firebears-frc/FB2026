@@ -25,7 +25,7 @@ public class corrections {
   // SHOOTER SUBSYSTEM, THIS IS JUST A DEFAULT VALUE
 
   public static void setShooterAngleOffset(double newAngle) {
-    shooterAngleOffset = newAngle;
+    shooterAngleOffset = -(newAngle - (Math.PI / 2)) + (Math.PI / 2);
   }
 
   // ~CHANGE~
