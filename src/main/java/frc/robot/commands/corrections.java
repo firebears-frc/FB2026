@@ -10,6 +10,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
@@ -21,8 +23,30 @@ public class corrections {
   private static final double shooterYOffset = Units.inchesToMeters(6);
   private static double shooterAngleOffset =
       Units.degreesToRadians(
-          90); // DONT CHANGE IT HERE CHANGE IT IN THE DASHBOARD NUMBER CALLED "angleOffset" IN THE
-  // SHOOTER SUBSYSTEM, THIS IS JUST A DEFAULT VALUE
+          90); // This is the initial value, also stored somewhat seperately within the shooter
+  // subsystem. Change it both places if necessary. This value is changed by a command
+  // in shooter.
+  private static double driveSpeedWhileSOTM =
+      5.83; // set to max speed found in drive / DriveConstants
+  private static double optionalSlowSOTM = 0.2; // factor to slow down for sotm when desired
+
+  public static Command slowDriveSpeedWhileSOTM() {
+    return Commands.runOnce(
+        () -> {
+          driveSpeedWhileSOTM *= optionalSlowSOTM;
+        });
+  }
+
+  public static Command normalDriveSpeedWhileSOTM() {
+    return Commands.runOnce(
+        () -> {
+          driveSpeedWhileSOTM /= optionalSlowSOTM;
+        });
+  }
+
+  public static double getDriveSpeedWhileSOTM() {
+    return driveSpeedWhileSOTM;
+  }
 
   public static void setShooterAngleOffset(double newAngle) {
     shooterAngleOffset = -(newAngle - (Math.PI / 2)) + (Math.PI / 2);

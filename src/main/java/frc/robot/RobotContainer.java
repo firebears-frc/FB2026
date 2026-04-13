@@ -265,6 +265,11 @@ public class RobotContainer {
                 () -> -joy1.getX(),
                 () -> corrections.nearestDiagonalAngle()));
 
+    // slow down driving while in sotm mode while pressed to predesignated speed;
+    joy1.trigger()
+        .onTrue(corrections.slowDriveSpeedWhileSOTM())
+        .onFalse(corrections.normalDriveSpeedWhileSOTM());
+
     // DRIVER 2 COMMANDS
     // Right trigger:  Auto shoot on the move (with auto aim) - (is the same as auto-aim when
     // standing still)
@@ -282,7 +287,8 @@ public class RobotContainer {
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () -> corrections.sotmAutoAimAngle()))
+                () -> corrections.sotmAutoAimAngle(),
+                () -> corrections.getDriveSpeedWhileSOTM()))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
