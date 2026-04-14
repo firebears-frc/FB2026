@@ -33,7 +33,7 @@ public class Arm extends SubsystemBase {
   private static double shoulderP = 0.02;
   private static double shoulderI = 0.0;
   private static double shoulderG = 0.5;
-  private static double shoulderD = 0.0;
+  private static double shoulderD = 0;
   private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 15;
   // private static boolean up = true;
   private final SparkMax shoulderMotor;
@@ -42,7 +42,7 @@ public class Arm extends SubsystemBase {
   private ArmState mode = ArmState.Default;
   private double jostlechange = 0.5;
   private final double maxJostleAngle = 0;
-  private final double minJostleAngle = -10;
+  private final double minJostleAngle = -8;
 
   @AutoLogOutput(key = "arm/setPoint")
   private Rotation2d shoulderSetpoint = new Rotation2d();
@@ -93,7 +93,7 @@ public class Arm extends SubsystemBase {
 
   private static final class Constants {
     private static final Rotation2d armDown = Rotation2d.fromDegrees(-11);
-    private static final Rotation2d armUp = Rotation2d.fromDegrees(125);
+    private static final Rotation2d armUp = Rotation2d.fromDegrees(125); // 125
   }
 
   @AutoLogOutput(key = "arm/Angle")

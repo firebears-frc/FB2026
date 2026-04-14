@@ -43,10 +43,10 @@ public class Shooter extends SubsystemBase {
   // Variables that can be updated
   private static final int smartShooterCurrentLimit = 75;
   private static final int secondaryShooterCurrentLimit = 85;
-  private final double motorP = 0.000175;
+  private final double motorP = 0.0003; // 0.000175
   private final double motorI = 0.0;
   private final double motorD = 0.0;
-  private final double motorFF = 0.0018;
+  private final double motorFF = 0.0018; // 0.0018
   private final double maxSpeed = 6500;
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
   private ShooterState mode = ShooterState.Off;
@@ -87,6 +87,7 @@ public class Shooter extends SubsystemBase {
         .pid(motorP, motorI, motorD)
         .apply(ShooterFFConfig1);
     ShooterConfig1.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
+    ShooterConfig1.encoder.quadratureAverageDepth(2).quadratureMeasurementPeriod(4);
 
     SparkUtil.tryUntilOk(
         ShooterMotor1,
@@ -105,6 +106,7 @@ public class Shooter extends SubsystemBase {
         .voltageCompensation(12.0);
     ShooterConfig2.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     ShooterConfig2.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
+    ShooterConfig2.encoder.quadratureAverageDepth(2).quadratureMeasurementPeriod(4);
 
     SparkUtil.tryUntilOk(
         ShooterMotor2,

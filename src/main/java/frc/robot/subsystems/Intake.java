@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
   private SparkFlex intakeMotor2 = new SparkFlex(11, MotorType.kBrushless);
   private final SparkClosedLoopController intakeController2;
   private double setPoint = 0;
-  private static final int intakeCurrentLimit = 60;
+  private static final int intakeCurrentLimit = 40;
   private double gearRatio = 2.8;
 
   public Intake() {
@@ -36,7 +36,7 @@ public class Intake extends SubsystemBase {
     intakeConfig
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(intakeCurrentLimit)
-        .secondaryCurrentLimit(80)
+        .secondaryCurrentLimit(50)
         .voltageCompensation(12.0);
     intakeConfig
         .closedLoop
@@ -59,7 +59,7 @@ public class Intake extends SubsystemBase {
         .idleMode(IdleMode.kCoast)
         .follow(12, true)
         .smartCurrentLimit(intakeCurrentLimit)
-        .secondaryCurrentLimit(80)
+        .secondaryCurrentLimit(50)
         .voltageCompensation(12.0);
     intakeConfig2
         .closedLoop
@@ -96,7 +96,7 @@ public class Intake extends SubsystemBase {
   public Command startIntake() {
     return runOnce(
         () -> {
-          setPoint = -1500 * gearRatio;
+          setPoint = -1000 * gearRatio;
         });
   }
 
