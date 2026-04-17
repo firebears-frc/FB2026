@@ -26,26 +26,25 @@ public class corrections {
           90); // This is the initial value, also stored somewhat seperately within the shooter
   // subsystem. Change it both places if necessary. This value is changed by a command
   // in shooter.
-  private static double driveSpeedWhileSOTM =
-      5.83; // set to max speed found in drive / DriveConstants
-  private static double optionalSlowSOTM = 0.2; // factor to slow down for sotm when desired
+  public static double driveSpeed = 5.83; // set to max speed found in drive / DriveConstants
+  private static double optionalSlow = 0.2; // factor to slow down for sotm when desired
 
-  public static Command slowDriveSpeedWhileSOTM() {
+  public static Command slowDriveSpeed() {
     return Commands.runOnce(
         () -> {
-          driveSpeedWhileSOTM *= optionalSlowSOTM;
+          driveSpeed *= optionalSlow;
         });
   }
 
-  public static Command normalDriveSpeedWhileSOTM() {
+  public static Command normalDriveSpeed() {
     return Commands.runOnce(
         () -> {
-          driveSpeedWhileSOTM /= optionalSlowSOTM;
+          driveSpeed /= optionalSlow;
         });
   }
 
-  public static double getDriveSpeedWhileSOTM() {
-    return driveSpeedWhileSOTM;
+  public static double getDriveSpeed() {
+    return driveSpeed;
   }
 
   public static void setShooterAngleOffset(double newAngle) {

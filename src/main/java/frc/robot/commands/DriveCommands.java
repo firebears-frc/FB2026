@@ -40,7 +40,7 @@ public class DriveCommands {
   private static final double ANGLE_MAX_ACCELERATION = 20.0;
   private static final double FF_START_DELAY = 2.0; // Secs
   private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
-  private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
+  private static final double WHEEL_RADIUS_MAX_VELOCITY = 1; // Rad/Sec
   private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
 
   private DriveCommands() {}
@@ -79,12 +79,25 @@ public class DriveCommands {
           // Square rotation value for more precise control
           omega = Math.copySign(omega * omega, omega);
 
+          // makes sure that if the total velocity would exceed the set max, it doesn't instead,
+          // limiting each wheel speed by the corresponding amount
+          double xVelocity = linearVelocity.getX() * corrections.getDriveSpeed();
+          double yVelocity = linearVelocity.getY() * corrections.getDriveSpeed();
+          double signX = xVelocity / Math.abs(xVelocity);
+          if (Math.sqrt((xVelocity * xVelocity) + (yVelocity * yVelocity))
+              > corrections.getDriveSpeed()) {
+            double ratio = xVelocity / yVelocity;
+            xVelocity =
+                signX
+                    * Math.sqrt(
+                        (corrections.getDriveSpeed() * corrections.getDriveSpeed())
+                            / (1 + (1 / (ratio * ratio))));
+            yVelocity = xVelocity / ratio;
+          }
+
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                  linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                  omega * drive.getMaxAngularSpeedRadPerSec());
+              new ChassisSpeeds(xVelocity, yVelocity, omega * drive.getMaxAngularSpeedRadPerSec());
           boolean isFlipped =
               DriverStation.getAlliance().isPresent()
                   && DriverStation.getAlliance().get() == Alliance.Red;
@@ -256,12 +269,24 @@ public class DriveCommands {
                   angleController.calculate(
                       drive.getRotation().getRadians(), rotationSupplier.get().getRadians());
 
+              // makes sure that if the total velocity would exceed the set max, it doesn't instead,
+              // limiting each wheel speed by the corresponding amount
+              double xVelocity = linearVelocity.getX() * corrections.getDriveSpeed();
+              double yVelocity = linearVelocity.getY() * corrections.getDriveSpeed();
+              double signX = xVelocity / Math.abs(xVelocity);
+              if (Math.sqrt((xVelocity * xVelocity) + (yVelocity * yVelocity))
+                  > corrections.getDriveSpeed()) {
+                double ratio = xVelocity / yVelocity;
+                xVelocity =
+                    signX
+                        * Math.sqrt(
+                            (corrections.getDriveSpeed() * corrections.getDriveSpeed())
+                                / (1 + (1 / (ratio * ratio))));
+                yVelocity = xVelocity / ratio;
+              }
+
               // Convert to field relative speeds & send command
-              ChassisSpeeds speeds =
-                  new ChassisSpeeds(
-                      linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                      linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                      omega);
+              ChassisSpeeds speeds = new ChassisSpeeds(xVelocity, yVelocity, omega);
               boolean isFlipped =
                   DriverStation.getAlliance().isPresent()
                       && DriverStation.getAlliance().get() == Alliance.Red;

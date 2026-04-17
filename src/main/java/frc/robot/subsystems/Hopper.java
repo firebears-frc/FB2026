@@ -45,7 +45,7 @@ public class Hopper extends SubsystemBase {
         .voltageCompensation(12.0);
     HopperConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(0.000175, 0.0, 0.0)
+        .pid(0.0003, 0.0, 0.0)
         .apply(HopperFFConfig);
     HopperConfig.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
 

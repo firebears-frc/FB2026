@@ -190,7 +190,7 @@ public class Shooter extends SubsystemBase {
   public Command decreaseStaticSpeed() {
     return runOnce(
             () -> {
-              staticShooterSpeed.set(staticShooterSpeed.get() - 50);
+              staticShooterSpeed.set(staticShooterSpeed.get() - 25);
             })
         .ignoringDisable(true);
   }
@@ -198,7 +198,7 @@ public class Shooter extends SubsystemBase {
   public Command increaseStaticSpeed() {
     return runOnce(
             () -> {
-              staticShooterSpeed.set(staticShooterSpeed.get() + 50);
+              staticShooterSpeed.set(staticShooterSpeed.get() + 25);
             })
         .ignoringDisable(true);
   }
@@ -219,21 +219,21 @@ public class Shooter extends SubsystemBase {
         .ignoringDisable(true);
   }
 
-  // decreases the angle where the rbot shoots the ball untill 85
+  // decreases the angle where the rbot shoots the ball untill 75
   public Command decreaseAngleAdjustment() {
     return runOnce(
             () -> {
-              shooterAngleOffset.set(Math.max(shooterAngleOffset.get() - 1, 85));
+              shooterAngleOffset.set(Math.max(shooterAngleOffset.get() - 0.5, 75));
               corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
             })
         .ignoringDisable(true);
   }
 
-  // increases the angle where the rbot shoots the ball untill 95
+  // increases the angle where the rbot shoots the ball untill 105
   public Command increaseAngleAdjustment() {
     return runOnce(
             () -> {
-              shooterAngleOffset.set(Math.min(shooterAngleOffset.get() + 1, 95));
+              shooterAngleOffset.set(Math.min(shooterAngleOffset.get() + 0.5, 105));
               corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
             })
         .ignoringDisable(true);
