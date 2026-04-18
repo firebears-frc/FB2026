@@ -29,7 +29,7 @@ public class corrections {
   private static double optionalSlow = 0.2; // factor to slow down for sotm when desired
 
   // ~CHANGE~
-  private static double delay = 0;
+  private static double delay = 0.03;
 
   private static boolean doDrawShotLine =
       false; // Do we want to log the line from shooter to target?
@@ -254,11 +254,8 @@ public class corrections {
   public static void createAngleCalculator() {
     // distance | angle offset
     // ~CHANGE~
-    angleOffsetCalculator.put(0.0, Math.toRadians(90.0));
-    angleOffsetCalculator.put(1.0, Math.toRadians(90.0));
-    angleOffsetCalculator.put(2.0, Math.toRadians(90.0));
-    angleOffsetCalculator.put(3.0, Math.toRadians(90.0));
-    angleOffsetCalculator.put(4.0, Math.toRadians(90.0));
+    angleOffsetCalculator.put(0.0, Math.toRadians(95));
+    angleOffsetCalculator.put(7.0, Math.toRadians(95));
   }
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
