@@ -332,6 +332,7 @@ public class corrections {
     return currentZone;
   }
 
+  // returns true if the robot is behind the hub
   public static boolean behindHub(){
     double currentY = robotPoseWithDelay.getY();
     return LinesHorizontal.rightBumpStart < currentY && currentY < LinesHorizontal.leftBumpEnd;
