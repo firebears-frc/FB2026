@@ -42,7 +42,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 5.0
                 }
               }
             ]
@@ -80,7 +80,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.5
+                  "waitTime": 5.0
                 }
               }
             ]
@@ -99,7 +99,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LeftTrenchMidHub2"
+                  "pathName": "LeftTrenchMidHub3"
                 }
               }
             ]
