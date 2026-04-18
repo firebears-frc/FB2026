@@ -55,7 +55,7 @@ public class Shooter extends SubsystemBase {
   private LoggedNetworkNumber staticShooterSpeed =
       new LoggedNetworkNumber("Static Shooter Speed", 3000);
   private LoggedNetworkNumber ShootAdjustment = new LoggedNetworkNumber("Shoot Adjustment", 1.00);
-  private LoggedNetworkNumber shooterAngleOffset = new LoggedNetworkNumber("angleOffset", 90);
+  private LoggedNetworkNumber shooterAngleOffset = new LoggedNetworkNumber("angleOffset", 0);
 
   private final DoubleSupplier distanceToHubSupplier;
 
@@ -116,12 +116,13 @@ public class Shooter extends SubsystemBase {
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Populate speed calculator with values (subject to change based on testing) (Meters,RPM)
+    // updated on 4/18/26
     speedCalculator.put(2.2, 2850.0);
-    speedCalculator.put(2.5, 2900.0);
-    speedCalculator.put(3.0, 3050.0);
-    speedCalculator.put(3.5, 3250.0);
-    speedCalculator.put(4.0, 3450.0);
-    speedCalculator.put(5.0, 3850.0);
+    speedCalculator.put(2.5, 2875.0);
+    speedCalculator.put(3.0, 2925.0);
+    speedCalculator.put(3.5, 3100.0);
+    speedCalculator.put(4.0, 3300.0);
+    speedCalculator.put(5.0, 3725.0);
     speedCalculator.put(6.0, 4400.0);
   }
 
@@ -223,7 +224,7 @@ public class Shooter extends SubsystemBase {
   public Command decreaseAngleAdjustment() {
     return runOnce(
             () -> {
-              shooterAngleOffset.set(Math.max(shooterAngleOffset.get() - 0.5, 75));
+              shooterAngleOffset.set(Math.max(shooterAngleOffset.get() - 0.5, -15));
               corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
             })
         .ignoringDisable(true);
@@ -233,7 +234,7 @@ public class Shooter extends SubsystemBase {
   public Command increaseAngleAdjustment() {
     return runOnce(
             () -> {
-              shooterAngleOffset.set(Math.min(shooterAngleOffset.get() + 0.5, 105));
+              shooterAngleOffset.set(Math.min(shooterAngleOffset.get() + 0.5, 15));
               corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
             })
         .ignoringDisable(true);

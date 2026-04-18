@@ -61,7 +61,8 @@ public class corrections {
   }
 
   public static void setShooterAngleOffset(double newAngle) {
-    shooterAngleOffset = -(newAngle - (Math.PI / 2)) + (Math.PI / 2);
+    // shooterAngleOffset = -(newAngle - (Math.PI / 2)) + (Math.PI / 2);
+    shooterAngleOffset = newAngle;
   }
 
   // creates a tree interpolator for time from distance
@@ -203,18 +204,18 @@ public class corrections {
   public static void createTimeCalculator() {
     // distance | time
     // ~Measured~
-    timeCalculator.put(2.5, .9);
-    timeCalculator.put(3.0, .91);
-    timeCalculator.put(3.5, 1.07);
-    timeCalculator.put(4.0, 1.11);
-    timeCalculator.put(4.5, 1.12);
-    timeCalculator.put(5.09, 1.29);
-    timeCalculator.put(5.5, 1.32); // Values from here down are extrapolated, not measurements
-    timeCalculator.put(6.0, 1.39);
-    timeCalculator.put(6.5, 1.47);
-    timeCalculator.put(7.0, 1.54);
-    timeCalculator.put(7.5, 1.61);
-    timeCalculator.put(8.0, 1.69);
+    timeCalculator.put(2.5, .61); // desmos calculated thingy
+    timeCalculator.put(3.0, .75); // tested 4/16/26
+    timeCalculator.put(3.5, .88); // tested 4/16/26
+    timeCalculator.put(4.0, 1.03); // tested 4/16/26
+    timeCalculator.put(4.5, 1.17); // desmos calculated thingy
+    timeCalculator.put(5.0, 1.31); // desmos calculated thingy
+    timeCalculator.put(5.5, 1.45); // desmos calculated thingy
+    timeCalculator.put(6.0, 1.59); // desmos calculated thingy
+    timeCalculator.put(6.5, 1.73); // desmos calculated thingy
+    timeCalculator.put(7.0, 1.87); // desmos calculated thingy
+    timeCalculator.put(7.5, 2.01); // desmos calculated thingy
+    timeCalculator.put(8.0, 2.15); // desmos calculated thingy
   }
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
