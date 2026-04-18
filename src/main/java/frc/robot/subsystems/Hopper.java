@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.corrections;
 import frc.robot.util.SparkUtil;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -121,6 +122,10 @@ public class Hopper extends SubsystemBase {
     } else if (mode == HopperState.Reverse) {
       setPoint = 700 * gearRatio;
     } else {
+      setPoint = 0;
+    } 
+    // turns off the hopper if behind the opposing hub so we don't score for our opponents
+    if (corrections.currentZone() == 2 && corrections.behindHub()){
       setPoint = 0;
     }
     hopperController.setSetpoint(setPoint, ControlType.kVelocity);
