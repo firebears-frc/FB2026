@@ -114,19 +114,23 @@ public class corrections {
     return sotmDistance;
   }
 
-  // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the angle to shoot straight back otherwise 
-  // EXCEPT if behind a hub, aims for the nearest bump in the direction of alliance zone instead | called in robot container
+  // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
+  // angle to shoot straight back otherwise
+  // EXCEPT if behind a hub, aims for the nearest bump in the direction of alliance zone instead |
+  // called in robot container
   public static Rotation2d sotmAutoAimAngle() {
     if (currentZone() <= 0) { // if in our zone, aim for the hub
       return sotmAngleToHub();
-    } else if(currentZone() == 1){ // if in the middle
-      if(!behindHub()){ // and not behind the hub, aim for the bump/trench/hub line but the current y value
+    } else if (currentZone() == 1) { // if in the middle
+      if (!behindHub()) { // and not behind the hub, aim for the bump/trench/hub line but the
+        // current y value
         return sotmAngleTo(correctXValue(LinesVertical.hubCenter), robotPoseWithDelay.getY());
       } else { // but if behind the hub, aim for the nearest bump instead
         return sotmAngleToNearestBump();
       }
     } else { // if in the opposing zone
-      if(!behindHub()){ // and not behind the hub, aim for the opposing bump/trench/hub line but the current y value
+      if (!behindHub()) { // and not behind the hub, aim for the opposing bump/trench/hub line but
+        // the current y value
         return sotmAngleTo(correctXValue(LinesVertical.oppHubCenter), robotPoseWithDelay.getY());
       } else { // but if behind the hub, aim for the nearest opp bump instead
         return sotmAngleToNearestOppBump();
@@ -361,7 +365,7 @@ public class corrections {
   }
 
   // returns true if the robot is behind the hub
-  public static boolean behindHub(){
+  public static boolean behindHub() {
     double currentY = robotPoseWithDelay.getY();
     return LinesHorizontal.rightBumpStart < currentY && currentY < LinesHorizontal.leftBumpEnd;
   }

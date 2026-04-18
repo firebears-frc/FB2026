@@ -123,9 +123,9 @@ public class Hopper extends SubsystemBase {
       setPoint = 700 * gearRatio;
     } else {
       setPoint = 0;
-    } 
+    }
     // turns off the hopper if behind the opposing hub so we don't score for our opponents
-    if (corrections.currentZone() == 2 && corrections.behindHub()){
+    if (corrections.currentZone() == 2 && corrections.behindHub()) {
       setPoint = 0;
     }
     hopperController.setSetpoint(setPoint, ControlType.kVelocity);
