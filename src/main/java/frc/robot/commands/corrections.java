@@ -22,10 +22,9 @@ public class corrections {
   private static final double shooterXOffset = Units.inchesToMeters(-5);
   private static final double shooterYOffset = Units.inchesToMeters(6);
   private static double shooterAngleOffset =
-      Units.degreesToRadians(
-          90); // This is the initial value, also stored somewhat seperately within the shooter
+      0; // This is the initial value, also stored somewhat seperately within the shooter
   // subsystem. Change it both places if necessary. This value is changed by a command
-  // in shooter.
+  // in shooter. This modifies the value returned by the tree
   public static double driveSpeed = 5.83; // set to max speed found in drive / DriveConstants
   private static double optionalSlow = 0.2; // factor to slow down for sotm when desired
 
@@ -41,6 +40,12 @@ public class corrections {
   private static ChassisSpeeds currentSpeed;
   private static Pose2d robotPose;
   private static Pose2d robotPoseWithDelay;
+
+  // creates a tree interpolator for time from distance
+  static InterpolatingDoubleTreeMap timeCalculator = new InterpolatingDoubleTreeMap();
+
+  // creates a tree interpolator for angle offset from distance
+  static InterpolatingDoubleTreeMap angleOffsetCalculator = new InterpolatingDoubleTreeMap();
 
   public static Command slowDriveSpeed() {
     return Commands.runOnce(
@@ -64,9 +69,6 @@ public class corrections {
     // shooterAngleOffset = -(newAngle - (Math.PI / 2)) + (Math.PI / 2);
     shooterAngleOffset = newAngle;
   }
-
-  // creates a tree interpolator for time from distance
-  static InterpolatingDoubleTreeMap timeCalculator = new InterpolatingDoubleTreeMap();
 
   // shoot on the move commands
 
@@ -153,7 +155,10 @@ public class corrections {
         targetY - robotVelocityY * sotmTime,
         shooterXOffset,
         shooterYOffset,
-        shooterAngleOffset);
+        angleOffsetCalculator.get(
+                distanceTo(
+                    targetX - robotVelocityX * sotmTime, targetY - robotVelocityY * sotmTime))
+            - shooterAngleOffset);
   }
 
   // Iterate time and distance (sotm), returns time
@@ -218,6 +223,17 @@ public class corrections {
     timeCalculator.put(8.0, 2.15); // desmos calculated thingy
   }
 
+  // Sets up the angle calculating tree interpolator
+  public static void createAngleCalculator() {
+    // distance | angle offset
+    // ~CHANGE~
+    angleOffsetCalculator.put(0.0, Math.toRadians(90.0));
+    angleOffsetCalculator.put(1.0, Math.toRadians(90.0));
+    angleOffsetCalculator.put(2.0, Math.toRadians(90.0));
+    angleOffsetCalculator.put(3.0, Math.toRadians(90.0));
+    angleOffsetCalculator.put(4.0, Math.toRadians(90.0));
+  }
+
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
   // in any other zone (sotm)
   public static boolean sotmAimedAtAutoTarget() {
@@ -244,7 +260,13 @@ public class corrections {
   public static Rotation2d angleToHub() {
     double hubX = correctXValue(LinesVertical.hubCenter);
     double hubY = LinesHorizontal.center;
-    Rotation2d angleToHub = angleTo(hubX, hubY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+    Rotation2d angleToHub =
+        angleTo(
+            hubX,
+            hubY,
+            shooterXOffset,
+            shooterYOffset,
+            angleOffsetCalculator.get(distanceToHub()) - shooterAngleOffset);
     Logger.recordOutput("corrections/angle to hub", angleToHub);
     return angleToHub;
   }
@@ -281,7 +303,12 @@ public class corrections {
       nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
     }
     Rotation2d angleToBump =
-        angleTo(nearestBumpX, nearestBumpY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+        angleTo(
+            nearestBumpX,
+            nearestBumpY,
+            shooterXOffset,
+            shooterYOffset,
+            angleOffsetCalculator.get(distanceTo(nearestBumpX, nearestBumpY)) - shooterAngleOffset);
     Logger.recordOutput("corrections/angle to bump", angleToBump);
     return angleToBump;
   }
@@ -323,7 +350,7 @@ public class corrections {
     Transform2d shooterOffset =
         new Transform2d(
             new Translation2d(shooterXOffset, shooterYOffset),
-            new Rotation2d(-1 * shooterAngleOffset));
+            new Rotation2d(-1 * (angleOffsetCalculator.get(distanceToHub) - shooterAngleOffset)));
 
     // Find pose of the shooter
     Pose2d shooterPose = robotPose.transformBy(shooterOffset);

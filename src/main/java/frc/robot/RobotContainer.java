@@ -156,6 +156,7 @@ public class RobotContainer {
         break;
     }
     corrections.createTimeCalculator();
+    corrections.createAngleCalculator();
     configureButtonBindings();
     configureAutoCommands();
 
