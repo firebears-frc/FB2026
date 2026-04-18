@@ -265,7 +265,7 @@ public class RobotContainer {
                 () -> -joy1.getX(),
                 () -> corrections.nearestDiagonalAngle()));
 
-    // slow down driving while in sotm mode while pressed to predesignated speed;
+    // slow down driving while pressed to predesignated speed;
     joy1.trigger().onTrue(corrections.slowDriveSpeed()).onFalse(corrections.normalDriveSpeed());
 
     // DRIVER 2 COMMANDS
