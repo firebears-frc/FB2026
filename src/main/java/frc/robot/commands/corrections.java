@@ -29,6 +29,19 @@ public class corrections {
   public static double driveSpeed = 5.83; // set to max speed found in drive / DriveConstants
   private static double optionalSlow = 0.2; // factor to slow down for sotm when desired
 
+  // ~CHANGE~
+  private static double delay = 0;
+
+  private static boolean doDrawShotLine =
+      false; // Do we want to log the line from shooter to target?
+
+  private static double robotVelocityX = 0;
+  private static double robotVelocityY = 0;
+  private static double sotmDistance = 0;
+  private static ChassisSpeeds currentSpeed;
+  private static Pose2d robotPose;
+  private static Pose2d robotPoseWithDelay;
+
   public static Command slowDriveSpeed() {
     return Commands.runOnce(
         () -> {
@@ -50,19 +63,6 @@ public class corrections {
   public static void setShooterAngleOffset(double newAngle) {
     shooterAngleOffset = -(newAngle - (Math.PI / 2)) + (Math.PI / 2);
   }
-
-  // ~CHANGE~
-  private static double delay = 0;
-
-  private static boolean doDrawShotLine =
-      false; // Do we want to log the line from shooter to target?
-
-  private static double robotVelocityX = 0;
-  private static double robotVelocityY = 0;
-  private static double sotmDistance = 0;
-  private static ChassisSpeeds currentSpeed;
-  private static Pose2d robotPose;
-  private static Pose2d robotPoseWithDelay;
 
   // creates a tree interpolator for time from distance
   static InterpolatingDoubleTreeMap timeCalculator = new InterpolatingDoubleTreeMap();
@@ -250,18 +250,24 @@ public class corrections {
 
   public static Rotation2d angleTo(
       double targetX, double targetY, double componentX, double componentY, double componentAngle) {
-    return corrections.makeRotation2D(
-        corrections.correctAngleForComponent(
-            corrections.correctAngleValue(
-                Math.atan(
-                    Math.abs((targetY - corrections.yValueOfComponent(componentX, componentY)))
-                        / Math.abs(
-                            (targetX - corrections.xValueOfComponent(componentX, componentY)))),
-                targetX,
-                targetY,
-                componentX,
-                componentY),
-            componentAngle));
+    Rotation2d angleTo =
+        makeRotation2D(
+            correctAngleForComponent(
+                correctAngleValue(
+                    Math.atan(
+                        Math.abs((targetY - yValueOfComponent(componentX, componentY)))
+                            / Math.abs((targetX - xValueOfComponent(componentX, componentY)))),
+                    targetX,
+                    targetY,
+                    componentX,
+                    componentY),
+                componentAngle));
+    Logger.recordOutput("corrections/angle setpoint degrees", angleTo.getDegrees());
+    Logger.recordOutput("corrections/actual angle degrees", robotPose.getRotation().getDegrees());
+    Logger.recordOutput(
+        "corrections/angle error degrees",
+        angleTo.getDegrees() - robotPose.getRotation().getDegrees());
+    return angleTo;
   }
 
   // Returns the angle to the center of the nearest bump dividing your alliance zone and the center
