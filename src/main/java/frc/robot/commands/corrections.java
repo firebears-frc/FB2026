@@ -138,6 +138,10 @@ public class corrections {
     }
   }
 
+  public static double distanceToSide(){
+    return distanceTo(correctXValue(LinesVertical.hubCenter), robotPoseWithDelay.getY());
+  }
+
   // returns the angle the bot needs to face to aim for the nearest bump (sotm)
   public static Rotation2d sotmAngleToNearestBump() {
     double nearestBumpY = 0;

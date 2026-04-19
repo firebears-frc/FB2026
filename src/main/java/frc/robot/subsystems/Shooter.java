@@ -49,6 +49,7 @@ public class Shooter extends SubsystemBase {
   private final double motorFF = 0.0018; // 0.0018
   private final double maxSpeed = 6500;
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
+  InterpolatingDoubleTreeMap relayCalculator = new InterpolatingDoubleTreeMap();
   private ShooterState mode = ShooterState.Off;
 
   // Dashboard Input
@@ -115,7 +116,7 @@ public class Shooter extends SubsystemBase {
             ShooterMotor2.configure(
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
-    // Populate speed calculator with values (subject to change based on testing) (Meters,RPM)
+    // Populate speed calculator with values (subject to change based on testing) (Meters from hub | RPM)
     // updated on 4/18/26
     speedCalculator.put(2.2, 2850.0);
     speedCalculator.put(2.5, 2875.0);
@@ -124,6 +125,19 @@ public class Shooter extends SubsystemBase {
     speedCalculator.put(4.0, 3300.0);
     speedCalculator.put(5.0, 3725.0);
     speedCalculator.put(6.0, 4400.0);
+
+    // Populate relay calculator with values (Meters from bump/trench line | RPM)
+    // ~unchanged values, a couple added~
+    relayCalculator.put(2.2, 2850.0);
+    relayCalculator.put(2.5, 2875.0);
+    relayCalculator.put(3.0, 2925.0);
+    relayCalculator.put(3.5, 3100.0);
+    relayCalculator.put(4.0, 3300.0);
+    relayCalculator.put(5.0, 3725.0);
+    relayCalculator.put(6.0, 4400.0);
+    relayCalculator.put(7.0, 5000.0);
+    relayCalculator.put(8.0, 6000.0);
+    relayCalculator.put(9.0, 6500.0);
   }
 
   @AutoLogOutput(key = "Shooter/error")
@@ -270,7 +284,12 @@ public class Shooter extends SubsystemBase {
     } else if (mode == ShooterState.Auto) {
       setPoint = speedCalculator.get(distance) * ShootAdjustment.get();
     } else if (mode == ShooterState.Sotm) {
-      setPoint = speedCalculator.get(corrections.sotmGetDistance()) * ShootAdjustment.get();
+      if (corrections.currentZone() <= 0){
+        setPoint = speedCalculator.get(corrections.sotmGetDistance()) * ShootAdjustment.get();
+      } else {
+        setPoint = relayCalculator.get(corrections.distanceToSide());
+      }
+      
     } else if (mode == ShooterState.Static) {
       setPoint = staticShooterSpeed.get();
     } else {
