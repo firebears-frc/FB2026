@@ -116,7 +116,8 @@ public class Shooter extends SubsystemBase {
             ShooterMotor2.configure(
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
-    // Populate speed calculator with values (subject to change based on testing) (Meters from hub | RPM)
+    // Populate speed calculator with values (subject to change based on testing) (Meters from hub |
+    // RPM)
     // updated on 4/18/26
     speedCalculator.put(2.2, 2850.0);
     speedCalculator.put(2.5, 2875.0);
@@ -138,6 +139,8 @@ public class Shooter extends SubsystemBase {
     relayCalculator.put(7.0, 5000.0);
     relayCalculator.put(8.0, 6000.0);
     relayCalculator.put(9.0, 6500.0);
+
+    corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
   }
 
   @AutoLogOutput(key = "Shooter/error")
@@ -154,7 +157,6 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = ShooterState.Reverse;
-          corrections.setDrawShotLine(false);
         });
   }
 
@@ -162,7 +164,6 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = ShooterState.Auto;
-          corrections.setDrawShotLine(true);
         });
   }
 
@@ -170,7 +171,6 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = ShooterState.Sotm;
-          corrections.setDrawShotLine(true);
         });
   }
 
@@ -178,7 +178,6 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = ShooterState.Fast;
-          corrections.setDrawShotLine(true);
         });
   }
   // subject to change based on design of the motor and mechanism
@@ -186,7 +185,6 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = ShooterState.Slow;
-          corrections.setDrawShotLine(true);
         });
   }
 
@@ -194,7 +192,6 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = ShooterState.Static;
-          corrections.setDrawShotLine(true);
         });
   }
 
@@ -258,7 +255,6 @@ public class Shooter extends SubsystemBase {
     return runOnce(
         () -> {
           mode = ShooterState.Off;
-          corrections.setDrawShotLine(false);
         });
   }
 
@@ -284,12 +280,12 @@ public class Shooter extends SubsystemBase {
     } else if (mode == ShooterState.Auto) {
       setPoint = speedCalculator.get(distance) * ShootAdjustment.get();
     } else if (mode == ShooterState.Sotm) {
-      if (corrections.currentZone() <= 0){
+      if (corrections.currentZone() <= 0) {
         setPoint = speedCalculator.get(corrections.sotmGetDistance()) * ShootAdjustment.get();
       } else {
         setPoint = relayCalculator.get(corrections.distanceToSide());
       }
-      
+
     } else if (mode == ShooterState.Static) {
       setPoint = staticShooterSpeed.get();
     } else {

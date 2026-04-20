@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.corrections;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -121,8 +120,6 @@ public class ShooterSim extends Shooter {
         simMode.equals(ShooterState.Fast)
             || simMode.equals(ShooterState.Slow)
             || simMode.equals(ShooterState.Auto);
-
-    corrections.setDrawShotLine(shooting);
 
     double distance = distanceToHubSupplier.getAsDouble();
 

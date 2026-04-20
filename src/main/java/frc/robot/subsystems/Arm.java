@@ -28,20 +28,20 @@ public class Arm extends SubsystemBase {
     Jostle
   }
 
-  private static int STALL_CURRENT_LIMIT_SHOULDER = 5;
+  private static int STALL_CURRENT_LIMIT_SHOULDER = 35;
   private static int FREE_CURRENT_LIMIT_SHOULDER = 5;
-  private static double shoulderP = 0.02;
+  private static double shoulderP = 0.007;
   private static double shoulderI = 0.0;
   private static double shoulderG = 0.5;
-  private static double shoulderD = 0;
-  private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 15;
+  private static double shoulderD = 0.0;
+  private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 40;
   // private static boolean up = true;
   private final SparkMax shoulderMotor;
   private final SparkAbsoluteEncoder shoulderEncoder;
   private final SparkClosedLoopController shoulderPID;
   private ArmState mode = ArmState.Default;
-  private double jostlechange = 0.5;
-  private final double maxJostleAngle = 0;
+  private double jostlechange;
+  private final double maxJostleAngle = 5;
   private final double minJostleAngle = -8;
 
   @AutoLogOutput(key = "arm/setPoint")
@@ -93,7 +93,7 @@ public class Arm extends SubsystemBase {
 
   private static final class Constants {
     private static final Rotation2d armDown = Rotation2d.fromDegrees(-11);
-    private static final Rotation2d armUp = Rotation2d.fromDegrees(125); // 125
+    private static final Rotation2d armUp = Rotation2d.fromDegrees(120); // 125
   }
 
   @AutoLogOutput(key = "arm/Angle")
@@ -144,7 +144,7 @@ public class Arm extends SubsystemBase {
     return Commands.sequence(
         runOnce(
             () -> {
-              mode = ArmState.Default;
+              mode = ArmState.Jostle;
             }),
         positionCommand(() -> Constants.armDown, () -> 5.0));
   }
@@ -178,10 +178,10 @@ public class Arm extends SubsystemBase {
     double currentShoulderAngle = getShoulderAngle().getDegrees();
 
     if (mode == ArmState.Jostle) {
-      if (currentShoulderAngle < minJostleAngle) {
-        jostlechange = 4;
-      } else if (currentShoulderAngle > maxJostleAngle) {
-        jostlechange = -4;
+      if (shoulderSetpoint.getDegrees() < minJostleAngle) {
+        jostlechange = .5;
+      } else if (shoulderSetpoint.getDegrees() > maxJostleAngle) {
+        jostlechange = -.5;
       }
       setShoulderSetpoint(Rotation2d.fromDegrees(shoulderSetpoint.getDegrees() + jostlechange));
     }

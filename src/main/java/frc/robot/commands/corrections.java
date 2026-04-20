@@ -21,8 +21,9 @@ public class corrections {
   // ~CONSTANTS~in meters / radians
   private static final double shooterXOffset = Units.inchesToMeters(-5);
   private static final double shooterYOffset = Units.inchesToMeters(6);
-  private static double shooterAngleOffset =
-      0; // This is the initial value, also stored somewhat seperately within the shooter
+  private static double
+      shooterAngleOffset; // This is the initial value, also stored somewhat seperately within the
+  // shooter
   // subsystem. Change it both places if necessary. This value is changed by a command
   // in shooter. This modifies the value returned by the tree
   public static double driveSpeed = 5.83; // set to max speed found in drive / DriveConstants
@@ -30,9 +31,6 @@ public class corrections {
 
   // ~CHANGE~
   private static double delay = 0.03;
-
-  private static boolean doDrawShotLine =
-      false; // Do we want to log the line from shooter to target?
 
   private static double robotVelocityX = 0;
   private static double robotVelocityY = 0;
@@ -138,7 +136,7 @@ public class corrections {
     }
   }
 
-  public static double distanceToSide(){
+  public static double distanceToSide() {
     return distanceTo(correctXValue(LinesVertical.hubCenter), robotPoseWithDelay.getY());
   }
 
@@ -258,8 +256,8 @@ public class corrections {
   public static void createAngleCalculator() {
     // distance | angle offset
     // ~CHANGE~
-    angleOffsetCalculator.put(0.0, Math.toRadians(95));
-    angleOffsetCalculator.put(7.0, Math.toRadians(95));
+    angleOffsetCalculator.put(0.0, Math.toRadians(93));
+    angleOffsetCalculator.put(7.0, Math.toRadians(93));
   }
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
@@ -371,11 +369,6 @@ public class corrections {
     return LinesHorizontal.rightBumpStart < currentY && currentY < LinesHorizontal.leftBumpEnd;
   }
 
-  // Decide whether or not we want to draw the shotline
-  public static void setDrawShotLine(boolean draw) {
-    doDrawShotLine = draw;
-  }
-
   // Log a line segment from the shooter, in the shooter direction of length distance_to_hub
   // ~CURRENTLY USES THE ROBOT POSE RATHER THAN THE ADJUSTED FOR DELAY POSE~
   private static void logShotLine(double distanceToHub) {
@@ -410,12 +403,7 @@ public class corrections {
     Logger.recordOutput("Odometry/distance to hub", distance);
 
     // optionally log the shotline and the shooter position on the bot
-    if (doDrawShotLine) {
-      logShotLine(distance);
-    } else {
-      Logger.recordOutput("Shooter/ShotLine", new Pose2d[] {});
-      Logger.recordOutput("Shooter/Marker", new Pose2d[] {});
-    }
+    logShotLine(distance);
     return distance;
   }
 
