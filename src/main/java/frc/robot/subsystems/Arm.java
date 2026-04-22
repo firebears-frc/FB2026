@@ -177,11 +177,22 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     double currentShoulderAngle = getShoulderAngle().getDegrees();
 
+    double trapezoiddelay = 30;
     if (mode == ArmState.Jostle) {
       if (shoulderSetpoint.getDegrees() < minJostleAngle) {
-        jostlechange = .5;
+        if (trapezoiddelay < 30) {
+          jostlechange = 0;
+          trapezoiddelay = trapezoiddelay + 2;
+        } else {
+          jostlechange = 1;
+        }
       } else if (shoulderSetpoint.getDegrees() > maxJostleAngle) {
-        jostlechange = -.5;
+        if (trapezoiddelay > 0) {
+          jostlechange = 0;
+          trapezoiddelay = trapezoiddelay - 1;
+        } else {
+          jostlechange = -1;
+        }
       }
       setShoulderSetpoint(Rotation2d.fromDegrees(shoulderSetpoint.getDegrees() + jostlechange));
     }
