@@ -197,12 +197,16 @@ public class RobotContainer {
                 shooter.autoShooter(),
                 DriveCommands.turnToAngle(drive, () -> corrections.angleToHub()),
                 Commands.waitUntil(() -> shooter.atSpeed()),
-                hopper.startHopper()),
+                hopper.startHopper(),
+                arm.startjostle()),
             "spinUpShooter",
             shooter.autoShooter(),
             "stopShoot",
             Commands.sequence(
-                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()),
+                arm.stopjostle(),
+                hopper.pauseHopper(),
+                Commands.waitSeconds(.1),
+                shooter.pauseShooter()),
             "startIntake",
             intake.startIntake(),
             "pauseIntake",
@@ -210,7 +214,11 @@ public class RobotContainer {
             "armDown",
             arm.armDown(),
             "armUp",
-            arm.armUp()));
+            arm.armUp(),
+            "armJostle",
+            arm.startjostle(),
+            "stopJostle",
+            arm.stopjostle()));
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
