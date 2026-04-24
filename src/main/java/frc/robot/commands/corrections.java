@@ -31,8 +31,11 @@ public class corrections {
   private static double baseDriveSpeed = 5.83; // set to max speed found in drive / DriveConstants
   private static double optionalSlow = 0.2; // factor to slow down for sotm when desired
 
+  // creates a network number to store a time in seconds to wait before starting an auto
   private static LoggedNetworkNumber autoDelay =
       new LoggedNetworkNumber("corrections/autoDelay", 0);
+  private static int autoDelayTimeElapsed = 0; // used to measure the wait for this
+  
 
   // ~CHANGE~
   private static double delay = 0.03;
@@ -50,6 +53,7 @@ public class corrections {
   // creates a tree interpolator for angle offset from distance
   static InterpolatingDoubleTreeMap angleOffsetCalculator = new InterpolatingDoubleTreeMap();
 
+  // increases the time for the bot to wait before it starts doing the selected auto
   public static Command increaseAutoDelay() {
     return Commands.runOnce(
             () -> {
@@ -58,6 +62,7 @@ public class corrections {
         .ignoringDisable(true);
   }
 
+  // decreases the time for the bot to wait before it starts doing the selected auto
   public static Command decreaseAutoDelay() {
     return Commands.runOnce(
             () -> {
@@ -69,10 +74,37 @@ public class corrections {
         .ignoringDisable(true);
   }
 
+  // a command that will wait autoDelay seconds
   public static Command waitAutoDelay() {
-    return Commands.waitSeconds(autoDelay.get());
+    return Commands.sequence(
+      Commands.repeatingSequence(
+        Commands.waitSeconds(0.5),
+        increaseTimeElapsed()
+      ).until(() -> autoDelayHasPassed()),
+      resetTimeElapsed()
+    );
   }
 
+  // a command that increases a variable to measure how much of the desired wait time has already happened
+  private static Command increaseTimeElapsed(){
+    return Commands.runOnce(() -> {
+      autoDelayTimeElapsed += 0.5;
+    });
+  }
+
+  // a command that resets a variable to measure how much of the desired wait time has already happened
+  private static Command resetTimeElapsed(){
+    return Commands.runOnce(() -> {
+      autoDelayTimeElapsed = 0;
+    });
+  }
+
+  // a function that returns if the measured time waited is equal or greater than the desired time
+  private static boolean autoDelayHasPassed(){
+    return autoDelayTimeElapsed >= autoDelay.get();
+  }
+
+  // sets the drive speed to slow
   public static Command slowDriveSpeed() {
     return Commands.runOnce(
         () -> {
@@ -80,6 +112,7 @@ public class corrections {
         });
   }
 
+  // sets the drive speed to normal
   public static Command normalDriveSpeed() {
     return Commands.runOnce(
         () -> {
@@ -87,10 +120,12 @@ public class corrections {
         });
   }
 
+  // returns the drive speed
   public static double getDriveSpeed() {
     return driveSpeed;
   }
 
+  // used to adjust the shooting angle slightly mid match
   public static void setShooterAngleOffset(double newAngle) {
     // shooterAngleOffset = -(newAngle - (Math.PI / 2)) + (Math.PI / 2);
     shooterAngleOffset = newAngle;
