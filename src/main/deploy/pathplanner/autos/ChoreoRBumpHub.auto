@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "delayStart"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
