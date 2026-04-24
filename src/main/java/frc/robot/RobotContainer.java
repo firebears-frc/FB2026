@@ -362,6 +362,9 @@ public class RobotContainer {
     // Reverse Intake / stop intake
     xboxController.b().onTrue(intake.reverseIntake()).onFalse(intake.pauseintake());
 
+    // toggles whether the bot should jostle the arm while shooting or not
+    xboxController.button(10).onTrue(arm.toggleJostle());
+
     // Start/stop hopper
     xboxController
         .x()

@@ -128,17 +128,11 @@ public class Shooter extends SubsystemBase {
     speedCalculator.put(6.0, 4400.0);
 
     // Populate relay calculator with values (Meters from bump/trench line | RPM)
-    // ~unchanged values, a couple added~
-    relayCalculator.put(2.2, 2850.0);
-    relayCalculator.put(2.5, 2875.0);
-    relayCalculator.put(3.0, 2925.0);
-    relayCalculator.put(3.5, 3100.0);
-    relayCalculator.put(4.0, 3300.0);
-    relayCalculator.put(5.0, 3725.0);
-    relayCalculator.put(6.0, 4400.0);
-    relayCalculator.put(7.0, 5000.0);
-    relayCalculator.put(8.0, 6000.0);
-    relayCalculator.put(9.0, 6500.0);
+    // values from old testing(?)
+    relayCalculator.put(0.0, 2000.0);
+    relayCalculator.put(4.0, 3600.0);
+    relayCalculator.put(6.75, 5500.0);
+    relayCalculator.put(12.0, 6750.0);
 
     corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
   }

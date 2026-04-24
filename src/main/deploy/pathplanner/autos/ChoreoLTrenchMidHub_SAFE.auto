@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CenterBump1"
+                  "pathName": "LeftTrenchMidHub1"
                 }
               }
             ]
@@ -42,7 +42,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 4.0
+                  "waitTime": 6.0
                 }
               }
             ]
@@ -61,45 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CenterRightBump2"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "shoot"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 4.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "stopShoot"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterRightBump3"
+                  "pathName": "LeftTrenchMidHub2_SAFE"
                 }
               }
             ]
