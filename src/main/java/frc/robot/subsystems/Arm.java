@@ -41,8 +41,8 @@ public class Arm extends SubsystemBase {
   private final SparkClosedLoopController shoulderPID;
   private ArmState mode = ArmState.Default;
   private double jostlechange;
-  private final double maxJostleAngle = 5;
-  private final double minJostleAngle = -8;
+  private final double maxJostleAngle = 10; // was 5
+  private final double minJostleAngle = 0; // was -8
   private boolean jostleArm = false;
   private double trapezoiddelay = 30;
 
@@ -186,25 +186,25 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     double currentShoulderAngle = getShoulderAngle().getDegrees();
 
-    if(jostleArm){
-    if (mode == ArmState.Jostle) {
-      if (shoulderSetpoint.getDegrees() < minJostleAngle) {
-        if (trapezoiddelay < 30) {
-          jostlechange = 0;
-          trapezoiddelay = trapezoiddelay + 2;
-        } else {
-          jostlechange = 1;
+    if (jostleArm) {
+      if (mode == ArmState.Jostle) {
+        if (shoulderSetpoint.getDegrees() < minJostleAngle) {
+          if (trapezoiddelay < 30) {
+            jostlechange = 0;
+            trapezoiddelay = trapezoiddelay + 2;
+          } else {
+            jostlechange = 1;
+          }
+        } else if (shoulderSetpoint.getDegrees() > maxJostleAngle) {
+          if (trapezoiddelay > 0) {
+            jostlechange = 0;
+            trapezoiddelay = trapezoiddelay - 1;
+          } else {
+            jostlechange = -1;
+          }
         }
-      } else if (shoulderSetpoint.getDegrees() > maxJostleAngle) {
-        if (trapezoiddelay > 0) {
-          jostlechange = 0;
-          trapezoiddelay = trapezoiddelay - 1;
-        } else {
-          jostlechange = -1;
-        }
+        setShoulderSetpoint(Rotation2d.fromDegrees(shoulderSetpoint.getDegrees() + jostlechange));
       }
-      setShoulderSetpoint(Rotation2d.fromDegrees(shoulderSetpoint.getDegrees() + jostlechange));
-    }
     }
 
     double feedForward = Math.cos(Math.toRadians(currentShoulderAngle)) * shoulderG;
