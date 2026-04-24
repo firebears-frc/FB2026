@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CenterLeftBump1"
+                  "pathName": "CenterBump1"
                 }
               }
             ]
@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CenterLeftBump2"
+                  "pathName": "CenterRightBump2"
                 }
               }
             ]
@@ -99,7 +99,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CenterLeftBump3"
+                  "pathName": "CenterRightBump3"
                 }
               }
             ]
