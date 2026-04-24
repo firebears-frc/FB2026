@@ -398,10 +398,10 @@ public class RobotContainer {
 
     // DELAY FOR AUTO
     // increase auto delay by half a second
-    joy1.button(11).onTrue(corrections.increaseAutoDelay().ignoringDisable(true));
+    joy1.button(13).onTrue(corrections.increaseAutoDelay().ignoringDisable(true));
 
     // decrease auto delay by half a second
-    joy1.button(16).onTrue(corrections.decreaseAutoDelay().ignoringDisable(true));
+    joy1.button(14).onTrue(corrections.decreaseAutoDelay().ignoringDisable(true));
 
     // Resets gyro to 0 degrees when b is pressed
     joy1.button(16)

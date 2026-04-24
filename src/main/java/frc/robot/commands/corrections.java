@@ -60,6 +60,9 @@ public class corrections {
     return Commands.runOnce(
         () -> {
           autoDelay.set(autoDelay.get() - 0.5);
+          if(autoDelay.get() < 0){
+            autoDelay.set(0);
+          }
         }).ignoringDisable(true);
   }
 
