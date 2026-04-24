@@ -16,6 +16,7 @@ import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class corrections {
   // ~CONSTANTS~in meters / radians
@@ -27,7 +28,10 @@ public class corrections {
   // subsystem. Change it both places if necessary. This value is changed by a command
   // in shooter. This modifies the value returned by the tree
   public static double driveSpeed = 5.83; // set to max speed found in drive / DriveConstants
+  private static double baseDriveSpeed = 5.83; // set to max speed found in drive / DriveConstants
   private static double optionalSlow = 0.2; // factor to slow down for sotm when desired
+
+  private static LoggedNetworkNumber autoDelay;
 
   // ~CHANGE~
   private static double delay = 0.03;
@@ -45,17 +49,44 @@ public class corrections {
   // creates a tree interpolator for angle offset from distance
   static InterpolatingDoubleTreeMap angleOffsetCalculator = new InterpolatingDoubleTreeMap();
 
+  public static Command increaseAutoDelay() {
+    return Commands.runOnce(
+        () -> {
+          autoDelay.set(autoDelay.get() + 0.5);
+        }).ignoringDisable(true);
+  }
+
+  public static Command decreaseAutoDelay() {
+    return Commands.runOnce(
+        () -> {
+          autoDelay.set(autoDelay.get() - 0.5);
+        }).ignoringDisable(true);
+  }
+
+  public static Command setAutoDelay(double delayAuto) {
+    return Commands.runOnce(
+        () -> {
+          autoDelay.set(delayAuto);
+        }).ignoringDisable(true);
+  }
+
+  public static Command waitAutoDelay(){
+    return Commands.waitSeconds(autoDelay.get());
+  }
+
+
+
   public static Command slowDriveSpeed() {
     return Commands.runOnce(
         () -> {
-          driveSpeed *= optionalSlow;
+          driveSpeed = baseDriveSpeed * optionalSlow;
         });
   }
 
   public static Command normalDriveSpeed() {
     return Commands.runOnce(
         () -> {
-          driveSpeed /= optionalSlow;
+          driveSpeed = baseDriveSpeed;
         });
   }
 

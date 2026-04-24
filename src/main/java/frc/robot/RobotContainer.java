@@ -157,6 +157,7 @@ public class RobotContainer {
     }
     corrections.createTimeCalculator();
     corrections.createAngleCalculator();
+    corrections.setAutoDelay(0);
     configureButtonBindings();
     configureAutoCommands();
 
@@ -218,7 +219,9 @@ public class RobotContainer {
             "armJostle",
             arm.startjostle(),
             "stopJostle",
-            arm.stopjostle()));
+            arm.stopjostle(),
+            "delayStart",
+            corrections.waitAutoDelay()));
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -389,6 +392,13 @@ public class RobotContainer {
 
     // Button 9 will be for adjusting shooter angle by -1
     joy1.button(9).onTrue(shooter.decreaseAngleAdjustment().ignoringDisable(true));
+
+    // DELAY FOR AUTO
+    // increase auto delay by half a second
+    joy1.button(11).onTrue(corrections.increaseAutoDelay().ignoringDisable(true));
+
+    // decrease auto delay by half a second
+    joy1.button(16).onTrue(corrections.decreaseAutoDelay().ignoringDisable(true));
 
     // Resets gyro to 0 degrees when b is pressed
     joy1.button(16)
