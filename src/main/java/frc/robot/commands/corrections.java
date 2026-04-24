@@ -31,7 +31,8 @@ public class corrections {
   private static double baseDriveSpeed = 5.83; // set to max speed found in drive / DriveConstants
   private static double optionalSlow = 0.2; // factor to slow down for sotm when desired
 
-  private static LoggedNetworkNumber autoDelay;
+  private static LoggedNetworkNumber autoDelay =
+      new LoggedNetworkNumber("corrections/autoDelay", 0);
 
   // ~CHANGE~
   private static double delay = 0.03;
@@ -51,33 +52,26 @@ public class corrections {
 
   public static Command increaseAutoDelay() {
     return Commands.runOnce(
-        () -> {
-          autoDelay.set(autoDelay.get() + 0.5);
-        }).ignoringDisable(true);
+            () -> {
+              autoDelay.set(autoDelay.get() + 0.5);
+            })
+        .ignoringDisable(true);
   }
 
   public static Command decreaseAutoDelay() {
     return Commands.runOnce(
-        () -> {
-          autoDelay.set(autoDelay.get() - 0.5);
-          if(autoDelay.get() < 0){
-            autoDelay.set(0);
-          }
-        }).ignoringDisable(true);
+            () -> {
+              autoDelay.set(autoDelay.get() - 0.5);
+              if (autoDelay.get() <= 0) {
+                autoDelay.set(0);
+              }
+            })
+        .ignoringDisable(true);
   }
 
-  public static Command setAutoDelay(double delayAuto) {
-    return Commands.runOnce(
-        () -> {
-          autoDelay.set(delayAuto);
-        }).ignoringDisable(true);
-  }
-
-  public static Command waitAutoDelay(){
+  public static Command waitAutoDelay() {
     return Commands.waitSeconds(autoDelay.get());
   }
-
-
 
   public static Command slowDriveSpeed() {
     return Commands.runOnce(
