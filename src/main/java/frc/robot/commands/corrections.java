@@ -35,7 +35,6 @@ public class corrections {
   private static LoggedNetworkNumber autoDelay =
       new LoggedNetworkNumber("corrections/autoDelay", 0);
   private static int autoDelayTimeElapsed = 0; // used to measure the wait for this
-  
 
   // ~CHANGE~
   private static double delay = 0.03;
@@ -77,31 +76,35 @@ public class corrections {
   // a command that will wait autoDelay seconds
   public static Command waitAutoDelay() {
     return Commands.sequence(
-      Commands.repeatingSequence(
-        Commands.waitSeconds(0.5),
-        increaseTimeElapsed()
-      ).until(() -> autoDelayHasPassed()),
-      resetTimeElapsed()
-    );
+        Commands.repeatingSequence(Commands.waitSeconds(0.5), increaseTimeElapsed())
+            .until(() -> autoDelayHasPassed()),
+        resetTimeElapsed());
   }
 
-  // a command that increases a variable to measure how much of the desired wait time has already happened
-  private static Command increaseTimeElapsed(){
-    return Commands.runOnce(() -> {
-      autoDelayTimeElapsed += 0.5;
-    });
+  // a command that increases a variable to measure how much of the desired wait time has already
+  // happened
+  private static Command increaseTimeElapsed() {
+    return Commands.runOnce(
+        () -> {
+          autoDelayTimeElapsed += 0.5;
+        });
   }
 
-  // a command that resets a variable to measure how much of the desired wait time has already happened
-  private static Command resetTimeElapsed(){
-    return Commands.runOnce(() -> {
-      autoDelayTimeElapsed = 0;
-    });
+  // a command that resets a variable to measure how much of the desired wait time has already
+  // happened
+  private static Command resetTimeElapsed() {
+    return Commands.runOnce(
+        () -> {
+          autoDelayTimeElapsed = 0;
+          
+        });
   }
 
   // a function that returns if the measured time waited is equal or greater than the desired time
-  private static boolean autoDelayHasPassed(){
-    return autoDelayTimeElapsed >= autoDelay.get();
+  private static boolean autoDelayHasPassed() {
+    boolean finished = autoDelayTimeElapsed >= autoDelay.get();
+    Logger.recordOutput("corrections/finishedAutoDelay", finished);
+    return finished;
   }
 
   // sets the drive speed to slow
