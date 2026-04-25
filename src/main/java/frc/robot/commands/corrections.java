@@ -16,6 +16,7 @@ import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class corrections {
   // ~CONSTANTS~in meters / radians
@@ -27,7 +28,12 @@ public class corrections {
   // subsystem. Change it both places if necessary. This value is changed by a command
   // in shooter. This modifies the value returned by the tree
   public static double driveSpeed = 5.83; // set to max speed found in drive / DriveConstants
+  private static double baseDriveSpeed = 5.83; // set to max speed found in drive / DriveConstants
   private static double optionalSlow = 0.2; // factor to slow down for sotm when desired
+
+  // creates a network number to store a time in seconds to wait before starting an auto
+  private static LoggedNetworkNumber autoDelay =
+      new LoggedNetworkNumber("corrections/autoDelay", 0);
 
   // ~CHANGE~
   private static double delay = 0.03;
@@ -45,24 +51,54 @@ public class corrections {
   // creates a tree interpolator for angle offset from distance
   static InterpolatingDoubleTreeMap angleOffsetCalculator = new InterpolatingDoubleTreeMap();
 
+  // increases the time for the bot to wait before it starts doing the selected auto
+  public static Command increaseAutoDelay() {
+    return Commands.runOnce(
+            () -> {
+              autoDelay.set(autoDelay.get() + 0.5);
+            })
+        .ignoringDisable(true);
+  }
+
+  // decreases the time for the bot to wait before it starts doing the selected auto
+  public static Command decreaseAutoDelay() {
+    return Commands.runOnce(
+            () -> {
+              autoDelay.set(autoDelay.get() - 0.5);
+              if (autoDelay.get() <= 0) {
+                autoDelay.set(0);
+              }
+            })
+        .ignoringDisable(true);
+  }
+
+  // a command that will wait autoDelay seconds
+  public static Command waitAutoDelay() {
+    return Commands.deferredProxy(() -> Commands.waitSeconds(autoDelay.get()));
+  }
+
+  // sets the drive speed to slow
   public static Command slowDriveSpeed() {
     return Commands.runOnce(
         () -> {
-          driveSpeed *= optionalSlow;
+          driveSpeed = baseDriveSpeed * optionalSlow;
         });
   }
 
+  // sets the drive speed to normal
   public static Command normalDriveSpeed() {
     return Commands.runOnce(
         () -> {
-          driveSpeed /= optionalSlow;
+          driveSpeed = baseDriveSpeed;
         });
   }
 
+  // returns the drive speed
   public static double getDriveSpeed() {
     return driveSpeed;
   }
 
+  // used to adjust the shooting angle slightly mid match
   public static void setShooterAngleOffset(double newAngle) {
     // shooterAngleOffset = -(newAngle - (Math.PI / 2)) + (Math.PI / 2);
     shooterAngleOffset = newAngle;
