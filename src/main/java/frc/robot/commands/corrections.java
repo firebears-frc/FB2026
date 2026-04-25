@@ -45,6 +45,33 @@ public class corrections {
   // creates a tree interpolator for angle offset from distance
   static InterpolatingDoubleTreeMap angleOffsetCalculator = new InterpolatingDoubleTreeMap();
 
+  // increases the time for the bot to wait before it starts doing the selected auto
+  public static Command increaseAutoDelay() {
+    return Commands.runOnce(
+            () -> {
+              autoDelay.set(autoDelay.get() + 0.5);
+            })
+        .ignoringDisable(true);
+  }
+
+  // decreases the time for the bot to wait before it starts doing the selected auto 
+  public static Command decreaseAutoDelay() {
+    return Commands.runOnce(
+            () -> {
+              autoDelay.set(autoDelay.get() - 0.5);
+              if (autoDelay.get() <= 0) {
+                autoDelay.set(0);
+              }
+            })
+        .ignoringDisable(true);
+  }
+
+  // a command that will wait autoDelay seconds
+  public static Command waitAutoDelay() {
+    return Commands.deferredProxy(() -> Commands.waitSeconds(autoDelay.get()));
+  }
+
+  // sets the drive speed to slow
   public static Command slowDriveSpeed() {
     return Commands.runOnce(
         () -> {
