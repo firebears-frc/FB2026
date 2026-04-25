@@ -211,13 +211,72 @@
           {
             "title": "TagCount",
             "x": 256.0,
-            "y": 256.0,
+            "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
               "topic": "/AdvantageKit/RealOutputs/Vision/Summary/TagCount",
               "period": 0.1,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Shoot Adjustment",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "Shoot Adjustment",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "angleOffset",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "angleOffset",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "doJostle",
+            "x": 1152.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/arm/doJostle",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "autoDelay",
+            "x": 128.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "corrections/autoDelay",
+              "period": 0.06,
               "data_type": "double",
               "show_submit_button": false
             }
