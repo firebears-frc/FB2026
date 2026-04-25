@@ -60,7 +60,7 @@ public class corrections {
         .ignoringDisable(true);
   }
 
-  // decreases the time for the bot to wait before it starts doing the selected auto
+  // decreases the time for the bot to wait before it starts doing the selected auto 
   public static Command decreaseAutoDelay() {
     return Commands.runOnce(
             () -> {
