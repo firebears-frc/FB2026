@@ -115,7 +115,7 @@ public class Arm extends SubsystemBase {
     } else if (setpoint.getDegrees() > 125) {
       setpoint = Rotation2d.fromDegrees(125);
     }
-    shoulderSetpoint = setpoint.minus(Rotation2d.fromDegrees(zeroOffset));
+    shoulderSetpoint = setpoint;
   }
 
   @AutoLogOutput(key = "arm/error")
@@ -211,7 +211,7 @@ public class Arm extends SubsystemBase {
 
     double feedForward = Math.cos(Math.toRadians(currentShoulderAngle)) * shoulderG;
     shoulderPID.setSetpoint(
-        shoulderSetpoint.getDegrees(),
+        shoulderSetpoint.getDegrees() - zeroOffset,
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         feedForward,

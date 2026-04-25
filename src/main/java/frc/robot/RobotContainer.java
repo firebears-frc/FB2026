@@ -220,7 +220,7 @@ public class RobotContainer {
             "stopJostle",
             arm.stopjostle(),
             "delayStart",
-            corrections.waitAutoDelay()));
+            Commands.waitSeconds(0.1)));
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
