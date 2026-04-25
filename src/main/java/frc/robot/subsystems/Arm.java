@@ -32,7 +32,7 @@ public class Arm extends SubsystemBase {
   private static int FREE_CURRENT_LIMIT_SHOULDER = 5;
   private static double shoulderP = 0.007;
   private static double shoulderI = 0.0;
-  private static double shoulderG = 0.8;
+  private static double shoulderG = 0.5;
   private static double shoulderD = 0.0;
   private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 40;
   // private static boolean up = true;
@@ -41,11 +41,10 @@ public class Arm extends SubsystemBase {
   private final SparkClosedLoopController shoulderPID;
   private ArmState mode = ArmState.Default;
   private double jostlechange;
-  private final double maxJostleAngle = 12; // was 5
+  private final double maxJostleAngle = 10; // was 5
   private final double minJostleAngle = 0; // was -8
   private boolean jostleArm = false;
   private double trapezoiddelay = 30;
-  private double zeroOffset = -11;
 
   @AutoLogOutput(key = "arm/setPoint")
   private Rotation2d shoulderSetpoint = new Rotation2d();
@@ -102,7 +101,6 @@ public class Arm extends SubsystemBase {
   @AutoLogOutput(key = "arm/Angle")
   public Rotation2d getShoulderAngle() {
     double rawDegrees = shoulderEncoder.getPosition();
-    rawDegrees += zeroOffset;
     if (rawDegrees >= 180) {
       rawDegrees -= 360;
     }
@@ -211,7 +209,7 @@ public class Arm extends SubsystemBase {
 
     double feedForward = Math.cos(Math.toRadians(currentShoulderAngle)) * shoulderG;
     shoulderPID.setSetpoint(
-        shoulderSetpoint.getDegrees() - zeroOffset,
+        shoulderSetpoint.getDegrees(),
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         feedForward,
