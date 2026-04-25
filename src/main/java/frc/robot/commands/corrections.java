@@ -242,7 +242,6 @@ public class corrections {
     double time = timeCalculator.get(distance);
     double change = Math.abs(time - prevTime);
     int i = 0;
-    Pose2d[] sotmPath = new Pose2d[maxIterations];
 
     while (change > timeTolerance) {
       distance = distanceTo(targetX - robotVelocityX * time, targetY - robotVelocityY * time);
@@ -253,14 +252,7 @@ public class corrections {
       if (i >= maxIterations) {
         change = 0;
       }
-      sotmPath[i] =
-          new Pose2d(
-              targetX - robotVelocityX * time,
-              targetY - robotVelocityY * time,
-              Rotation2d.fromDegrees(0));
     }
-    Pose2d[] cleaned =
-        java.util.Arrays.stream(sotmPath).filter(p -> p != null).toArray(Pose2d[]::new);
 
     sotmDistance = distance;
     Pose2d sotmtarget =
@@ -271,7 +263,6 @@ public class corrections {
     Logger.recordOutput("corrections/sotm time", time);
     Logger.recordOutput("corrections/sotm distance", distance);
     Logger.recordOutput("corrections/sotm goal", sotmtarget);
-    Logger.recordOutput("corrections/sotm path", cleaned);
     return time;
   }
 
