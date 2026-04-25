@@ -115,7 +115,7 @@ public class Arm extends SubsystemBase {
     } else if (setpoint.getDegrees() > 125) {
       setpoint = Rotation2d.fromDegrees(125);
     }
-    shoulderSetpoint = setpoint.plus(Rotation2d.fromDegrees(zeroOffset));
+    shoulderSetpoint = setpoint.minus(Rotation2d.fromDegrees(zeroOffset));
   }
 
   @AutoLogOutput(key = "arm/error")
