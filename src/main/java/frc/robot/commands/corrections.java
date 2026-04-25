@@ -103,7 +103,9 @@ public class corrections {
   // a function that returns if the measured time waited is equal or greater than the desired time
   private static boolean autoDelayHasPassed() {
     boolean finished = autoDelayTimeElapsed >= autoDelay.get();
+    Logger.recordOutput("corrections/autoDelayTimeElapsed", autoDelayTimeElapsed);
     Logger.recordOutput("corrections/finishedAutoDelay", finished);
+
     return finished;
   }
 
