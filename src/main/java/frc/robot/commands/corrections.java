@@ -4,69 +4,134 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.FieldConstants.LinesHorizontal;
 import frc.robot.FieldConstants.LinesVertical;
 import frc.robot.subsystems.drive.Drive;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class corrections {
   // ~CONSTANTS~in meters / radians
   private static final double shooterXOffset = Units.inchesToMeters(-5);
   private static final double shooterYOffset = Units.inchesToMeters(6);
-  private static final double shooterAngleOffset = Units.degreesToRadians(93);
-  private static boolean doDrawShotLine =
-      false; // Do we want to log the line from shooter to target?
+  private static double
+      shooterAngleOffset; // This is the initial value, also stored somewhat seperately within the
+  // shooter
+  // subsystem. Change it both places if necessary. This value is changed by a command
+  // in shooter. This modifies the value returned by the tree
+  public static double driveSpeed = 5.83; // set to max speed found in drive / DriveConstants
+  private static double baseDriveSpeed = 5.83; // set to max speed found in drive / DriveConstants
+  private static double optionalSlow = 0.2; // factor to slow down for sotm when desired
+
+  // creates a network number to store a time in seconds to wait before starting an auto
+  private static LoggedNetworkNumber autoDelay =
+      new LoggedNetworkNumber("corrections/autoDelay", 0);
+
+  // ~CHANGE~
+  private static double delay = 0.03;
 
   private static double robotVelocityX = 0;
   private static double robotVelocityY = 0;
   private static double sotmDistance = 0;
+  private static ChassisSpeeds currentSpeed;
+  private static Pose2d robotPose;
+  private static Pose2d robotPoseWithDelay;
 
   // creates a tree interpolator for time from distance
   static InterpolatingDoubleTreeMap timeCalculator = new InterpolatingDoubleTreeMap();
 
-  // sets robotVelocityX, robotVelocityY
-  public static void setRobotVelocities(ChassisSpeeds currentSpeeds, double currentAngle) {
-    robotVelocityX = currentSpeeds.vxMetersPerSecond * Math.cos(currentAngle);
-    robotVelocityX += currentSpeeds.vyMetersPerSecond * -Math.sin(currentAngle);
+  // creates a tree interpolator for angle offset from distance
+  static InterpolatingDoubleTreeMap angleOffsetCalculator = new InterpolatingDoubleTreeMap();
+
+  // increases the time for the bot to wait before it starts doing the selected auto
+  public static Command increaseAutoDelay() {
+    return Commands.runOnce(
+            () -> {
+              autoDelay.set(autoDelay.get() + 0.5);
+            })
+        .ignoringDisable(true);
+  }
+
+  // decreases the time for the bot to wait before it starts doing the selected auto
+  public static Command decreaseAutoDelay() {
+    return Commands.runOnce(
+            () -> {
+              autoDelay.set(autoDelay.get() - 0.5);
+              if (autoDelay.get() <= 0) {
+                autoDelay.set(0);
+              }
+            })
+        .ignoringDisable(true);
+  }
+
+  // a command that will wait autoDelay seconds
+  public static Command waitAutoDelay() {
+    return Commands.deferredProxy(() -> Commands.waitSeconds(autoDelay.get()));
+  }
+
+  // sets the drive speed to slow
+  public static Command slowDriveSpeed() {
+    return Commands.runOnce(
+        () -> {
+          driveSpeed = baseDriveSpeed * optionalSlow;
+        });
+  }
+
+  // sets the drive speed to normal
+  public static Command normalDriveSpeed() {
+    return Commands.runOnce(
+        () -> {
+          driveSpeed = baseDriveSpeed;
+        });
+  }
+
+  // returns the drive speed
+  public static double getDriveSpeed() {
+    return driveSpeed;
+  }
+
+  // used to adjust the shooting angle slightly mid match
+  public static void setShooterAngleOffset(double newAngle) {
+    // shooterAngleOffset = -(newAngle - (Math.PI / 2)) + (Math.PI / 2);
+    shooterAngleOffset = newAngle;
+  }
+
+  // shoot on the move commands
+
+  // Called in other files
+
+  // sets robotVelocityX, robotVelocityY, currentSpeed (robot relative) | called in drive periodic
+  public static void setRobotVelocities(Drive drive) {
+    // makes a corrected robot pose for the delay;
+    currentSpeed = drive.getChassisSpeeds();
+    robotPose = drive.getPose();
+    robotPoseWithDelay =
+        robotPose.exp(
+            new Twist2d(
+                currentSpeed.vxMetersPerSecond * delay,
+                currentSpeed.vyMetersPerSecond * delay,
+                currentSpeed.omegaRadiansPerSecond * delay));
+    double currentAngle = robotPoseWithDelay.getRotation().getRadians();
+    robotVelocityX = currentSpeed.vxMetersPerSecond * Math.cos(currentAngle);
+    robotVelocityX += currentSpeed.vyMetersPerSecond * -Math.sin(currentAngle);
     Logger.recordOutput("corrections/robot x velocity", robotVelocityX);
-    robotVelocityY = currentSpeeds.vyMetersPerSecond * Math.cos(currentAngle);
-    robotVelocityY += currentSpeeds.vxMetersPerSecond * Math.sin(currentAngle);
+    robotVelocityY = currentSpeed.vyMetersPerSecond * Math.cos(currentAngle);
+    robotVelocityY += currentSpeed.vxMetersPerSecond * Math.sin(currentAngle);
     Logger.recordOutput("corrections/robot y velocity", robotVelocityY);
-    sotmVelocitiesForRotation(currentAngle, currentSpeeds.omegaRadiansPerSecond);
+    sotmVelocitiesForRotation(currentAngle, currentSpeed.omegaRadiansPerSecond);
     Logger.recordOutput("corrections/shooter x velocity", robotVelocityX);
     Logger.recordOutput("corrections/shooter y velocity", robotVelocityY);
   }
 
-  // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
-  // in any other zone
-  public static boolean aimedAtAutoTarget(Drive drive) {
-    // ~CONSTANTS~
-    double tolerance = 1;
-    boolean aimedAtTarget = false;
-    if (currentZone(drive) <= 0) {
-      aimedAtTarget =
-          Math.abs(angleToHub(drive).getDegrees() - drive.getPose().getRotation().getDegrees())
-              < tolerance;
-    } else {
-      aimedAtTarget =
-          Math.abs(
-                  angleToNearestBump(drive).getDegrees()
-                      - drive.getPose().getRotation().getDegrees())
-              < tolerance;
-    }
-    Logger.recordOutput("corrections/aimed at target", aimedAtTarget);
-    return aimedAtTarget;
-  }
-
-  public static double sotmGetDistance() {
-    return sotmDistance;
-  }
-
+  // corrects the robotVelocityX and robotVelocityY into the velocities of the shooter
   public static void sotmVelocitiesForRotation(double currentAngle, double rotationSpeed) {
     double totalShooterOffset =
         Math.sqrt((shooterXOffset * shooterXOffset) + (shooterYOffset * shooterYOffset));
@@ -78,69 +143,108 @@ public class corrections {
     robotVelocityY += linearVelocity * Math.cos(currentShooterOffsetAngle);
   }
 
+  // returns the distance to the sotm target | called in shooter periodic
+  public static double sotmGetDistance() {
+    return sotmDistance;
+  }
+
   // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
-  // angle from the shooter to the nearest bump otherwise (sotm)
-  public static Rotation2d sotmAutoAimAngle(Drive drive) {
-    if (currentZone(drive) <= 0) {
-      return sotmAngleToHub(drive);
-    } else {
-      return sotmAngleToNearestBump(drive);
+  // angle to shoot straight back otherwise
+  // EXCEPT if behind a hub, aims for the nearest bump in the direction of alliance zone instead |
+  // called in robot container
+  public static Rotation2d sotmAutoAimAngle() {
+    if (currentZone() <= 0) { // if in our zone, aim for the hub
+      return sotmAngleToHub();
+    } else if (currentZone() == 1) { // if in the middle
+      if (!behindHub()) { // and not behind the hub, aim for the bump/trench/hub line but the
+        // current y value
+        return sotmAngleTo(correctXValue(LinesVertical.hubCenter), robotPoseWithDelay.getY());
+      } else { // but if behind the hub, aim for the nearest bump instead
+        return sotmAngleToNearestBump();
+      }
+    } else { // if in the opposing zone
+      if (!behindHub()) { // and not behind the hub, aim for the opposing bump/trench/hub line but
+        // the current y value
+        return sotmAngleTo(correctXValue(LinesVertical.oppHubCenter), robotPoseWithDelay.getY());
+      } else { // but if behind the hub, aim for the nearest opp bump instead
+        return sotmAngleToNearestOppBump();
+      }
     }
   }
 
+  public static double distanceToSide() {
+    double distance = distanceTo(correctXValue(LinesVertical.hubCenter), robotPoseWithDelay.getY());
+    distance =
+        distanceTo(
+            correctXValue(LinesVertical.hubCenter) - robotVelocityX * timeCalculator.get(distance),
+            robotPoseWithDelay.getY() - robotVelocityY * timeCalculator.get(distance));
+    return distance;
+  }
+
   // returns the angle the bot needs to face to aim for the nearest bump (sotm)
-  public static Rotation2d sotmAngleToNearestBump(Drive drive) {
+  public static Rotation2d sotmAngleToNearestBump() {
     double nearestBumpY = 0;
     double nearestBumpX = correctXValue(LinesVertical.hubCenter);
-    if (drive.getPose().getY() > LinesHorizontal.center) {
+    if (robotPoseWithDelay.getY() > LinesHorizontal.center) {
       nearestBumpY = (LinesHorizontal.leftBumpStart + LinesHorizontal.leftBumpEnd) / 2;
     } else {
       nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
     }
-    Rotation2d angleToBump =
-        angleTo(
-            drive, nearestBumpX, nearestBumpY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+    Rotation2d angleToBump = sotmAngleTo(nearestBumpX, nearestBumpY);
+    Logger.recordOutput("corrections/angle to bump", angleToBump);
+    return angleToBump;
+  }
+
+  public static Rotation2d sotmAngleToNearestOppBump() {
+    double nearestBumpY = 0;
+    double nearestBumpX = correctXValue(LinesVertical.oppHubCenter);
+    if (robotPoseWithDelay.getY() > LinesHorizontal.center) {
+      nearestBumpY = (LinesHorizontal.leftBumpStart + LinesHorizontal.leftBumpEnd) / 2;
+    } else {
+      nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
+    }
+    Rotation2d angleToBump = sotmAngleTo(nearestBumpX, nearestBumpY);
     Logger.recordOutput("corrections/angle to bump", angleToBump);
     return angleToBump;
   }
 
   // returns the angle the bot needs to face to aim for the hub (sotm)
-  public static Rotation2d sotmAngleToHub(Drive drive) {
+  public static Rotation2d sotmAngleToHub() {
     Rotation2d sotmAngleToHub =
-        sotmAngleTo(drive, correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
+        sotmAngleTo(correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
     Logger.recordOutput("corrections/sotm angle to hub", sotmAngleToHub);
     return sotmAngleToHub;
   }
 
   // returns the angle the bot needs to face to aim the shooter at a location (sotm), updates sotm
   // time and distance
-  public static Rotation2d sotmAngleTo(Drive drive, double targetX, double targetY) {
-    double sotmTime = itterateSOTM(drive, targetX, targetY);
+  public static Rotation2d sotmAngleTo(double targetX, double targetY) {
+    double sotmTime = itterateSOTM(targetX, targetY);
     return angleTo(
-        drive,
         targetX - robotVelocityX * sotmTime,
         targetY - robotVelocityY * sotmTime,
         shooterXOffset,
         shooterYOffset,
-        shooterAngleOffset);
+        angleOffsetCalculator.get(
+                distanceTo(
+                    targetX - robotVelocityX * sotmTime, targetY - robotVelocityY * sotmTime))
+            - shooterAngleOffset);
   }
 
   // Iterate time and distance (sotm), returns time
-  public static double itterateSOTM(Drive drive, double targetX, double targetY) {
+  public static double itterateSOTM(double targetX, double targetY) {
     // ~CONSTANTS~
     int maxIterations = 20;
     double timeTolerance = 0.02;
 
-    double distance = distanceTo(drive, targetX, targetY);
+    double distance = distanceTo(targetX, targetY);
     double prevTime = 0;
     double time = timeCalculator.get(distance);
     double change = Math.abs(time - prevTime);
     int i = 0;
-    Pose2d[] sotmPath = new Pose2d[maxIterations];
 
     while (change > timeTolerance) {
-      distance =
-          distanceTo(drive, targetX - robotVelocityX * time, targetY - robotVelocityY * time);
+      distance = distanceTo(targetX - robotVelocityX * time, targetY - robotVelocityY * time);
       prevTime = time;
       time = timeCalculator.get(distance);
       change = Math.abs(time - prevTime);
@@ -148,14 +252,7 @@ public class corrections {
       if (i >= maxIterations) {
         change = 0;
       }
-      sotmPath[i] =
-          new Pose2d(
-              targetX - robotVelocityX * time,
-              targetY - robotVelocityY * time,
-              Rotation2d.fromDegrees(0));
     }
-    Pose2d[] cleaned =
-        java.util.Arrays.stream(sotmPath).filter(p -> p != null).toArray(Pose2d[]::new);
 
     sotmDistance = distance;
     Pose2d sotmtarget =
@@ -166,7 +263,6 @@ public class corrections {
     Logger.recordOutput("corrections/sotm time", time);
     Logger.recordOutput("corrections/sotm distance", distance);
     Logger.recordOutput("corrections/sotm goal", sotmtarget);
-    Logger.recordOutput("corrections/sotm path", cleaned);
     return time;
   }
 
@@ -174,27 +270,35 @@ public class corrections {
   public static void createTimeCalculator() {
     // distance | time
     // ~Measured~
-    timeCalculator.put(2.5, .9);
-    timeCalculator.put(3.0, .91);
-    timeCalculator.put(3.5, 1.07);
-    timeCalculator.put(4.0, 1.11);
-    timeCalculator.put(4.5, 1.12);
-    timeCalculator.put(5.09, 1.29);
-    timeCalculator.put(5.5, 1.32); // Values from here down are extrapolated, not measurements
-    timeCalculator.put(6.0, 1.39);
-    timeCalculator.put(6.5, 1.47);
-    timeCalculator.put(7.0, 1.54);
-    timeCalculator.put(7.5, 1.61);
-    timeCalculator.put(8.0, 1.69);
+    timeCalculator.put(2.5, .61); // desmos calculated thingy
+    timeCalculator.put(3.0, .75); // tested 4/16/26
+    timeCalculator.put(3.5, .88); // tested 4/16/26
+    timeCalculator.put(4.0, 1.03); // tested 4/16/26
+    timeCalculator.put(4.5, 1.17); // desmos calculated thingy
+    timeCalculator.put(5.0, 1.31); // desmos calculated thingy
+    timeCalculator.put(5.5, 1.45); // desmos calculated thingy
+    timeCalculator.put(6.0, 1.59); // desmos calculated thingy
+    timeCalculator.put(6.5, 1.73); // desmos calculated thingy
+    timeCalculator.put(7.0, 1.87); // desmos calculated thingy
+    timeCalculator.put(7.5, 2.01); // desmos calculated thingy
+    timeCalculator.put(8.0, 2.15); // desmos calculated thingy
+  }
+
+  // Sets up the angle calculating tree interpolator
+  public static void createAngleCalculator() {
+    // distance | angle offset
+    // ~CHANGE~
+    angleOffsetCalculator.put(0.0, Math.toRadians(93));
+    angleOffsetCalculator.put(7.0, Math.toRadians(93));
   }
 
   // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
   // in any other zone (sotm)
-  public static boolean sotmAimedAtAutoTarget(Drive drive) {
+  public static boolean sotmAimedAtAutoTarget() {
     // ~CONSTANTS~
     double tolerance = 6;
     boolean aimedAtTarget =
-        Math.abs(sotmAutoAimAngle(drive).getDegrees() - drive.getPose().getRotation().getDegrees())
+        Math.abs(sotmAutoAimAngle().getDegrees() - robotPoseWithDelay.getRotation().getDegrees())
             < tolerance;
     Logger.recordOutput("corrections/aimed at sotm target", aimedAtTarget);
     return aimedAtTarget;
@@ -202,70 +306,76 @@ public class corrections {
 
   // Returns the angle from the shooter to the hub for autoaim if in alliance zone, returns the
   // angle from the shooter to the nearest bump otherwise
-  public static Rotation2d autoAimAngle(Drive drive) {
-    if (currentZone(drive) <= 0) {
-      return angleToHub(drive);
+  public static Rotation2d autoAimAngle() {
+    if (currentZone() <= 0) {
+      return angleToHub();
     } else {
-      return angleToNearestBump(drive);
+      return angleToNearestBump();
     }
   }
 
   // Returns the angle from the shooter to the hub
-  public static Rotation2d angleToHub(Drive drive) {
+  public static Rotation2d angleToHub() {
     double hubX = correctXValue(LinesVertical.hubCenter);
     double hubY = LinesHorizontal.center;
     Rotation2d angleToHub =
-        angleTo(drive, hubX, hubY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+        angleTo(
+            hubX,
+            hubY,
+            shooterXOffset,
+            shooterYOffset,
+            angleOffsetCalculator.get(distanceToHub()) - shooterAngleOffset);
     Logger.recordOutput("corrections/angle to hub", angleToHub);
     return angleToHub;
   }
 
   public static Rotation2d angleTo(
-      Drive drive,
-      double targetX,
-      double targetY,
-      double componentX,
-      double componentY,
-      double componentAngle) {
-    return corrections.makeRotation2D(
-        corrections.correctAngleForComponent(
-            corrections.correctAngleValue(
-                Math.atan(
-                    Math.abs(
-                            (targetY
-                                - corrections.yValueOfComponent(componentX, componentY, drive)))
-                        / Math.abs(
-                            (targetX
-                                - corrections.xValueOfComponent(componentX, componentY, drive)))),
-                targetX,
-                targetY,
-                componentX,
-                componentY,
-                drive),
-            componentAngle));
+      double targetX, double targetY, double componentX, double componentY, double componentAngle) {
+    Rotation2d angleTo =
+        makeRotation2D(
+            correctAngleForComponent(
+                correctAngleValue(
+                    Math.atan(
+                        Math.abs((targetY - yValueOfComponent(componentX, componentY)))
+                            / Math.abs((targetX - xValueOfComponent(componentX, componentY)))),
+                    targetX,
+                    targetY,
+                    componentX,
+                    componentY),
+                componentAngle));
+    Logger.recordOutput("corrections/angle setpoint degrees", angleTo.getDegrees());
+    Logger.recordOutput("corrections/actual angle degrees", robotPose.getRotation().getDegrees());
+    Logger.recordOutput(
+        "corrections/angle error degrees",
+        angleTo.getDegrees() - robotPose.getRotation().getDegrees());
+    return angleTo;
   }
 
   // Returns the angle to the center of the nearest bump dividing your alliance zone and the center
-  public static Rotation2d angleToNearestBump(Drive drive) {
+  public static Rotation2d angleToNearestBump() {
     double nearestBumpY = 0;
     double nearestBumpX = correctXValue(LinesVertical.hubCenter);
-    if (drive.getPose().getY() > LinesHorizontal.center) {
+    if (robotPoseWithDelay.getY() > LinesHorizontal.center) {
       nearestBumpY = (LinesHorizontal.leftBumpStart + LinesHorizontal.leftBumpEnd) / 2;
     } else {
       nearestBumpY = (LinesHorizontal.rightBumpStart + LinesHorizontal.rightBumpEnd) / 2;
     }
     Rotation2d angleToBump =
         angleTo(
-            drive, nearestBumpX, nearestBumpY, shooterXOffset, shooterYOffset, shooterAngleOffset);
+            nearestBumpX,
+            nearestBumpY,
+            shooterXOffset,
+            shooterYOffset,
+            angleOffsetCalculator.get(distanceTo(nearestBumpX, nearestBumpY)) - shooterAngleOffset);
     Logger.recordOutput("corrections/angle to bump", angleToBump);
     return angleToBump;
   }
 
   // Returns the zone the robot is currently in. 0 = alliance side, 1 = center, 2 = opposing side.
   // -1 = failed to find zone.
-  public static int currentZone(Drive drive) {
+  public static int currentZone() {
     int currentZone = -1;
-    double currentX = drive.getPose().getX();
+    double currentX = robotPoseWithDelay.getX();
     if (currentX < LinesVertical.hubCenter) {
       if (onRedAlliance()) {
         currentZone = 2;
@@ -285,22 +395,21 @@ public class corrections {
     return currentZone;
   }
 
-  // Decide whether or not we want to draw the shotline
-  public static void setDrawShotLine(boolean draw) {
-    doDrawShotLine = draw;
+  // returns true if the robot is behind the hub
+  public static boolean behindHub() {
+    double currentY = robotPoseWithDelay.getY();
+    return LinesHorizontal.rightBumpStart < currentY && currentY < LinesHorizontal.leftBumpEnd;
   }
 
   // Log a line segment from the shooter, in the shooter direction of length distance_to_hub
-  private static void logShotLine(Drive drive, double distanceToHub) {
-
-    // Get current robot pose
-    Pose2d robotPose = drive.getPose();
+  // ~CURRENTLY USES THE ROBOT POSE RATHER THAN THE ADJUSTED FOR DELAY POSE~
+  private static void logShotLine(double distanceToHub) {
 
     // Specify the offset from the shooter to the robot (so we can use it to find shooter pose)
     Transform2d shooterOffset =
         new Transform2d(
             new Translation2d(shooterXOffset, shooterYOffset),
-            new Rotation2d(-1 * shooterAngleOffset));
+            new Rotation2d(-1 * (angleOffsetCalculator.get(distanceToHub) - shooterAngleOffset)));
 
     // Find pose of the shooter
     Pose2d shooterPose = robotPose.transformBy(shooterOffset);
@@ -320,26 +429,20 @@ public class corrections {
   }
 
   // Gets the distance from the robots current location to the hub
-  public static double distanceToHub(Drive drive) {
-    double distance =
-        distanceTo(drive, correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
+  public static double distanceToHub() {
+    double distance = distanceTo(correctXValue(LinesVertical.hubCenter), LinesHorizontal.center);
 
     Logger.recordOutput("Odometry/distance to hub", distance);
 
     // optionally log the shotline and the shooter position on the bot
-    if (doDrawShotLine) {
-      logShotLine(drive, distance);
-    } else {
-      Logger.recordOutput("Shooter/ShotLine", new Pose2d[] {});
-      Logger.recordOutput("Shooter/Marker", new Pose2d[] {});
-    }
+    logShotLine(distance);
     return distance;
   }
 
   // Gets the distance from the robot to a specified X and Y
-  public static double distanceTo(Drive drive, double X, double Y) {
-    double xDifference = drive.getPose().getX() - X;
-    double yDifference = drive.getPose().getY() - Y;
+  public static double distanceTo(double X, double Y) {
+    double xDifference = robotPoseWithDelay.getX() - X;
+    double yDifference = robotPoseWithDelay.getY() - Y;
     double distance = Math.sqrt((xDifference * xDifference) + (yDifference * yDifference));
     return distance;
   }
@@ -392,17 +495,16 @@ public class corrections {
   }
 
   // returns the nearest PI / 2 radian angle to the bots current position
-  public static Rotation2d nearestDiagonalAngle(Drive drive) {
+  public static Rotation2d nearestDiagonalAngle() {
     double newAngle = 0;
-    if (Math.abs(drive.getPose().getRotation().getRadians() - (Math.PI / 4)) <= (Math.PI / 4)) {
+    if (Math.abs(robotPose.getRotation().getRadians() - (Math.PI / 4)) <= (Math.PI / 4)) {
       newAngle = Math.PI / 4;
-    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (-Math.PI / 4))
-        <= (Math.PI / 4)) {
+    } else if (Math.abs(robotPose.getRotation().getRadians() - (-Math.PI / 4)) <= (Math.PI / 4)) {
       newAngle = -Math.PI / 4;
-    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (3 * Math.PI / 4))
+    } else if (Math.abs(robotPose.getRotation().getRadians() - (3 * Math.PI / 4))
         <= (Math.PI / 4)) {
       newAngle = 3 * Math.PI / 4;
-    } else if (Math.abs(drive.getPose().getRotation().getRadians() - (-3 * Math.PI / 4))
+    } else if (Math.abs(robotPose.getRotation().getRadians() - (-3 * Math.PI / 4))
         <= (Math.PI / 4)) {
       newAngle = -3 * Math.PI / 4;
     }
@@ -414,10 +516,10 @@ public class corrections {
   // of the bot
   // Offsets are based on the offsets when the bot is at angle 0, following field rules for positive
   // and negative.
-  public static double xValueOfComponent(double offsetX, double offsetY, Drive drive) {
-    double newLocation = drive.getPose().getX();
-    newLocation += Math.cos(drive.getPose().getRotation().getRadians()) * offsetX;
-    newLocation -= Math.sin(drive.getPose().getRotation().getRadians()) * offsetY;
+  public static double xValueOfComponent(double offsetX, double offsetY) {
+    double newLocation = robotPoseWithDelay.getX();
+    newLocation += Math.cos(robotPoseWithDelay.getRotation().getRadians()) * offsetX;
+    newLocation -= Math.sin(robotPoseWithDelay.getRotation().getRadians()) * offsetY;
     return newLocation;
   }
 
@@ -425,10 +527,10 @@ public class corrections {
   // of the bot
   // Offsets are based on the offsets when the bot is at angle 0, following field rules for positive
   // and negative.
-  public static double yValueOfComponent(double offsetX, double offsetY, Drive drive) {
-    double newLocation = drive.getPose().getY();
-    newLocation += Math.cos(drive.getPose().getRotation().getRadians()) * offsetY;
-    newLocation += Math.sin(drive.getPose().getRotation().getRadians()) * offsetX;
+  public static double yValueOfComponent(double offsetX, double offsetY) {
+    double newLocation = robotPoseWithDelay.getY();
+    newLocation += Math.cos(robotPoseWithDelay.getRotation().getRadians()) * offsetY;
+    newLocation += Math.sin(robotPoseWithDelay.getRotation().getRadians()) * offsetX;
     return newLocation;
   }
 
@@ -450,17 +552,16 @@ public class corrections {
       double targetLocationX,
       double targetLocationY,
       double offsetX,
-      double offsetY,
-      Drive drive) {
+      double offsetY) {
     double newAngleValue = angleValue;
 
-    if (xValueOfComponent(offsetX, offsetY, drive) > targetLocationX) {
+    if (xValueOfComponent(offsetX, offsetY) > targetLocationX) {
       newAngleValue = Math.PI - newAngleValue;
     }
 
     newAngleValue = makeAngleInBounds(newAngleValue);
 
-    if (yValueOfComponent(offsetX, offsetY, drive) > targetLocationY) {
+    if (yValueOfComponent(offsetX, offsetY) > targetLocationY) {
       newAngleValue *= -1;
     }
 
@@ -508,5 +609,25 @@ public class corrections {
       newAngle += 360;
     }
     return newAngle;
+  }
+
+  // Returns a boolean for if the shooter is aimed at the hub if on our side, the nearest bumper if
+  // in any other zone | called in some robotContainer commands
+  public static boolean aimedAtAutoTarget() {
+    // ~CONSTANTS~
+    double tolerance = 1;
+    boolean aimedAtTarget = false;
+    if (currentZone() <= 0) {
+      aimedAtTarget =
+          Math.abs(angleToHub().getDegrees() - robotPoseWithDelay.getRotation().getDegrees())
+              < tolerance;
+    } else {
+      aimedAtTarget =
+          Math.abs(
+                  angleToNearestBump().getDegrees() - robotPoseWithDelay.getRotation().getDegrees())
+              < tolerance;
+    }
+    Logger.recordOutput("corrections/aimed at target", aimedAtTarget);
+    return aimedAtTarget;
   }
 }

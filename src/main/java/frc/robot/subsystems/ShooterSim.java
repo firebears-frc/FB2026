@@ -3,18 +3,26 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.corrections;
 import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class ShooterSim extends Shooter {
+  private static enum ShooterState {
+    Off,
+    Static,
+    Auto,
+    Sotm,
+    Reverse,
+    Fast,
+    Slow
+  }
 
   // Simulated shooter velocity (RPM)
   private double simVelocity = 0.0;
 
-  // Simulated mode ("fast", "slow", "auto", "reverse", "static", "off")
-  private String simMode = "off";
+  // Simulated mode (ShooterState)
+  private ShooterState simMode = ShooterState.Off;
 
   // Simulated setpoint (RPM)
   private double simSetPoint = 0.0;
@@ -56,32 +64,32 @@ public class ShooterSim extends Shooter {
 
   @Override
   public Command reverseShooter() {
-    return runOnce(() -> simMode = "reverse");
+    return runOnce(() -> simMode = ShooterState.Reverse);
   }
 
   @Override
   public Command autoShooter() {
-    return runOnce(() -> simMode = "auto");
+    return runOnce(() -> simMode = ShooterState.Auto);
   }
 
   @Override
   public Command fastShot() {
-    return runOnce(() -> simMode = "fast");
+    return runOnce(() -> simMode = ShooterState.Fast);
   }
 
   @Override
   public Command slowShot() {
-    return runOnce(() -> simMode = "slow");
+    return runOnce(() -> simMode = ShooterState.Slow);
   }
 
   @Override
   public Command staticShot() {
-    return runOnce(() -> simMode = "static");
+    return runOnce(() -> simMode = ShooterState.Static);
   }
 
   @Override
   public Command pauseShooter() {
-    return runOnce(() -> simMode = "off");
+    return runOnce(() -> simMode = ShooterState.Off);
   }
 
   @Override
@@ -95,8 +103,8 @@ public class ShooterSim extends Shooter {
   }
 
   @Override
-  public String getMode() {
-    return simMode;
+  public Boolean isRunning() {
+    return simMode != ShooterState.Off;
   }
 
   // --- Simulation periodic ---
@@ -108,27 +116,28 @@ public class ShooterSim extends Shooter {
       super.periodic();
       return;
     }
-    boolean shooting = simMode.equals("fast") || simMode.equals("slow") || simMode.equals("auto");
-
-    corrections.setDrawShotLine(shooting);
+    boolean shooting =
+        simMode.equals(ShooterState.Fast)
+            || simMode.equals(ShooterState.Slow)
+            || simMode.equals(ShooterState.Auto);
 
     double distance = distanceToHubSupplier.getAsDouble();
 
     // Determine simulated setpoint based on mode
     switch (simMode) {
-      case "fast":
+      case Fast:
         simSetPoint = 3500;
         break;
-      case "slow":
+      case Slow:
         simSetPoint = 2600;
         break;
-      case "reverse":
+      case Reverse:
         simSetPoint = -2600;
         break;
-      case "auto":
+      case Auto:
         simSetPoint = speedCalculator.get(distance);
         break;
-      case "static":
+      case Static:
         simSetPoint = staticShooterSpeed.get();
         break;
       default:

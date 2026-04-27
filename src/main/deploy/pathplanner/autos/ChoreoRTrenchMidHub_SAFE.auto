@@ -5,15 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "delayStart"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "startIntake"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -21,47 +21,15 @@
                 }
               },
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Left Trench-Mid"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
                 "type": "named",
                 "data": {
-                  "name": "shoot"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 7.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "stopShoot"
+                  "name": "startIntake"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Trench-Hub"
+                  "pathName": "RightTrenchMidHub1"
                 }
               }
             ]
@@ -97,9 +65,28 @@
                 }
               },
               {
+                "type": "path",
+                "data": {
+                  "pathName": "RightTrenchMidHub2_SAFE"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
                 "type": "named",
                 "data": {
-                  "name": "pauseIntake"
+                  "name": "shoot"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
                 }
               }
             ]
@@ -110,5 +97,5 @@
   },
   "resetOdom": true,
   "folder": null,
-  "choreoAuto": false
+  "choreoAuto": true
 }

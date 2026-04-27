@@ -1,0 +1,113 @@
+{
+ "name":"Firebears2846ChoreoPaths",
+ "version":2,
+ "type":"Swerve",
+ "variables":{
+  "expressions":{},
+  "poses":{
+   "endfirstright":{
+    "x":{
+     "exp":"5.991916179656982 m",
+     "val":5.991916179656982
+    },
+    "y":{
+     "exp":"0.750278890132904 m",
+     "val":0.750278890132904
+    },
+    "heading":{
+     "exp":"2.969401826441188 rad",
+     "val":2.969401826441188
+    }
+   },
+   "endsecondleft":{
+    "x":{
+     "exp":"3.246411085128784 m",
+     "val":3.246411085128784
+    },
+    "y":{
+     "exp":"7.31000280380249 m",
+     "val":7.31000280380249
+    },
+    "heading":{
+     "exp":"60.41768919120254 mrad",
+     "val":0.060417689191202543
+    }
+   }
+  }
+ },
+ "config":{
+  "frontLeft":{
+   "x":{
+    "exp":"0.286 m",
+    "val":0.286
+   },
+   "y":{
+    "exp":"0.311 m",
+    "val":0.311
+   }
+  },
+  "backLeft":{
+   "x":{
+    "exp":"-0.286 m",
+    "val":-0.286
+   },
+   "y":{
+    "exp":"0.311 m",
+    "val":0.311
+   }
+  },
+  "mass":{
+   "exp":"142 lbs",
+   "val":64.41011654
+  },
+  "inertia":{
+   "exp":"6 kg m ^ 2",
+   "val":6.0
+  },
+  "gearing":{
+   "exp":"4.71",
+   "val":4.71
+  },
+  "radius":{
+   "exp":"0.0381 m",
+   "val":0.0381
+  },
+  "vmax":{
+   "exp":"5000 RPM",
+   "val":523.5987755982989
+  },
+  "tmax":{
+   "exp":"0.5 N * m",
+   "val":0.5
+  },
+  "cof":{
+   "exp":"1.2",
+   "val":1.2
+  },
+  "bumper":{
+   "front":{
+    "exp":"24 in",
+    "val":0.6095999999999999
+   },
+   "side":{
+    "exp":"18 in",
+    "val":0.4572
+   },
+   "back":{
+    "exp":"17 in",
+    "val":0.4318
+   }
+  },
+  "differentialTrackWidth":{
+   "exp":"22 in",
+   "val":0.5588
+  }
+ },
+ "generationFeatures":[],
+ "codegen":{
+  "root":"../C:/FIRST/FB2026/src/main/deploy/pathplanner/choreo",
+  "genVars":true,
+  "genTrajData":true,
+  "useChoreoLib":true
+ }
+}

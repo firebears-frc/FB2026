@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -28,21 +28,23 @@ public class Arm extends SubsystemBase {
     Jostle
   }
 
-  private static int STALL_CURRENT_LIMIT_SHOULDER = 5;
+  private static int STALL_CURRENT_LIMIT_SHOULDER = 35;
   private static int FREE_CURRENT_LIMIT_SHOULDER = 5;
-  private static double shoulderP = 0.02;
+  private static double shoulderP = 0.007;
   private static double shoulderI = 0.0;
-  private static double shoulderG = 0.5;
+  private static double shoulderG = 0.8;
   private static double shoulderD = 0.0;
-  private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 15;
+  private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 40;
   // private static boolean up = true;
-  private final SparkMax shoulderMotorRight;
+  private final SparkMax shoulderMotor;
   private final SparkAbsoluteEncoder shoulderEncoder;
   private final SparkClosedLoopController shoulderPID;
   private ArmState mode = ArmState.Default;
-  private double jostlechange = 0.5;
-  private final double maxJostleAngle = 0;
-  private final double minJostleAngle = -10;
+  private double jostlechange;
+  private final double maxJostleAngle = 10; // was 5
+  private final double minJostleAngle = 0; // was -8
+  private boolean jostleArm = false;
+  private double trapezoiddelay = 30;
 
   @AutoLogOutput(key = "arm/setPoint")
   private Rotation2d shoulderSetpoint = new Rotation2d();
@@ -50,32 +52,32 @@ public class Arm extends SubsystemBase {
   private Debouncer debounce = new Debouncer(0.2);
 
   public Arm() {
-    shoulderMotorRight = new SparkMax(10, MotorType.kBrushless);
-    shoulderEncoder = shoulderMotorRight.getAbsoluteEncoder();
-    shoulderPID = shoulderMotorRight.getClosedLoopController();
+    shoulderMotor = new SparkMax(10, MotorType.kBrushless);
+    shoulderEncoder = shoulderMotor.getAbsoluteEncoder();
+    shoulderPID = shoulderMotor.getClosedLoopController();
 
-    var shoulderMotorRightConfig = new SparkMaxConfig();
-    shoulderMotorRightConfig
+    var shoulderMotorConfig = new SparkMaxConfig();
+    shoulderMotorConfig
         .idleMode(IdleMode.kBrake)
         .inverted(true)
         .smartCurrentLimit(STALL_CURRENT_LIMIT_SHOULDER, FREE_CURRENT_LIMIT_SHOULDER)
         .secondaryCurrentLimit(SECONDARY_CURRENT_LIMIT_SHOULDER);
-    shoulderMotorRightConfig
+    shoulderMotorConfig
         .absoluteEncoder
         .inverted(false)
         .positionConversionFactor(360); // check if this needed to be inverted
-    shoulderMotorRightConfig
+    shoulderMotorConfig
         .closedLoop
         .pid(shoulderP, shoulderI, shoulderD)
         .positionWrappingEnabled(true)
         .positionWrappingInputRange(0, 360)
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
     SparkUtil.tryUntilOk(
-        shoulderMotorRight,
+        shoulderMotor,
         5,
         () ->
-            shoulderMotorRight.configure(
-                shoulderMotorRightConfig,
+            shoulderMotor.configure(
+                shoulderMotorConfig,
                 ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters));
 
@@ -93,7 +95,7 @@ public class Arm extends SubsystemBase {
 
   private static final class Constants {
     private static final Rotation2d armDown = Rotation2d.fromDegrees(-11);
-    private static final Rotation2d armUp = Rotation2d.fromDegrees(125);
+    private static final Rotation2d armUp = Rotation2d.fromDegrees(120); // 125
   }
 
   @AutoLogOutput(key = "arm/Angle")
@@ -127,18 +129,26 @@ public class Arm extends SubsystemBase {
   }
 
   public Command armDown() {
-    return positionCommand(() -> Constants.armDown, () -> 10.0);
+    return positionCommand(() -> Constants.armDown, () -> 5.0);
   }
 
   public Command armUp() {
-    return positionCommand(() -> Constants.armUp, () -> 1.0);
+    return positionCommand(() -> Constants.armUp, () -> 5.0);
   }
 
+  // public Command startjostle() {
+  //   return runOnce(
+  //       () -> {
+  //         mode = ArmState.Jostle;
+  //       });
+  // }
   public Command startjostle() {
-    return runOnce(
-        () -> {
-          mode = ArmState.Jostle;
-        });
+    return Commands.sequence(
+        runOnce(
+            () -> {
+              mode = ArmState.Jostle;
+            }),
+        positionCommand(() -> Constants.armDown, () -> 5.0));
   }
 
   public Command stopjostle() {
@@ -147,7 +157,14 @@ public class Arm extends SubsystemBase {
             () -> {
               mode = ArmState.Default;
             }),
-        positionCommand(() -> Constants.armDown, () -> 10.0));
+        positionCommand(() -> Constants.armDown, () -> 5.0));
+  }
+
+  public Command toggleJostle() {
+    return runOnce(
+        () -> {
+          jostleArm = !jostleArm;
+        });
   }
 
   private boolean onTarget(double tolerance) {
@@ -167,27 +184,42 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (mode == ArmState.Jostle) {
-      if (getShoulderAngle().getDegrees() < minJostleAngle) {
-        jostlechange = 4;
-      } else if (getShoulderAngle().getDegrees() > maxJostleAngle) {
-        jostlechange = -4;
+    double currentShoulderAngle = getShoulderAngle().getDegrees();
+
+    if (jostleArm) {
+      if (mode == ArmState.Jostle) {
+        if (shoulderSetpoint.getDegrees() < minJostleAngle) {
+          if (trapezoiddelay < 30) {
+            jostlechange = 0;
+            trapezoiddelay = trapezoiddelay + 2;
+          } else {
+            jostlechange = 1;
+          }
+        } else if (shoulderSetpoint.getDegrees() > maxJostleAngle) {
+          if (trapezoiddelay > 0) {
+            jostlechange = 0;
+            trapezoiddelay = trapezoiddelay - 1;
+          } else {
+            jostlechange = -1;
+          }
+        }
+        setShoulderSetpoint(Rotation2d.fromDegrees(shoulderSetpoint.getDegrees() + jostlechange));
       }
-      setShoulderSetpoint(Rotation2d.fromDegrees(shoulderSetpoint.getDegrees() + jostlechange));
     }
 
-    double feedForward = Math.cos(getShoulderAngle().getRadians()) * shoulderG;
+    double feedForward = Math.cos(Math.toRadians(currentShoulderAngle)) * shoulderG;
     shoulderPID.setSetpoint(
         shoulderSetpoint.getDegrees(),
         ControlType.kPosition,
         ClosedLoopSlot.kSlot0,
         feedForward,
         ArbFFUnits.kVoltage);
-    Logger.recordOutput("arm/MotorRight", shoulderMotorRight.getAppliedOutput());
-    Logger.recordOutput("arm/MotorRightCurrent", shoulderMotorRight.getOutputCurrent());
+    Logger.recordOutput("arm/Output", shoulderMotor.getAppliedOutput());
+    Logger.recordOutput("arm/Amps", shoulderMotor.getOutputCurrent());
     Logger.recordOutput("arm/setPointDegrees", shoulderSetpoint.getDegrees());
-    Logger.recordOutput("arm/angleDegrees", getShoulderAngle().getDegrees());
+    Logger.recordOutput("arm/angleDegrees", currentShoulderAngle);
     Logger.recordOutput("arm/FeedForward", feedForward);
     Logger.recordOutput("arm/mode", mode);
+    Logger.recordOutput("arm/doJostle", jostleArm);
   }
 }

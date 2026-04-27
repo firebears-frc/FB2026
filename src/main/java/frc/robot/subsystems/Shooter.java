@@ -1,12 +1,14 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.FeedForwardConfig;
+import com.revrobotics.spark.config.LimitSwitchConfig.Behavior;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -20,6 +22,16 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class Shooter extends SubsystemBase {
+  private static enum ShooterState {
+    Off,
+    Static,
+    Auto,
+    Sotm,
+    Reverse,
+    Fast,
+    Slow
+  }
+
   private SparkFlex ShooterMotor1 = new SparkFlex(14, MotorType.kBrushless);
   private SparkFlex ShooterMotor2 = new SparkFlex(15, MotorType.kBrushless);
   private final SparkClosedLoopController ShooterController1;
@@ -31,19 +43,20 @@ public class Shooter extends SubsystemBase {
   // Variables that can be updated
   private static final int smartShooterCurrentLimit = 75;
   private static final int secondaryShooterCurrentLimit = 85;
-  private final double motorP = 0.000175;
+  private final double motorP = 0.0003; // 0.000175
   private final double motorI = 0.0;
   private final double motorD = 0.0;
-  private final double motorFF = 0.0018;
+  private final double motorFF = 0.0018; // 0.0018
   private final double maxSpeed = 6500;
-  private String mode = "off";
   InterpolatingDoubleTreeMap speedCalculator = new InterpolatingDoubleTreeMap();
+  InterpolatingDoubleTreeMap relayCalculator = new InterpolatingDoubleTreeMap();
+  private ShooterState mode = ShooterState.Off;
 
   // Dashboard Input
   private LoggedNetworkNumber staticShooterSpeed =
       new LoggedNetworkNumber("Static Shooter Speed", 3000);
-
-  private LoggedNetworkNumber ShootAdjustment = new LoggedNetworkNumber("Shoot Adjustment", 1.02);
+  private LoggedNetworkNumber ShootAdjustment = new LoggedNetworkNumber("Shoot Adjustment", 1.00);
+  private LoggedNetworkNumber shooterAngleOffset = new LoggedNetworkNumber("angleOffset", 0);
 
   private final DoubleSupplier distanceToHubSupplier;
 
@@ -63,6 +76,8 @@ public class Shooter extends SubsystemBase {
 
     // Configure Motor 1
     ShooterController1 = ShooterMotor1.getClosedLoopController();
+    var ShooterFFConfig1 = new FeedForwardConfig();
+    ShooterFFConfig1.kV(motorFF);
     var ShooterConfig1 = new SparkFlexConfig();
     ShooterConfig1.idleMode(IdleMode.kCoast)
         .smartCurrentLimit(smartShooterCurrentLimit)
@@ -70,8 +85,10 @@ public class Shooter extends SubsystemBase {
         .voltageCompensation(12.0);
     ShooterConfig1.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(motorP, motorI, motorD, motorFF);
-    ShooterConfig1.limitSwitch.forwardLimitSwitchEnabled(false);
+        .pid(motorP, motorI, motorD)
+        .apply(ShooterFFConfig1);
+    ShooterConfig1.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
+    ShooterConfig1.encoder.quadratureAverageDepth(2).quadratureMeasurementPeriod(4);
 
     SparkUtil.tryUntilOk(
         ShooterMotor1,
@@ -89,7 +106,8 @@ public class Shooter extends SubsystemBase {
         .secondaryCurrentLimit(secondaryShooterCurrentLimit)
         .voltageCompensation(12.0);
     ShooterConfig2.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-    ShooterConfig2.limitSwitch.forwardLimitSwitchEnabled(false);
+    ShooterConfig2.limitSwitch.forwardLimitSwitchTriggerBehavior(Behavior.kKeepMovingMotor);
+    ShooterConfig2.encoder.quadratureAverageDepth(2).quadratureMeasurementPeriod(4);
 
     SparkUtil.tryUntilOk(
         ShooterMotor2,
@@ -98,16 +116,25 @@ public class Shooter extends SubsystemBase {
             ShooterMotor2.configure(
                 ShooterConfig2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
-    // Populate speed calculator with values (subject to change based on testing) (Meters,RPM)
-    speedCalculator.put(2.0, 2900.0);
-    speedCalculator.put(2.5, 2900.0);
-    speedCalculator.put(2.9, 3100.0);
-    speedCalculator.put(3.1, 3250.0);
-    speedCalculator.put(3.4, 3350.0);
-    speedCalculator.put(3.8, 3400.0);
-    speedCalculator.put(4.5, 3800.0);
-    speedCalculator.put(5.25, 3950.0);
-    speedCalculator.put(6.6, 6500.0);
+    // Populate speed calculator with values (subject to change based on testing) (Meters from hub |
+    // RPM)
+    // updated on 4/18/26
+    speedCalculator.put(2.2, 2850.0);
+    speedCalculator.put(2.5, 2875.0);
+    speedCalculator.put(3.0, 2925.0);
+    speedCalculator.put(3.5, 3100.0);
+    speedCalculator.put(4.0, 3300.0);
+    speedCalculator.put(5.0, 3725.0);
+    speedCalculator.put(6.0, 4400.0);
+
+    // Populate relay calculator with values (Meters from bump/trench line | RPM)
+    // values from old testing(?)
+    relayCalculator.put(0.0, 2000.0);
+    relayCalculator.put(4.0, 3600.0);
+    relayCalculator.put(6.75, 5500.0);
+    relayCalculator.put(12.0, 6750.0);
+
+    corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
   }
 
   @AutoLogOutput(key = "Shooter/error")
@@ -123,113 +150,137 @@ public class Shooter extends SubsystemBase {
   public Command reverseShooter() {
     return runOnce(
         () -> {
-          mode = "reverse";
+          mode = ShooterState.Reverse;
         });
   }
 
   public Command autoShooter() {
     return runOnce(
         () -> {
-          mode = "auto";
+          mode = ShooterState.Auto;
         });
   }
 
   public Command sotmAutoShooter() {
     return runOnce(
         () -> {
-          mode = "sotm";
+          mode = ShooterState.Sotm;
         });
   }
 
   public Command fastShot() {
     return runOnce(
         () -> {
-          mode = "fast";
+          mode = ShooterState.Fast;
         });
   }
   // subject to change based on design of the motor and mechanism
   public Command slowShot() {
     return runOnce(
         () -> {
-          mode = "slow";
+          mode = ShooterState.Slow;
         });
   }
 
   public Command staticShot() {
     return runOnce(
         () -> {
-          mode = "static";
+          mode = ShooterState.Static;
         });
   }
 
-  public String getMode() {
-    return mode;
+  public Boolean isRunning() {
+    return mode != ShooterState.Off;
   }
 
   public Command decreaseStaticSpeed() {
     return runOnce(
-        () -> {
-          staticShooterSpeed.set(staticShooterSpeed.get() - 50);
-        });
+            () -> {
+              staticShooterSpeed.set(staticShooterSpeed.get() - 25);
+            })
+        .ignoringDisable(true);
   }
 
   public Command increaseStaticSpeed() {
     return runOnce(
-        () -> {
-          staticShooterSpeed.set(staticShooterSpeed.get() + 50);
-        });
+            () -> {
+              staticShooterSpeed.set(staticShooterSpeed.get() + 25);
+            })
+        .ignoringDisable(true);
   }
 
   public Command decreaseShootAdjustment() {
     return runOnce(
-        () -> {
-          ShootAdjustment.set(ShootAdjustment.get() - 0.005);
-        });
+            () -> {
+              ShootAdjustment.set(ShootAdjustment.get() - 0.005);
+            })
+        .ignoringDisable(true);
   }
 
   public Command increaseShootAdjustment() {
     return runOnce(
-        () -> {
-          ShootAdjustment.set(ShootAdjustment.get() + 0.005);
-        });
+            () -> {
+              ShootAdjustment.set(ShootAdjustment.get() + 0.005);
+            })
+        .ignoringDisable(true);
+  }
+
+  // decreases the angle where the rbot shoots the ball untill 75
+  public Command decreaseAngleAdjustment() {
+    return runOnce(
+            () -> {
+              shooterAngleOffset.set(Math.max(shooterAngleOffset.get() - 0.5, -15));
+              corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
+            })
+        .ignoringDisable(true);
+  }
+
+  // increases the angle where the rbot shoots the ball untill 105
+  public Command increaseAngleAdjustment() {
+    return runOnce(
+            () -> {
+              shooterAngleOffset.set(Math.min(shooterAngleOffset.get() + 0.5, 15));
+              corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
+            })
+        .ignoringDisable(true);
   }
 
   public Command pauseShooter() {
     return runOnce(
         () -> {
-          mode = "off";
+          mode = ShooterState.Off;
         });
   }
 
   @Override
   public void periodic() {
 
-    // Are we shooting (we only update the shotline if we are shooting)
-    boolean shooting =
-        mode.equals("fast") || mode.equals("slow") || mode.equals("auto") || mode.equals("sotm");
-    corrections.setDrawShotLine(shooting);
-
-    // Get the distance from the
+    // Get the distance from the hub
     double distance = distanceToHubSupplier.getAsDouble();
     if (ShootAdjustment.get() > 1.05) {
       ShootAdjustment.set(1.05);
     }
 
-    if (ShootAdjustment.get() < 1.00) {
-      ShootAdjustment.set(1.00);
+    if (ShootAdjustment.get() < .95) {
+      ShootAdjustment.set(.95);
     }
 
-    if (mode == "fast") {
+    if (mode == ShooterState.Fast) {
       setPoint = 3500;
-    } else if (mode == "slow") {
+    } else if (mode == ShooterState.Slow) {
       setPoint = 2600;
-    } else if (mode == "reverse") {
+    } else if (mode == ShooterState.Reverse) {
       setPoint = -2600;
-    } else if (mode == "auto") {
+    } else if (mode == ShooterState.Auto) {
       setPoint = speedCalculator.get(distance) * ShootAdjustment.get();
-    } else if (mode == "sotm") {
-      setPoint = speedCalculator.get(corrections.sotmGetDistance()) * ShootAdjustment.get();
-    } else if (mode == "static") {
+    } else if (mode == ShooterState.Sotm) {
+      if (corrections.currentZone() <= 0) {
+        setPoint = speedCalculator.get(corrections.sotmGetDistance()) * ShootAdjustment.get();
+      } else {
+        setPoint = relayCalculator.get(corrections.distanceToSide());
+      }
+
+    } else if (mode == ShooterState.Static) {
       setPoint = staticShooterSpeed.get();
     } else {
       setPoint = 0;
@@ -243,7 +294,7 @@ public class Shooter extends SubsystemBase {
       setPoint = maxSpeed;
     }
 
-    ShooterController1.setReference(setPoint, ControlType.kVelocity);
+    ShooterController1.setSetpoint(setPoint, ControlType.kVelocity);
 
     // LaserCan.Measurement measurement = lc.getMeasurement();
     // if (measurement != null && measurement.status == LaserCan.LASERCAN_STATUS_VALID_MEASUREMENT)

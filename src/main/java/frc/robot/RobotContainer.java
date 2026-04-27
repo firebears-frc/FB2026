@@ -59,16 +59,20 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
   // Subsystems
   private final Drive drive;
-  private final Vision vision;
   private final Shooter shooter;
   private final Hopper hopper;
   private final Intake intake;
   private final Arm arm;
+
+  @SuppressWarnings("unused")
+  private final Vision vision;
+
   // Controller
-  private final CommandJoystick joy1 = new CommandJoystick(0); // right
-  private final CommandJoystick joy2 = new CommandJoystick(1); // left
+  private final CommandJoystick joy1 = new CommandJoystick(0); // joystick for moving
+  private final CommandJoystick joy2 = new CommandJoystick(1); // joystick for rotating
   private final CommandXboxController xboxController = new CommandXboxController(2);
 
   private final Field2d field = new Field2d();
@@ -98,7 +102,7 @@ public class RobotContainer {
                 new VisionIOPhotonVision(Camera2, robotToCamera2),
                 new VisionIOPhotonVision(Camera3, robotToCamera3));
 
-        shooter = new Shooter(() -> corrections.distanceToHub(drive));
+        shooter = new Shooter(() -> corrections.distanceToHub());
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -127,11 +131,10 @@ public class RobotContainer {
         // new VisionIOPhotonVisionSim(Camera2, robotToCamera2, drive::getPose),
         // new VisionIOPhotonVisionSim(Camera3, robotToCamera3, drive::getPose));
 
-        shooter = new ShooterSim(() -> corrections.distanceToHub(drive));
+        shooter = new ShooterSim(() -> corrections.distanceToHub());
         hopper = new HopperSim();
         intake = new IntakeSim();
         arm = new ArmSim();
-
         break;
 
       default:
@@ -145,7 +148,7 @@ public class RobotContainer {
                 new ModuleIO() {});
 
         vision = new Vision(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {});
-        shooter = new Shooter(() -> corrections.distanceToHub(drive));
+        shooter = new Shooter(() -> corrections.distanceToHub());
         hopper = new Hopper();
         intake = new Intake();
         arm = new Arm();
@@ -153,17 +156,18 @@ public class RobotContainer {
         break;
     }
     corrections.createTimeCalculator();
+    corrections.createAngleCalculator();
     configureButtonBindings();
     configureAutoCommands();
 
     SmartDashboard.putData("field", field);
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
     autoChooser.addOption(
         "turn n shoot!",
         Commands.sequence(
-            DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+            DriveCommands.turnToAngle(drive, () -> corrections.angleToHub()),
             Commands.waitSeconds(.2),
             shooter.autoShooter()));
 
@@ -184,20 +188,25 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
+  // Commands to be used in pathplanner or choreo
   private void configureAutoCommands() {
     NamedCommands.registerCommands(
         Map.of(
             "shoot",
             Commands.sequence(
                 shooter.autoShooter(),
-                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub()),
                 Commands.waitUntil(() -> shooter.atSpeed()),
-                hopper.startHopper()),
+                hopper.startHopper(),
+                arm.startjostle()),
             "spinUpShooter",
             shooter.autoShooter(),
             "stopShoot",
             Commands.sequence(
-                hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()),
+                arm.stopjostle(),
+                hopper.pauseHopper(),
+                Commands.waitSeconds(.1),
+                shooter.pauseShooter()),
             "startIntake",
             intake.startIntake(),
             "pauseIntake",
@@ -205,7 +214,13 @@ public class RobotContainer {
             "armDown",
             arm.armDown(),
             "armUp",
-            arm.armUp()));
+            arm.armUp(),
+            "armJostle",
+            arm.startjostle(),
+            "stopJostle",
+            arm.stopjostle(),
+            "delayStart",
+            corrections.waitAutoDelay()));
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -215,32 +230,32 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
+    // DRIVER 1 COMMANDS
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> -joy2.getX()));
-
-    joy2.povUp()
+    joy2.povUp() // drive while facing up
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(0))));
-    joy2.povRight()
+    joy2.povRight() // drive while facing right
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue((3 * Math.PI) / 2))));
-    joy2.povDown()
+    joy2.povDown() // drive while facing down
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI))));
-    joy2.povLeft()
+    joy2.povLeft() // drive while facing left
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
@@ -248,41 +263,32 @@ public class RobotContainer {
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
 
-    joy2.trigger()
+    joy2.trigger() // drive while aiming at the hub
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.autoAimAngle()));
+
+    joy2.button(2) // drive while snapping to nearest diagonal (diamond) position
         .whileTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () -> corrections.autoAimAngle(drive)));
+                () -> corrections.nearestDiagonalAngle()));
 
-    joy2.button(2)
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
-                () -> corrections.nearestDiagonalAngle(drive)));
+    // slow down driving while pressed to predesignated speed;
+    joy1.trigger().onTrue(corrections.slowDriveSpeed()).onFalse(corrections.normalDriveSpeed());
 
-    // Resets gyro to 0 degrees when b is pressed
-    xboxController
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));
-
-    // Right trigger: Auto-Aim shooter when standing still (using distance to hub)
+    // DRIVER 2 COMMANDS
+    // Right trigger:  Auto shoot on the move (with auto aim) - (is the same as auto-aim when
+    // standing still)
     xboxController
         .rightTrigger()
         .onTrue(
             Commands.sequence(
-                shooter.autoShooter(),
+                shooter.sotmAutoShooter(),
                 Commands.waitUntil(() -> shooter.atSpeed()),
-                Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
+                Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget()),
                 hopper.startHopper(),
                 arm.startjostle()))
         .whileTrue(
@@ -290,7 +296,7 @@ public class RobotContainer {
                 drive,
                 () -> -joy1.getY(),
                 () -> -joy1.getX(),
-                () -> corrections.autoAimAngle(drive)))
+                () -> corrections.sotmAutoAimAngle()))
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
@@ -307,39 +313,15 @@ public class RobotContainer {
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 hopper.startHopper(),
                 arm.startjostle()))
-        .onFalse(Commands.sequence(hopper.pauseHopper(), arm.stopjostle(), shooter.pauseShooter()));
+        .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter(), arm.stopjostle()));
 
-    // Auto shoot on the move (with auto aim) - not yet including speed limiter
+    // Right Bumper: Shoot with x-lock
     xboxController
         .rightBumper()
         .onTrue(
             Commands.sequence(
-                shooter.sotmAutoShooter(),
-                Commands.waitUntil(() -> shooter.atSpeed()),
-                Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
-                hopper.startHopper(),
-                arm.startjostle()))
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
-                () -> corrections.sotmAutoAimAngle(drive)))
-        .onFalse(
-            Commands.sequence(
-                hopper.pauseHopper(),
-                arm.stopjostle(),
-                Commands.waitSeconds(.1),
-                shooter.pauseShooter()));
-
-    // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
-    // xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
-    xboxController
-        .leftBumper()
-        .onTrue(
-            Commands.sequence(
                 shooter.autoShooter(),
-                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub(drive)),
+                DriveCommands.turnToAngle(drive, () -> corrections.angleToHub()),
                 DriveCommands.stopWithX(drive),
                 Commands.waitUntil(() -> shooter.atSpeed()),
                 hopper.startHopper(),
@@ -347,22 +329,113 @@ public class RobotContainer {
         .onFalse(
             Commands.sequence(
                 hopper.pauseHopper(),
-                arm.stopjostle(),
                 Commands.waitSeconds(0.1),
-                shooter.pauseShooter()));
-    // joy1.button(5).onTrue(shooter.increaseStaticSpeed());
-    // joy1.button(10).onTrue(shooter.decreaseStaticSpeed());
-    joy1.button(5).onTrue(shooter.increaseShootAdjustment());
-    joy1.button(10).onTrue(shooter.decreaseShootAdjustment());
+                shooter.pauseShooter(),
+                arm.stopjostle()));
+
+    // Left Bumper: Static shot
+    xboxController
+        .leftBumper()
+        .onTrue(
+            Commands.sequence(
+                shooter.staticShot(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                hopper.startHopper(),
+                arm.startjostle()))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(),
+                Commands.waitSeconds(0.1),
+                shooter.pauseShooter(),
+                arm.stopjostle()));
+
+    // Arm Down
+    xboxController.povDown().onTrue(arm.armDown());
+
+    // Arm Up
+    xboxController.povUp().onTrue(arm.armUp());
+
+    // Start / stop intake
     xboxController.a().onTrue(intake.startIntake()).onFalse(intake.pauseintake());
-    xboxController.x().onTrue(hopper.reverseHopper()).onFalse(hopper.pauseHopper());
+
+    // Reverse Intake / stop intake
+    xboxController.b().onTrue(intake.reverseIntake()).onFalse(intake.pauseintake());
+
+    // toggles whether the bot should jostle the arm while shooting or not
+    xboxController.button(10).onTrue(arm.toggleJostle());
+
+    // Start/stop hopper
+    xboxController
+        .x()
+        .onTrue(hopper.reverseHopper())
+        .onFalse(hopper.regMode(() -> shooter.isRunning()));
+
+    // Temporarily change hopper state
     xboxController
         .y()
-        .onTrue(hopper.altMode(() -> shooter.getMode()))
-        .onFalse(hopper.regMode(() -> shooter.getMode()));
-    xboxController.povDown().onTrue(arm.armDown());
-    xboxController.povUp().onTrue(arm.armUp());
-    joy1.button(7).onTrue(intake.reverseIntake()).onFalse(intake.pauseintake());
+        .onTrue(hopper.altMode(() -> shooter.isRunning()))
+        .onFalse(hopper.regMode(() -> shooter.isRunning()));
+
+    // FINE CONTROL OVER SHOOT PARAMETERS
+    // Adjust static speed by +50 in range 0-6500
+    joy1.button(7).onTrue(shooter.increaseStaticSpeed().ignoringDisable(true));
+
+    // Adjust static speed by -50 in range 0-6500
+    joy1.button(8).onTrue(shooter.decreaseStaticSpeed().ignoringDisable(true));
+
+    // Adjust shoot factor by +0.05 in range 0.95 -1.05
+    joy1.button(5).onTrue(shooter.increaseShootAdjustment().ignoringDisable(true));
+
+    // Adjust shoot factor by -0.05 in range 0.95 -1.05
+    joy1.button(10).onTrue(shooter.decreaseShootAdjustment().ignoringDisable(true));
+
+    // Button 6 will be for adjusting shooter angle  by +1
+    joy1.button(6).onTrue(shooter.increaseAngleAdjustment().ignoringDisable(true));
+
+    // Button 9 will be for adjusting shooter angle by -1
+    joy1.button(9).onTrue(shooter.decreaseAngleAdjustment().ignoringDisable(true));
+
+    // DELAY FOR AUTO
+    // increase auto delay by half a second
+    joy1.button(13).onTrue(corrections.increaseAutoDelay().ignoringDisable(true));
+
+    // decrease auto delay by half a second
+    joy1.button(14).onTrue(corrections.decreaseAutoDelay().ignoringDisable(true));
+
+    // Resets gyro to 0 degrees when b is pressed
+    joy1.button(16)
+        .onTrue(
+            Commands.runOnce(
+                    () ->
+                        drive.setPose(
+                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+                    drive)
+                .ignoringDisable(true));
+
+    // Previously used mappings we replaced:
+    // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
+    // xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
+    // xboxController // Shoot auto aim without shoot on the move
+    //     .rightTrigger()
+    //     .onTrue(
+    //         Commands.sequence(
+    //             shooter.autoShooter(),
+    //             Commands.waitUntil(() -> shooter.atSpeed()),
+    //             Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
+    //             hopper.startHopper(),
+    //             arm.startjostle()))
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -joy1.getY(),
+    //             () -> -joy1.getX(),
+    //             () -> corrections.autoAimAngle(drive)))
+    //     .onFalse(
+    //         Commands.sequence(
+    //             hopper.pauseHopper(),
+    //             Commands.waitSeconds(.1),
+    //             shooter.pauseShooter(),
+    //             arm.stopjostle()));
 
     // Button Mappings for simulation with keyboard (Drag keyboard into joy in glass)
     if (RobotBase.isSimulation()) {
@@ -371,35 +444,32 @@ public class RobotContainer {
               Commands.sequence(
                   shooter.autoShooter(),
                   Commands.waitUntil(() -> shooter.atSpeed()),
-                  Commands.waitUntil(() -> corrections.aimedAtAutoTarget(drive)),
+                  Commands.waitUntil(() -> corrections.aimedAtAutoTarget()),
                   hopper.startHopper()))
           .whileTrue(
               DriveCommands.joystickDriveAtAngle(
-                  drive,
-                  () -> -joy1.getY(),
-                  () -> -joy1.getX(),
-                  () -> corrections.autoAimAngle(drive)))
+                  drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.autoAimAngle()))
           .onFalse(
               Commands.sequence(
                   hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
 
-      joy1.button(2)
-          .onTrue(
-              Commands.sequence(
-                  shooter.autoShooter(),
-                  Commands.waitUntil(() -> shooter.atSpeed()),
-                  hopper.startHopper()))
-          .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
+      //   joy1.button(2)
+      //       .onTrue(
+      //           Commands.sequence(
+      //               shooter.autoShooter(),
+      //               Commands.waitUntil(() -> shooter.atSpeed()),
+      //               hopper.startHopper()))
+      //       .onFalse(Commands.sequence(hopper.pauseHopper(), shooter.pauseShooter()));
 
-      // sotm drive at angle
-      joy1.button(3)
-          .whileTrue(
-              DriveCommands.joystickDriveAtAngle(
-                  drive,
-                  () -> -joy1.getY(),
-                  () -> -joy1.getX(),
-                  () -> corrections.sotmAutoAimAngle(drive),
-                  () -> 2.81));
+      //   // sotm drive at angle
+      //   joy1.button(3)
+      //       .whileTrue(
+      //           DriveCommands.joystickDriveAtAngle(
+      //               drive,
+      //               () -> -joy1.getY(),
+      //               () -> -joy1.getX(),
+      //               () -> corrections.sotmAutoAimAngle(),
+      //               () -> 2.81));
 
       // sotm drive and shoot
       joy1.button(4)
@@ -407,18 +477,22 @@ public class RobotContainer {
               Commands.sequence(
                   shooter.autoShooter(),
                   Commands.waitUntil(() -> shooter.atSpeed()),
-                  Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget(drive)),
+                  Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget()),
                   hopper.startHopper()))
           .whileTrue(
               DriveCommands.joystickDriveAtAngle(
                   drive,
                   () -> -joy1.getY(),
                   () -> -joy1.getX(),
-                  () -> corrections.sotmAutoAimAngle(drive),
+                  () -> corrections.sotmAutoAimAngle(),
                   () -> 2.81))
           .onFalse(
               Commands.sequence(
                   hopper.pauseHopper(), Commands.waitSeconds(.1), shooter.pauseShooter()));
+      // Button 6 will be for adjusting shooter angle  by +1
+      joy1.button(2).onTrue(shooter.increaseAngleAdjustment());
+      // Button 9 will be for adjusting shooter angle by -1
+      joy1.button(3).onTrue(shooter.decreaseAngleAdjustment());
     }
   }
 
