@@ -395,6 +395,8 @@ public class RobotContainer {
     // Button 9 will be for adjusting shooter angle by -1
     joy1.button(9).onTrue(shooter.decreaseAngleAdjustment().ignoringDisable(true));
 
+    joy1.button(12).onTrue(shooter.minStaticSpeed().ignoringDisable(true));
+    joy1.button(15).onTrue(shooter.maxStaticSpeed().ignoringDisable(true));
     // DELAY FOR AUTO
     // increase auto delay by half a second
     joy1.button(13).onTrue(corrections.increaseAutoDelay().ignoringDisable(true));

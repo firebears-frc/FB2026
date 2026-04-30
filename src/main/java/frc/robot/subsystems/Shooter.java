@@ -209,6 +209,22 @@ public class Shooter extends SubsystemBase {
         .ignoringDisable(true);
   }
 
+  public Command minStaticSpeed() {
+    return runOnce(
+            () -> {
+              staticShooterSpeed.set(550);
+            })
+        .ignoringDisable(true);
+  }
+
+  public Command maxStaticSpeed() {
+    return runOnce(
+            () -> {
+              staticShooterSpeed.set(6500);
+            })
+        .ignoringDisable(true);
+  }
+
   public Command decreaseShootAdjustment() {
     return runOnce(
             () -> {
