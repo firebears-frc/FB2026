@@ -42,7 +42,7 @@ public class Arm extends SubsystemBase {
   private final SparkClosedLoopController shoulderPID;
   private ArmState mode = ArmState.Default;
   private double jostlechange;
-  private final double maxJostleAngle = 10; // was 5
+  private final double maxJostleAngle = 15; // was 5
   private final double minJostleAngle = 0; // was -8
   private boolean jostleArm = false;
   private double trapezoiddelay = 30;

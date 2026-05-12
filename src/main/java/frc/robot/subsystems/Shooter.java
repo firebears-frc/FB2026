@@ -132,7 +132,7 @@ public class Shooter extends SubsystemBase {
     relayCalculator.put(0.0, 2000.0);
     relayCalculator.put(4.0, 3600.0);
     relayCalculator.put(6.75, 5500.0);
-    relayCalculator.put(12.0, 6750.0);
+    // relayCalculator.put(12.0, 6750.0);
 
     corrections.setShooterAngleOffset(Math.toRadians(shooterAngleOffset.get()));
   }
