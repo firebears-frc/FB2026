@@ -32,7 +32,8 @@ public class Arm extends SubsystemBase {
   private static int FREE_CURRENT_LIMIT_SHOULDER = 5;
   private static double shoulderP = 0.007;
   private static double shoulderI = 0.0;
-  private static double shoulderG = 0.8;
+  private static double shoulderG =
+      0.5; // 0.8 seemed like better value at PAR but messed up something in champs practice autos
   private static double shoulderD = 0.0;
   private static int SECONDARY_CURRENT_LIMIT_SHOULDER = 40;
   // private static boolean up = true;
@@ -41,7 +42,7 @@ public class Arm extends SubsystemBase {
   private final SparkClosedLoopController shoulderPID;
   private ArmState mode = ArmState.Default;
   private double jostlechange;
-  private final double maxJostleAngle = 10; // was 5
+  private final double maxJostleAngle = 15; // was 5
   private final double minJostleAngle = 0; // was -8
   private boolean jostleArm = false;
   private double trapezoiddelay = 30;

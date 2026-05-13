@@ -263,27 +263,31 @@ public class RobotContainer {
                 () -> -joy1.getX(),
                 () -> Rotation2d.fromRadians(corrections.correctAngleValue(Math.PI / 2))));
 
-    joy2.trigger() // drive while aiming at the hub
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive, () -> -joy1.getY(), () -> -joy1.getX(), () -> corrections.autoAimAngle()));
+    // joy2.trigger() // drive while aiming at the hub
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive, () -> -joy1.getY(), () -> -joy1.getX(), () ->
+    // corrections.autoAimAngle()));
 
-    joy2.button(2) // drive while snapping to nearest diagonal (diamond) position
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -joy1.getY(),
-                () -> -joy1.getX(),
-                () -> corrections.nearestDiagonalAngle()));
+    // joy2.button(2) // drive while snapping to nearest diagonal (diamond) position
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -joy1.getY(),
+    //             () -> -joy1.getX(),
+    //             () -> corrections.nearestDiagonalAngle()));
 
     // slow down driving while pressed to predesignated speed;
     joy1.trigger().onTrue(corrections.slowDriveSpeed()).onFalse(corrections.normalDriveSpeed());
 
+    // joy2.trigger().and(joy1.trigger().not()) TODO TS
     // DRIVER 2 COMMANDS
     // Right trigger:  Auto shoot on the move (with auto aim) - (is the same as auto-aim when
     // standing still)
     xboxController
         .rightTrigger()
+        .and(joy2.trigger().negate())
+        .and(joy2.button(2).negate())
         .onTrue(
             Commands.sequence(
                 shooter.sotmAutoShooter(),
@@ -307,6 +311,8 @@ public class RobotContainer {
     // Left trigger: Shoot without auto aim (but using auto-distance to hub)
     xboxController
         .leftTrigger()
+        .and(joy2.trigger().negate())
+        .and(joy2.button(2).negate())
         .onTrue(
             Commands.sequence(
                 shooter.autoShooter(),
@@ -318,6 +324,8 @@ public class RobotContainer {
     // Right Bumper: Shoot with x-lock
     xboxController
         .rightBumper()
+        .and(joy2.trigger().negate())
+        .and(joy2.button(2).negate())
         .onTrue(
             Commands.sequence(
                 shooter.autoShooter(),
@@ -336,6 +344,8 @@ public class RobotContainer {
     // Left Bumper: Static shot
     xboxController
         .leftBumper()
+        .and(joy2.trigger().negate())
+        .and(joy2.button(2).negate())
         .onTrue(
             Commands.sequence(
                 shooter.staticShot(),
@@ -376,6 +386,26 @@ public class RobotContainer {
         .onTrue(hopper.altMode(() -> shooter.isRunning()))
         .onFalse(hopper.regMode(() -> shooter.isRunning()));
 
+    joy2.trigger()
+        .onTrue(
+            Commands.sequence(
+                shooter.sotmAutoShooter(),
+                Commands.waitUntil(() -> shooter.atSpeed()),
+                Commands.waitUntil(() -> corrections.sotmAimedAtAutoTarget()),
+                hopper.startHopper(),
+                arm.startjostle()))
+        .whileTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -joy1.getY(),
+                () -> -joy1.getX(),
+                () -> corrections.sotmAutoAimAngle()))
+        .onFalse(
+            Commands.sequence(
+                hopper.pauseHopper(),
+                Commands.waitSeconds(.1),
+                shooter.pauseShooter(),
+                arm.stopjostle()));
     // FINE CONTROL OVER SHOOT PARAMETERS
     // Adjust static speed by +50 in range 0-6500
     joy1.button(7).onTrue(shooter.increaseStaticSpeed().ignoringDisable(true));
@@ -395,6 +425,8 @@ public class RobotContainer {
     // Button 9 will be for adjusting shooter angle by -1
     joy1.button(9).onTrue(shooter.decreaseAngleAdjustment().ignoringDisable(true));
 
+    joy1.button(12).onTrue(shooter.minStaticSpeed().ignoringDisable(true));
+    joy1.button(15).onTrue(shooter.maxStaticSpeed().ignoringDisable(true));
     // DELAY FOR AUTO
     // increase auto delay by half a second
     joy1.button(13).onTrue(corrections.increaseAutoDelay().ignoringDisable(true));
