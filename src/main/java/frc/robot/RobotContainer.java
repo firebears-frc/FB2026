@@ -444,6 +444,12 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
+    // while pressed, speeds up the hopper to competition speed
+    // ~CHANGE~ (which button)
+    joy2.button(5)
+        .onTrue(hopper.switchSpeed().ignoringDisable(true))
+        .onFalse(hopper.switchSpeed().ignoringDisable(true));
+
     // Previously used mappings we replaced:
     // xboxController.rightBumper().onTrue(shooter.reverseShooter()).onFalse(shooter.pauseShooter());
     // xboxController.leftBumper().onTrue(shooter.staticShot()).onFalse(shooter.pauseShooter());
