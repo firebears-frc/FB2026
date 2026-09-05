@@ -277,8 +277,9 @@ public class RobotContainer {
     //             () -> -joy1.getX(),
     //             () -> corrections.nearestDiagonalAngle()));
 
-    // slow down driving while pressed to predesignated speed;
-    joy1.trigger().onTrue(corrections.slowDriveSpeed()).onFalse(corrections.normalDriveSpeed());
+    // slow down driving as a toggle to predesignated speed;
+    joy2.button(10).onTrue(corrections.toggleDriveSpeed());
+    // joy1.trigger().onTrue(corrections.slowDriveSpeed()).onFalse(corrections.normalDriveSpeed());
 
     // joy2.trigger().and(joy1.trigger().not()) TODO TS
     // DRIVER 2 COMMANDS
@@ -433,6 +434,9 @@ public class RobotContainer {
 
     // decrease auto delay by half a second
     joy1.button(14).onTrue(corrections.decreaseAutoDelay().ignoringDisable(true));
+
+    // toggles whether vision is enabled or not
+    joy1.button(11).onTrue(drive.toggleVision());
 
     // Resets gyro to 0 degrees when b is pressed
     joy1.button(16)

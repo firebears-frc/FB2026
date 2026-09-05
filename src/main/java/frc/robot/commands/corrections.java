@@ -37,7 +37,6 @@ public class corrections {
 
   // ~CHANGE~
   private static double delay = 0.03;
-
   private static double robotVelocityX = 0;
   private static double robotVelocityY = 0;
   private static double sotmDistance = 0;
@@ -82,6 +81,7 @@ public class corrections {
     return Commands.runOnce(
         () -> {
           driveSpeed = baseDriveSpeed * optionalSlow;
+          Logger.recordOutput("corrections/drive speed", driveSpeed);
         });
   }
 
@@ -90,6 +90,20 @@ public class corrections {
     return Commands.runOnce(
         () -> {
           driveSpeed = baseDriveSpeed;
+          Logger.recordOutput("corrections/drive speed", driveSpeed);
+        });
+  }
+
+  // toggles the drive speed
+  public static Command toggleDriveSpeed() {
+    return Commands.runOnce(
+        () -> {
+          if (driveSpeed == baseDriveSpeed) {
+            driveSpeed = baseDriveSpeed * optionalSlow;
+          } else {
+            driveSpeed = baseDriveSpeed;
+          }
+          Logger.recordOutput("corrections/drive speed", driveSpeed);
         });
   }
 

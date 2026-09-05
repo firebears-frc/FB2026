@@ -47,6 +47,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class Drive extends SubsystemBase {
   static final Lock odometryLock = new ReentrantLock();
+  private boolean useVision = true; // used to toggle vision position updates
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
@@ -302,8 +303,23 @@ public class Drive extends SubsystemBase {
       Pose2d visionRobotPoseMeters,
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
-    poseEstimator.addVisionMeasurement(
-        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+    if (useVision) {
+      poseEstimator.addVisionMeasurement(
+          visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+    }
+  }
+
+  // used to toggle vision updates on and off
+  public Command toggleVision() {
+    return runOnce(
+        () -> {
+          if (useVision) {
+            useVision = false;
+          } else {
+            useVision = true;
+          }
+          Logger.recordOutput("drive/useVision", useVision);
+        });
   }
 
   /** Returns the maximum linear speed in meters per sec. */
